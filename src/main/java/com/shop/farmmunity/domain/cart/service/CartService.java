@@ -1,5 +1,18 @@
 package com.shop.farmmunity.domain.cart.service;
 
+import com.shop.farmmunity.domain.cart.dto.CartDetailDto;
+import com.shop.farmmunity.domain.cart.dto.CartItemDto;
+import com.shop.farmmunity.domain.cart.dto.CartOrderDto;
+import com.shop.farmmunity.domain.cart.entity.Cart;
+import com.shop.farmmunity.domain.cart.entity.CartItem;
+import com.shop.farmmunity.domain.cart.repository.CartItemRepository;
+import com.shop.farmmunity.domain.cart.repository.CartRepository;
+import com.shop.farmmunity.domain.item.entity.Item;
+import com.shop.farmmunity.domain.item.repository.ItemRepository;
+import com.shop.farmmunity.domain.member.entity.Member;
+import com.shop.farmmunity.domain.member.repository.MemberRepository;
+import com.shop.farmmunity.domain.order.dto.OrderDto;
+import com.shop.farmmunity.domain.order.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,11 +86,8 @@ public class CartService {
 
         Member savedMember = cartItem.getCart().getMember();
 
-        if (!StringUtils.equals(curMember.getEmail(), savedMember.getEmail())) { // 현재 멤버와 cartItem 의 멤버와 일치하는지
-            return false;
-        }
-
-        return true;
+        // 현재 멤버와 cartItem 의 멤버와 일치하는지
+        return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
     }
 
     // cartItem 의 수량도 함께 업데이트

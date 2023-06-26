@@ -1,6 +1,7 @@
 package com.shop.farmmunity.domain.cart.entity;
 
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
+import com.shop.farmmunity.domain.item.entity.Item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="cart_item")
+@Table(name = "cart_item")
 public class CartItem extends BaseEntity {
 
     @Id
@@ -17,7 +18,7 @@ public class CartItem extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="cart_id")
+    @JoinColumn(name = "cart_id")
     private Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,7 +27,7 @@ public class CartItem extends BaseEntity {
 
     private int count;
 
-    public static CartItem createCartItem(Cart cart, Item item, int count){
+    public static CartItem createCartItem(Cart cart, Item item, int count) {
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setItem(item);
@@ -34,11 +35,11 @@ public class CartItem extends BaseEntity {
         return cartItem;
     }
 
-    public void addCount(int count){
+    public void addCount(int count) {
         this.count += count;
     }
 
-    public void updateCount(int count){
+    public void updateCount(int count) {
         this.count = count;
     }
 }

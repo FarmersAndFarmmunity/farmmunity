@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+  <style>
+    .error {
+      color: #bd2130;
+    }
+    .social-img {
+      width:60px;
+      height:60px;
+    }
+  </style>
+</th:block>
+
+
+<div layout:fragment="content">
+
+  <div class="content-box w-full flex justify-center mt-10">
+    <div class="flex justify-center" style="width:500px;">
+      <form role="form" method="post" action="/members/login">
+        <div class="h4 text-4xl font-bold my-4 text-center mb-3" th:text="로그인"></div>
+        <div class="login-box flex justify-center flex-col gap-3">
+          <input type="email" name="email" class="input input-bordered input-accent w-full max-w-xs" placeholder="이메일을 입력해주세요">
+          <input type="password" name="password" id="password" class="input input-bordered w-full max-w-xs" placeholder="비밀번호를 입력해주세요">
+          <p th:if="${loginErrorMsg}" class="error" th:text="${loginErrorMsg}"></p>
+        </div>
+        <div class="login-button flex justify-center flex-row mt-3 gap-3">
+          <button class="btn btn-accent w-1/2">로그인</button>
+          <button type="button" class="btn btn-warning w-1/2" onClick="location.href='/members/new'">회원가입</button>
+          <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        </div>
+        <br>
+        <div class="h4 text-xl font-bold my-4 text-center mb-3" th:text="|소셜 로그인|"></div>
+        <div class="social-box flex justify-center gap-3">
+          <a href="/oauth2/authorization/kakao">
+            <img class="social-img" src="https://user-images.githubusercontent.com/15629036/245657764-225936cf-2837-428e-bd34-a4e100e31898.png">
+          </a>
+          <a href="/oauth2/authorization/naver">
+            <img class="social-img" src="https://user-images.githubusercontent.com/15629036/245657775-220f6d2a-b750-4bad-a395-375c0b3e6a2c.png">
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</html>
