@@ -15,11 +15,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(value = {AuditingEntityListener.class})
 @MappedSuperclass
 @Getter
-public class BaseEntity {
+public abstract class BaseEntity extends BaseTimeEntity {
+
     @CreatedBy
     @Column(updatable = false)
-    private String createdBy; // 생성한 사람
+    private String createdBy;
 
     @LastModifiedBy
-    private String modifiedBy; // 마지막으로 수정한 사람
+    private String modifiedBy;
 }

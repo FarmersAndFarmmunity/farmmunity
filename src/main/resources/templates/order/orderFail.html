@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+  <style>
+    .content-mg{
+      margin-left:30%;
+      margin-right:30%;
+      margin-top:2%;
+      margin-bottom:100px;
+    }
+    .repImgDiv{
+      margin-right:15px;
+      margin-left:15px;
+      height:auto;
+    }
+    .repImg{
+      height:100px;
+      width:100px;
+    }
+    .card{
+      width:750px;
+      height:100%;
+      padding:30px;
+      margin-bottom:20px;
+    }
+    .fs18{
+      font-size:18px
+    }
+    .fs24{
+      font-size:24px
+    }
+  </style>
+</th:block>
+
+<div layout:fragment="content" class="content-mg">
+
+  <div>
+    주문 결제실패
+  </div>
+
+  <div>
+    주문번호 : [[${orderId}]]
+  </div>
+
+  <div>[[${message}]]</div>
+  <div>[[${code}]]</div>
+
+</div>
+
+</html>

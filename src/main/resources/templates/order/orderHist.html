@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+
+    <script th:inline="javascript">
+
+        function cancelOrder(orderId) {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/order/" + orderId + "/cancel";
+            var paramData = {
+                orderId : orderId,
+            };
+
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                url      : url,
+                type     : "POST",
+                contentType : "application/json",
+                data     : param,
+                beforeSend : function(xhr){
+                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache   : false,
+                success  : function(result, status){
+                    alert("주문이 취소 되었습니다.");
+                    location.href='/orders/' + [[${page}]];
+                },
+                error : function(jqXHR, status, error){
+                    if(jqXHR.status == '401'){
+                        alert('로그인 후 이용해주세요');
+                        location.href='/members/login';
+                    } else{
+                        alert(jqXHR.responseText);
+                    }
+                }
+            });
+        }
+
+        function payment(orderId) {
+            const popOption = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
+            const openUrl = '/payment/' + orderId;
+            window.open(openUrl, 'payment', popOption);
+        }
+
+    </script>
+
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .content-mg{
+            margin-left:30%;
+            margin-right:30%;
+            margin-top:2%;
+            margin-bottom:100px;
+        }
+        .repImgDiv{
+            margin-right:15px;
+            margin-left:15px;
+            height:auto;
+            text-overflow : ellipsis;
+        }
+        .repImg{
+            height:100px;
+            width:100px;
+        }
+        .card{
+            width:750px;
+            height:100%;
+            padding:30px;
+            margin-bottom:20px;
+        }
+        .fs18{
+            font-size:18px
+        }
+        .fs24{
+            font-size:24px
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+
+    <p class="text-3xl font-bold my-4 ml-3 pb-3">
+        지난 구매 이력
+    </p>
+
+    <div class="flex flex-col items-center w-full justify-center gap-5">
+        <!-- 주문명 구현 예정 : 주문 상품이 1개일 때 -->
+        <!-- 주문명 구현 예정 : 주문 상품이 2개 이상일 때 -->
+        <div th:each="order, orderStat : ${orders}">
+            <div class="order-box card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h4 class="card-title text-3xl mb-10" th:text="|${order.orderDate} 주문건|"></h4>
+                    <div class="flex flex-col">
+                        <div th:each="orderItem : ${order.orderItemDtoList}" class="flex mb-3">
+                            <div class="flex justify-center items-center">
+                                <div class="repImgDiv">
+                                    <img th:src="${orderItem.imgUrl}" class = "rounded repImg" th:alt="${orderItem.itemNm}">
+                                </div>
+                                <div class="text-base repImgDiv" style="width: 350px">
+                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"></div>
+                                    <div th:text="${'상품 가격 : ' + orderItem.orderPrice} +'원'"></div>
+                                    <div th:text="${'주문 개수 : ' + orderItem.count} +'개'"></div>
+                                    <div th:text="${'주문 번호 : ' + order.getOrderId() + '번'}"></div>
+                                </div>
+                                <a class="btn btn-accent" th:href="@{|/reviews/new?orderId=${orderItem.orderId}&itemId=${orderItem.itemId}|}" th:if="${order.orderStatus == T(com.shop.farmmunity.domain.order.constant.OrderStatus).ORDER}" th:text="|리뷰작성|"></a>
+                                <a class="btn btn-error" th:unless="${order.orderStatus == T(com.shop.farmmunity.domain.order.constant.OrderStatus).ORDER}" th:text="|리뷰작성불가|"></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3">
+                        <th:block th:if="${order.orderStatus == T(com.shop.farmmunity.domain.order.constant.OrderStatus).ORDER}">
+                            <button type="button" class="btn btn-accent" th:value="${order.orderId}" onclick="payment(this.value)">결제내역</button>
+                            <button type="button" class="btn btn-error" th:value="${order.orderId}" onclick="cancelOrder(this.value)">주문취소</button>
+                        </th:block>
+                        <th:block th:unless="${order.orderStatus == T(com.shop.farmmunity.domain.order.constant.OrderStatus).ORDER}">
+                            <h4 class="text-2xl text-error font-bold">취소 완료</h4>
+                        </th:block>
+                    </div>
+               </div>
+          </div>
+       </div>
+    </div>
+
+    <div th:with="start=${(orders.number/maxPage)*maxPage + 1}, end=(${(orders.totalPages == 0) ? 1 : (start + (maxPage - 1) < orders.totalPages ? start + (maxPage - 1) : orders.totalPages)})" >
+        <ul class="flex join justify-center mt-5">
+
+            <li class="join-item btn" th:classappend="${orders.number eq 0}?'disabled':''">
+                <a th:href="@{'/orders/' + ${orders.number-1}}" aria-label='이전' class="page-link">
+                    <span aria-hidden='true'>이전</span>
+                </a>
+            </li>
+
+            <li class="join-item btn" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${orders.number eq page-1}?'active':''">
+                <a th:href="@{'/orders/' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
+            </li>
+
+            <li class="join-item btn" th:classappend="${orders.number+1 ge orders.totalPages}?'disabled':''">
+                <a th:href="@{'/orders/' + ${orders.number+1}}" aria-label='다음' class="page-link">
+                    <span aria-hidden='true'>다음</span>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+
+</div>
+
+</html>
