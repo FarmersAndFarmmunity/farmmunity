@@ -10,7 +10,7 @@ import lombok.ToString;
 import org.modelmapper.ModelMapper;
 
 @Entity
-@Table(name = "member")
+@Table(name = "shipping")
 @Getter
 @Setter
 @ToString
