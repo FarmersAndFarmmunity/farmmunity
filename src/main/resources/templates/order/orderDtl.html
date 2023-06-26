@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+</head>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+    <script src="https://js.tosspayments.com/v1"></script>
+    <script th:inline="javascript">
+        const orderId = /*[[ ${order.orderId} ]]*/ null;
+        const customerName = /*[[ ${order.customerName} ]]*/ null;
+        const customerEmail = /*[[ ${order.customerEmail} ]]*/ null;
+        const orderName = /*[[ ${order.orderName} ]]*/ null;
+        const totalPrice = /*[[ ${order.totalPrice} ]]*/ null;
+        const CLIENT_KEY = /*[[ ${order.CLIENT_KEY} ]]*/ null;
+    </script>
+
+    <script>
+        var urlParams = new URLSearchParams(window.location.search);
+        var msg = urlParams.get('msg');
+
+        if (msg) {
+            alert(decodeURIComponent(msg));
+            window.location.href = '/orders';
+        }
+    </script>
+
+    <script>
+        const tossPayments = TossPayments(CLIENT_KEY);
+
+        function payment() {
+            const method = '카드'; // "카드" 혹은 "가상계좌"
+
+            const paymentData = {
+                amount: totalPrice,
+                orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2), // orderId는 6자 이상이여야 함
+                orderName: orderName,
+                customerName: customerName,
+                customerEmail: customerEmail,
+                successUrl: 'http://localhost:8080/' + orderId +'/success',
+                failUrl: 'http://localhost:8080/' + orderId +'/fail',
+            };
+
+            tossPayments.requestPayment(method, paymentData);
+        }
+    </script>
+
+</th:block>
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+    <style>
+        .content-mg{
+            margin-left:25%;
+            margin-right:25%;
+            margin-top:2%;
+            margin-bottom:100px;
+        }
+        .repImg{
+            height:100px;
+            width:100px;
+        }
+        .repImgDiv{
+            padding:10px;
+            text-overflow : ellipsis;
+        }
+        .fs18{
+            font-size:18px
+        }
+        .fs24{
+            font-size:24px
+        }
+        .order-box{
+            width:500px;
+        }
+        .order-line{
+            border-bottom: 1px solid #efefef;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content" class="content-mg">
+
+    <div class="flex w-full justify-center">
+        <div class="flex flex-col" style="width: 650px;">
+            <p class="text-3xl font-bold my-4 ml-3">
+                주문 상세 내역
+            </p>
+            <div class="flex w-full justify-center">
+                <div class="order-box card bg-base-100 shadow-xl">
+                    <div class="card-body">
+                        <h3 class="card-title text-2xl" th:text="${'주문명 : ' + order.getOrderName()}"></h3>
+                        <div th:each="orderItem : ${order.getOrderItemDtlDtos()}" class="flex mb-3 order-line">
+                            <div class="flex">
+                                <div class="repImgDiv">
+                                    <img th:src="${orderItem.imgUrl}" class = "rounded repImg" th:alt="${orderItem.itemNm}">
+                                </div>
+                                <div class="text-base repImgDiv" style="width: 350px">
+                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"></div>
+                                    <div th:text="${'상품 가격 : ' + orderItem.orderPrice} +'원'"></div>
+                                    <div th:text="${'주문 개수 : ' + orderItem.count} +'개'"></div>
+                                    <div th:text="${'주문 번호 : ' + order.getOrderId() + '번'}"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="text-xl font-bold text-center mb-2">
+                                총 주문 금액 : <span class="text-accent" th:text="${order.getTotalPrice() + '원'}">0원</span>
+                            </div>
+                            <button type="button" class="btn btn-accent" onclick="payment()">주문하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>

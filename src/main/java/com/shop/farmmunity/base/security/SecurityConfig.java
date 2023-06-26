@@ -41,16 +41,17 @@ public class SecurityConfig {
 
         http
                 .logout(form -> form
-                        .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
-                        .logoutSuccessUrl("/"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout"))
+                .logoutSuccessUrl("/"))
         ;
 
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                        .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/classify/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
+                .requestMatchers("/", "/members/**", "/item/**", "/images/**", "/classify/**").permitAll()
+                .requestMatchers("/vendor/**").hasAnyRole("ADMIN", "VENDOR")
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated())
         ;
 
         http.exceptionHandling((exceptionHandling) -> exceptionHandling
