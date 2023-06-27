@@ -137,6 +137,26 @@
                             <p th:if="${#fields.hasErrors('stockNumber')}" th:errors="*{stockNumber}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>
+
+                    <div class="detail-toast-ui-box flex flex-col">
+
+                        <div id="editor"></div>
+
+                        <!-- TOAST UI Editor CDN URL(JS) -->
+                        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+
+
+                        <!-- TOAST UI Editor 생성 JavaScript 코드 -->
+                        <script>
+                            const editor = new toastui.Editor({
+                                el: document.querySelector('#editor'),
+                                previewStyle: 'vertical',
+                                height: '500px',
+                                initialValue: '안녕하세요.'
+                            });
+                        </script>
+                    </div>
+
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
                             상품 상세 내용

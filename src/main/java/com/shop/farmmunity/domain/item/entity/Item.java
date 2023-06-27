@@ -4,11 +4,16 @@ import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.base.exception.OutOfStockException;
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
+import com.shop.farmmunity.domain.item.constant.TimeSaleStatus;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
+import com.shop.farmmunity.domain.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -20,7 +25,7 @@ public class Item extends BaseEntity {
     @Id
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;       // 상품 코드
+    private Long id; // 상품 코드
 
     @Column(nullable = false, length = 50)
     private String itemNm; // 상품명
@@ -32,7 +37,7 @@ public class Item extends BaseEntity {
     private int stockNumber; // 재고수량
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String itemDetail; // 상품 상세 설명
 
     @Enumerated(EnumType.STRING)
@@ -41,8 +46,15 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
 
-//    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-//    private List<Review> reviewList;
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviewList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemOption> itemOptionList = new ArrayList<>(); // 상품 옵션
+
+    @Enumerated(EnumType.STRING)
+    private TimeSaleStatus timeSaleStatus; // 세일 유무
+
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();
