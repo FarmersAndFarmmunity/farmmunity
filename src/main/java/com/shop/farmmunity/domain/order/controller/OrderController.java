@@ -1,5 +1,6 @@
 package com.shop.farmmunity.domain.order.controller;
 
+import com.shop.farmmunity.domain.order.dto.OrderCplDto;
 import com.shop.farmmunity.domain.order.dto.OrderDtlDto;
 import com.shop.farmmunity.domain.order.dto.OrderDto;
 import com.shop.farmmunity.domain.order.dto.OrderHistDto;
@@ -63,6 +64,29 @@ public class OrderController {
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/order/{orderId}/complete")
+    public @ResponseBody ResponseEntity orderComplete(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderCplDto orderCplDto,
+                                                      BindingResult bindingResult, Principal principal) {
+
+        if (!orderService.validateOrder(orderId, principal.getName())) {
+            return new ResponseEntity<String>("주문 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        if (bindingResult.hasErrors()) {
+            StringBuilder sb = new StringBuilder();
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                sb.append(fieldError.getDefaultMessage());
+            }
+            return new ResponseEntity<String>(sb.toString(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        orderService.orderComplete(orderId, orderCplDto);
 
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
