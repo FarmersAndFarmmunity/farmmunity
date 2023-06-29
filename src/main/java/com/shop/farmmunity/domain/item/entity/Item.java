@@ -47,9 +47,6 @@ public class Item extends BaseEntity {
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviewList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOption> itemOptionList = new ArrayList<>(); // 상품 옵션
 
     @Enumerated(EnumType.STRING)

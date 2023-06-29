@@ -196,6 +196,15 @@
 
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">
+                            <span th:text="옵션 선택 "></span>
+                        </dt>
+                        <dd class="detail-content">
+
+                        </dd>
+                    </dl>
+
+                    <dl class="detail-line count-box flex flex-row">
+                        <dt class="detail-title font-bold">
                             <span th:text="주문수량"></span>
                         </dt>
                         <dd class="detail-content">
@@ -216,6 +225,8 @@
                 <div th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-accent" onclick="addCart()">장바구니 담기</button>
                     <button type="button" class="btn btn-warning" onclick="order()">주문하기</button>
+                    <button type="button" class="btn btn-accent" onclick="addCart()">공동구매 장바구니 담기</button>
+                    <button type="button" class="btn btn-warning" onclick="order()">공동구매 주문하기</button>
                 </div>
                 <div th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">
                     <span class="text-3xl font-bold text-red-700">품절</span>
@@ -224,6 +235,12 @@
 
 
         </div>
+    </div>
+
+    <div class="tabs menu-container flex flex-row">
+        <a class="tab tab-bordered tab-active item-detail-box">상품 정보</a>
+        <a class="tab tab-bordered tab-active item-review-box">상품 리뷰</a>
+        <a class="tab tab-bordered tab-active item-faq-box">문의 하기</a>
     </div>
 
     <div class="jumbotron jumbotron-fluid mgt-30">
