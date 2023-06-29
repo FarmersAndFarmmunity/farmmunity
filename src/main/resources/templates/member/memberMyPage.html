@@ -132,6 +132,14 @@
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
             <dt class="detail-title">
+              가입 일자
+            </dt>
+            <dd class="detail-content">
+              <div th:text="${member.getRegTime()}"></div>
+            </dd>
+          </dl>
+          <dl class="detail-line price-box flex flex-row items-center">
+            <dt class="detail-title">
               회원 가입 방식
             </dt>
             <dd class="detail-content">
