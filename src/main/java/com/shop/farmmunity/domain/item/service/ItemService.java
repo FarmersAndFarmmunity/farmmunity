@@ -25,7 +25,7 @@ import java.util.Optional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final ItemImgService itemImgService;
+    private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
 
     // 등록
