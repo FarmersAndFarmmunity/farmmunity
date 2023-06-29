@@ -1,5 +1,6 @@
 package com.shop.farmmunity.domain.order.controller;
 
+import com.shop.farmmunity.domain.order.dto.OrderCplDto;
 import com.shop.farmmunity.domain.order.dto.OrderDtlDto;
 import com.shop.farmmunity.domain.order.dto.OrderDto;
 import com.shop.farmmunity.domain.order.dto.OrderHistDto;
@@ -18,7 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -63,6 +66,26 @@ public class OrderController {
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
+
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/order/{orderId}/complete")
+    public @ResponseBody ResponseEntity orderComplete(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderCplDto orderCplDto,
+                                                      BindingResult bindingResult, Principal principal) {
+
+        if (!orderService.validateOrder(orderId, principal.getName())) {
+            return new ResponseEntity<String>("주문 권한이 없습니다.", HttpStatus.FORBIDDEN);
+        }
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getAllErrors().forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
+            return new ResponseEntity<Map<String, String>>(errors,
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        orderService.orderComplete(orderId, orderCplDto);
 
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
