@@ -37,7 +37,9 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
 
     @Value("${custom.toss_client}")
-    private String CLIENT_KEY; // 수정
+    private String CLIENT_KEY;
+    @Value("${custom.site.baseUrl}")
+    private String baseUrl;
 
     public Long order(OrderDto orderDto, String email) {
         Item item = itemRepository.findById(orderDto.getItemId()) // 주문할 상품 조회
@@ -69,7 +71,7 @@ public class OrderService {
 
         List<OrderItem> orderItems = order.getOrderItems();
 
-        OrderDtlDto orderDtlDto = new OrderDtlDto(order, CLIENT_KEY);
+        OrderDtlDto orderDtlDto = new OrderDtlDto(order, CLIENT_KEY, baseUrl);
 
         for (OrderItem orderItem : orderItems) {
             ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
