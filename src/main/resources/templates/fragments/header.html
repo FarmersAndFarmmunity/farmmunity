@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="kr">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<div th:fragment="header">
+    <!-- 네비게이션 바 구현 -->
+    <div class="container-box flex-col mx-10" style="width: 1000px;">
+        <!-- 1번째 블럭 시작 회원가입, 로그인-->
+        <div class="sign-in-up-box flex justify-end mb-5">
+            <button class="btn btn-xs btn-ghost shrink flex-none hover:text-yellow-500" sec:authorize="isAnonymous()" onclick="location.href='/members/new'">회원가입</button>
+            <button class="btn btn-xs btn-ghost shrink flex-none" sec:authorize="isAnonymous()" onclick="location.href='/members/login'">로그인</button>
+            <button class="btn btn-xs btn-ghost shrink flex-none" sec:authorize="isAuthenticated()" onclick="location.href='/members/logout'">로그아웃</button>
+        </div>
+
+        <!-- 2번째 블럭 시작 프로덕트 로고, 검색창, 장바구니 -->
+        <div class="middle-search-box flex shrink-0 items-center justify-around">
+            <a class="title text-3xl" href="/" style="font-family: 'SEBANG_Gothic_Bold'; font-size: 2em;">Farmmunity</a>
+            <div class="search-box flex shrink-0">
+                <form class="mx-10" action="/" method="get">
+                    <div class="join">
+                        <input name="searchQuery" type="search" placeholder="Search" aria-label="Search" class="input input-bordered join-item md:w-80">
+                        <button type="submit" class="btn join-item rounded-r-full">
+                            <div tabindex="0">
+                                <span class="material-symbols-outlined">search</span>
+                            </div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <!-- 장바구니-->
+            <div class="flex items-center">
+                <a class="btn btn-circle hover:text-green-500" href="/cart"><span class="material-symbols-outlined">shopping_cart</span></a>
+            </div>
+        </div>
+
+        <!-- 3번째 블럭 시작 각종 카테고리 -->
+        <div class="join w-full flex justify-center mt-3 font-bold text-base">
+            <div class="category-box flex w-full justify-center shrink-0">
+                <ul class="flex items-center w-full justify-between" style="width:870px;">
+                    <li class="hover:text-accent" >
+                        <a class="nav-link" href="/">전체 카테고리</a>
+                    </li>
+                    <li class="hover:text-accent" >
+                        <a class="nav-link" th:href="@{/classify/AGRICULTURE(classifyItem='AGRICULTURE')}">농산물</a>
+                    </li>
+                    <li class="hover:text-accent" >
+                        <a class="nav-link" th:href="@{/classify/MARINE(classifyItem='MARINE')}">수산물</a>
+                    </li>
+                    <li class="hover:text-accent" >
+                        <a class="nav-link" th:href="@{/classify/LIVESTOCK(classifyItem='LIVESTOCK')}">축산물</a>
+                    </li>
+                    <li class="dropdown">
+                        <label tabindex="0" class="btn btn-outline w-40">마이 페이지</label>
+                        <ul tabindex="0" class="dropdown-content menu p-2 text-base font-normal shadow bg-base-100 rounded-box w-52">
+                            <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDOR')">
+                                <a href="/vendor/item/new">상품 등록</a>
+                            </li>
+
+                            <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDOR')">
+                                <a href="/vendor/items">내 상품 관리</a>
+                            </li>
+
+                            <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                                <a href="/admin/items">전체 상품 관리</a>
+                            </li>
+
+                            <li class="hover:text-accent" sec:authorize="isAuthenticated()">
+                                <a href="/orders">구매이력</a>
+                            </li>
+
+                            <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                                <a href="/admin/member">회원 관리</a>
+                            </li>
+
+                            <li class="hover:text-accent" sec:authorize="isAuthenticated()">
+                                <a href="/reviews">리뷰 관리</a>
+                            </li>
+
+                            <li class="hover:text-accent" sec:authorize="isAnonymous()">
+                                <a href="">로그인 후 이용해주세요.</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</html>
