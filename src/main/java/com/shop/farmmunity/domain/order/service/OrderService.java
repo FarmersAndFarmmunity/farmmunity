@@ -54,6 +54,14 @@ public class OrderService {
         return order.getId();
     }
 
+    public void orderComplete(Long orderId, OrderCplDto orderCplDto) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(EntityNotFoundException::new);
+        order.setCustomer(orderCplDto.createCustomer());
+        order.setRecipient(orderCplDto.createRecipient());
+    }
+
     @Transactional(readOnly = true)
     public OrderDtlDto getOrderDtl(Long orderId) {
         Order order = orderRepository.findById(orderId)
@@ -107,12 +115,6 @@ public class OrderService {
         Member savedMember = order.getMember();
 
         return StringUtils.equals(curMember.getEmail(), savedMember.getEmail());
-    }
-
-    public boolean findOrder(Long ItemId, String email) {
-        Optional<OrderItem> opOrderItem = orderItemRepository.findByItemIdAndCreatedBy(ItemId, email);
-
-        return opOrderItem.isPresent();
     }
 
     public void cancelOrder(Long orderId) {
