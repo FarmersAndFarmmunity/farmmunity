@@ -20,7 +20,7 @@
       var searchBy = $("#searchBy").val();
       var searchQuery = $("#searchQuery").val();
 
-      location.href="/admin/items/" + page + "?searchDateType=" + searchDateType
+      location.href="/vendor/items/" + page + "?searchDateType=" + searchDateType
               + "&searchSellStatus=" + searchSellStatus
               + "&searchBy=" + searchBy
               + "&searchQuery=" + searchQuery;
@@ -42,7 +42,7 @@
   <p class="text-3xl font-bold my-4 ml-3 pb-3">
     상품 관리
   </p>
-  <form th:action="@{'/admin/items/' + ${items.number}}" role="form" method="get" th:object="${items}">
+  <form th:action="@{'/vendor/items/' + ${items.number}}" role="form" method="get" th:object="${items}">
     <table class="table w-full">
       <thead>
       <tr>
@@ -57,7 +57,7 @@
       <tr th:each="item, status: ${items.getContent()}" class="hover">
         <td th:text="${item.id}"></td>
         <td>
-          <a th:href="'/admin/item/'+${item.id}" th:text="${item.itemNm}"></a>
+          <a th:href="'/vendor/item/'+${item.id}" th:text="${item.itemNm}"></a>
         </td>
         <td th:text="(${item.itemSellStatus} == ${T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL} ? '판매중' : '품절')"></td>
         <td th:text="${item.createdBy}" style="width: 300px;word-break:break-all;"></td>
@@ -70,17 +70,17 @@
       <ul class="flex join justify-center mt-5">
 
         <li class="join-item btn" th:classappend="${items.first}?'disabled':''">
-          <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:onclick="'javascript:page(' + ${items.number - 1} + ')'" aria-label='이전' class="page-link">
+          <a th:onclick="'javascript:vendor_page(' + ${items.number - 1} + ')'" aria-label='이전' class="page-link">
             <span aria-hidden='true'>이전</span>
           </a>
         </li>
 
         <li class="join-item btn" th:each="page: ${#numbers.sequence(start, end)}" th:classappend="${items.number eq page-1}?'active':''">
-          <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
+          <a th:onclick="'javascript:vendor_page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
         </li>
 
         <li class="join-item btn" th:classappend="${items.last}?'disabled':''">
-          <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:onclick="'javascript:page(' + ${items.number + 1} + ')'" aria-label='다음' class="page-link">
+          <a th:onclick="'javascript:vendor_page(' + ${items.number + 1} + ')'" aria-label='다음' class="page-link">
             <span aria-hidden='true'>다음</span>
           </a>
         </li>
@@ -103,7 +103,6 @@
       </select>
       <select class="select select-bordered w-full max-w-xs" th:field="*{searchBy}" style="width:auto;">
         <option value="itemNm">상품명</option>
-        <option value="createdBy">등록자</option>
       </select>
       <input th:field="*{searchQuery}" type="text" class="input input-bordered input-accent w-full max-w-xs" placeholder="검색어를 입력해주세요">
       <button id="searchBtn" type="submit" class="btn btn-accent">검색</button>
