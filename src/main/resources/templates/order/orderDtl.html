@@ -16,8 +16,6 @@
 
     <script th:inline="javascript">
         const orderId = /*[[ ${order.orderId} ]]*/ null;
-        const customerName = /*[[ ${order.customerName} ]]*/ null;
-        const customerEmail = /*[[ ${order.customerEmail} ]]*/ null;
         const orderName = /*[[ ${order.orderName} ]]*/ null;
         const totalPrice = /*[[ ${order.totalPrice} ]]*/ null;
         const CLIENT_KEY = /*[[ ${order.CLIENT_KEY} ]]*/ null;
@@ -66,7 +64,7 @@
                 dataType: "json",
                 cache: false,
                 success: function (result, status) {
-                    location.href = '/order/' + result;
+                    payment();
                 },
                 error: function (jqXHR, status, error) {
 
@@ -74,11 +72,33 @@
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
                     } else {
-                        alert(jqXHR.responseText);
+                        // alert(jqXHR.responseText);
+                        var errors = jqXHR.responseJSON;
+                        displayErrors(errors);
                     }
-
                 }
             });
+        }
+
+        function displayErrors(errors) {
+            $(".fieldError").hide().text(""); // Clear previous error messages
+
+            for (var fieldName in errors) {
+                var errorElement = $("#" + fieldName + "Error");
+                var inputElement = $("#" + fieldName);
+
+                if (errorElement.length > 0) {
+                    if (errors[fieldName]) {
+                        errorElement.text(errors[fieldName]);
+                        errorElement.show();
+                        inputElement.addClass("is-invalid"); // Add error styling
+                    } else {
+                        errorElement.hide();
+                        inputElement.removeClass("is-invalid"); // Remove error styling
+                        inputElement.val(""); // Clear input value
+                    }
+                }
+            }
         }
 
         function handleSelectChange() {
@@ -102,8 +122,8 @@
                 amount: totalPrice,
                 orderId: "order__" + orderId + "__" + (Math.random() + "").substring(2), // orderId는 6자 이상이여야 함
                 orderName: orderName,
-                customerName: customerName,
-                customerEmail: customerEmail,
+                customerName: $("#customerName").val(),
+                customerEmail: $("#customerEmail").val(),
                 successUrl: 'http://localhost:8080/' + orderId + '/success',
                 failUrl: 'http://localhost:8080/' + orderId + '/fail',
             };
@@ -196,6 +216,10 @@
         .order-line {
             border-bottom: 1px solid #efefef;
         }
+        .fieldError {
+            color: red;
+        }
+
     </style>
 </th:block>
 
@@ -234,6 +258,7 @@
                                 <dd class="detail-content">
                                     <input type="text" id="customerName" class="input  input-bordered w-full"
                                            placeholder="이름을 입력해주세요">
+                                    <div id="customerNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
@@ -243,6 +268,7 @@
                                 <dd class="detail-content">
                                     <input type="text" id="contact" class="input input-bordered w-full"
                                            placeholder="'-'없이 숫자 입력">
+                                    <div id="contactError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3 order-line">
@@ -252,6 +278,7 @@
                                 <dd class="detail-content">
                                     <input type="text" id="customerEmail" class="input input-bordered w-full"
                                            placeholder="이메일을 입력해주세요">
+                                    <div id="customerEmailError" class="fieldError"></div>
                                 </dd>
                             </dl>
                         </div>
@@ -264,6 +291,7 @@
                                 <dd class="detail-content">
                                     <input type="text" id="shippingName" class="input input-bordered w-full"
                                            placeholder="배송지명을 입력해주세요">
+                                    <div id="shippingNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
@@ -273,6 +301,7 @@
                                 <dd class="detail-content">
                                     <input type="text" id="recipientName" class="input input-bordered w-full"
                                            placeholder="이름을 입력해주세요">
+                                    <div id="recipientNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
@@ -281,7 +310,8 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="recipientContact" class="input input-bordered w-full"
-                                           placeholder="이름을 입력해주세요">
+                                           placeholder="연락처를 입력해주세요">
+                                    <div id="recipientContactError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
@@ -290,16 +320,18 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="zipcode" class="input input-bordered"
-                                           placeholder="우편번호">
+                                           placeholder="우편번호" readonly>
                                     <button type="button" class="btn btn-primary mb-3 ml-1"
                                             onclick="execDaumPostcode()">주소검색
                                     </button>
+                                    <div id="zipcodeError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
                                 <dd class="detail-content">
                                     <input type="text" id="addr" class="input input-bordered w-full"
-                                           placeholder="기본주소">
+                                           placeholder="기본주소" readonly>
+                                    <div id="addrError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">

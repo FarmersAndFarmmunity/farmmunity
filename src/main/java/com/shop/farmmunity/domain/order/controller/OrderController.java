@@ -19,7 +19,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -77,12 +79,9 @@ public class OrderController {
         }
 
         if (bindingResult.hasErrors()) {
-            StringBuilder sb = new StringBuilder();
-            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-            for (FieldError fieldError : fieldErrors) {
-                sb.append(fieldError.getDefaultMessage());
-            }
-            return new ResponseEntity<String>(sb.toString(),
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getAllErrors().forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
+            return new ResponseEntity<Map<String, String>>(errors,
                     HttpStatus.BAD_REQUEST);
         }
 
