@@ -31,20 +31,23 @@ public class ItemService {
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
-                         List<MultipartFile> itemImgFileList) throws Exception {
+                         List<MultipartFile> itemImgFileList,
+                         List<String> optionNameList,
+                         List<Integer> extraAmountList) throws Exception {
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
 
         List<ItemOptionDto> itemOptionList = itemFormDto.getItemOptionDtoList();
 
         // 아이템 옵션
-        for (int i = 0; i < itemOptionList.size(); i++) {
+        for (int i = 0; i < optionNameList.size(); i++) {
             ItemOption itemOption = new ItemOption();
             itemOption.setItem(item);
 
-            ItemOptionDto data = itemOptionList.get(i);
+            String optName = optionNameList.get(i);
+            int extraAmount = extraAmountList.get(i);
 
-            itemOption.updateItemOption(data.getOptionName(), data.getExtraAmount());
+            itemOption.updateItemOption(optName, extraAmount);
 
             itemOptionService.saveItemOption(itemOption);
         }

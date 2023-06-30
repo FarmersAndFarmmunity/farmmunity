@@ -48,7 +48,10 @@ public class ItemController {
     }
 
     @PostMapping(value = "/vendor/item/new")
-    public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
+    public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
+                          @RequestParam("optionNameList") List<String> optionNameList,
+                          @RequestParam("extraAmountList") List<Integer> extraAmountList,
+                          @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
         if(bindingResult.hasErrors()){
             return "item/itemForm";
@@ -60,7 +63,10 @@ public class ItemController {
         }
 
         try {
-            itemService.saveItem(itemFormDto, itemImgFileList);
+            System.out.println("optionNameList.get(0) = " + optionNameList.get(0));
+            System.out.println("extraAmountList.get(0) = " + extraAmountList.get(0));
+
+            itemService.saveItem(itemFormDto, itemImgFileList, optionNameList, extraAmountList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
             return "item/itemForm";
