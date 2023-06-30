@@ -167,6 +167,9 @@
             <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="badge badge-accent badge-outline">
                 판매중
             </span>
+            <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="badge badge-error">
+                공동구매 진행중
+            </span>
             <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="badge badge-accent badge-outline" >
                 품절
             </span>
@@ -193,15 +196,13 @@
                             <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}">-</span>
                         </dd>
                     </dl>
-
-<!--                    <dl class="detail-line count-box flex flex-row">-->
-<!--                        <dt class="detail-title font-bold">-->
-<!--                            <span th:text="옵션 선택 "></span>-->
-<!--                        </dt>-->
-<!--                        <dd class="detail-content">-->
-
-<!--                        </dd>-->
-<!--                    </dl>-->
+                    <dl class="detail-line count-box flex flex-row">
+                        <dt class="detail-title font-bold">
+                            <span th:text="옵션선택"></span>
+                        </dt>
+                        <dd class="detail-content">
+                        </dd>
+                    </dl>
 
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">

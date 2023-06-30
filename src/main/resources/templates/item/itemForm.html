@@ -200,23 +200,21 @@
                         <dd class="detail-content">
                             <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">
                                 <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">
-                                    <div class="custom-opt op-div">
+                                    <div class="custom-file img-div">
                                         <input type="text" class="file-input file-input-bordered file-input-md w-full" name="optionNameList" placeholder="옵션명을 입력해주세요">
                                         <input type="number" class="file-input file-input-bordered file-input-md w-full" name="extraAmountList" placeholder="옵션 추가가격을 입력해주세요">
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="w-full" th:if = "${not #lists.isEmpty(itemFormDto.itemImgDtoList)}">
-                                <div class="form-group" th:each="itemImgDto, status: ${itemFormDto.itemImgDtoList}">
+                            <div class="w-full" th:if = "${not #lists.isEmpty(itemFormDto.itemOptionDtoList)}">
+                                <div class="form-group" th:each="itemOptionDto, status: ${itemFormDto.itemOptionDtoList}">
                                     <div class="custom-file img-div">
-                                        <input type="file" class="file-input file-input-bordered file-input-md w-full" name="itemImgFile">
-                                        <input type="hidden" name="itemImgIds" th:value="${itemImgDto.id}">
-                                        <label class="text-sm" th:text="${not #strings.isEmpty(itemImgDto.oriImgName)} ? ${itemImgDto.oriImgName} : '등록된 이미지 없음'"></label>
+                                        <input type="text" th:value="${not #strings.isEmpty(itemOptionDto.optionName)} ? ${itemOptionDto.optionName} : '등록된 옵션 없음'" class="file-input file-input-bordered file-input-md w-full" name="optionNameList" placeholder="옵션명을 입력해주세요">
+                                        <input type="number" th:value="${not #strings.isEmpty(itemOptionDto.extraAmount)} ? ${itemOptionDto.extraAmount} : ''" class="file-input file-input-bordered file-input-md w-full" name="extraAmountList" placeholder="옵션 추가가격을 입력해주세요">
                                     </div>
                                 </div>
                             </div>
-
                         </dd>
                     </dl>
 

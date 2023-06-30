@@ -5,6 +5,7 @@ import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
 import com.shop.farmmunity.domain.item.entity.ItemOption;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
+import com.shop.farmmunity.domain.item.repository.ItemOptionRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,11 @@ import java.util.Optional;
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final ItemImgService itemImgService;
+    private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
+    private final ItemOptionRepository itemOptionRepository;
     private final ItemOptionService itemOptionService;
+
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
@@ -77,11 +80,19 @@ public class ItemService {
             ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
             itemImgDtoList.add(itemImgDto);
         }
+        List<ItemOption> itemOptionList = itemOptionRepository.findByItemIdOrderByIdAsc(itemId);
+        List<ItemOptionDto> itemOptionDtoList = new ArrayList<>();
+
+        for(ItemOption itemOption : itemOptionList) {
+            ItemOptionDto itemOptionDto = ItemOptionDto.of(itemOption);
+            itemOptionDtoList.add(itemOptionDto);
+        }
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+        itemFormDto.setItemOptionDtoList(itemOptionDtoList);
         return itemFormDto;
     }
 
