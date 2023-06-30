@@ -63,9 +63,6 @@ public class ItemController {
         }
 
         try {
-            System.out.println("optionNameList.get(0) = " + optionNameList.get(0));
-            System.out.println("extraAmountList.get(0) = " + extraAmountList.get(0));
-
             itemService.saveItem(itemFormDto, itemImgFileList, optionNameList, extraAmountList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");

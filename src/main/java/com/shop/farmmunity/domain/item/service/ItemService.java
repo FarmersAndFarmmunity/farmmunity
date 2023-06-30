@@ -44,12 +44,13 @@ public class ItemService {
             ItemOption itemOption = new ItemOption();
             itemOption.setItem(item);
 
-            String optName = optionNameList.get(i);
-            int extraAmount = extraAmountList.get(i);
+            if (!(optionNameList.get(i).equals(""))) {
+                String optName = optionNameList.get(i);
+                int extraAmount = extraAmountList.get(i);
 
-            itemOption.updateItemOption(optName, extraAmount);
-
-            itemOptionService.saveItemOption(itemOption);
+                itemOption.updateItemOption(optName, extraAmount);
+                itemOptionService.saveItemOption(itemOption);
+            }
         }
 
         // 아이템 이미지
