@@ -27,7 +27,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
-    private ItemOptionService itemOptionService;
+    private final ItemOptionService itemOptionService;
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,

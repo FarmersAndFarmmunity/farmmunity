@@ -192,45 +192,34 @@
                             <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>
+
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
                             상품 옵션
                         </dt>
                         <dd class="detail-content">
-                            <div class="w-full">
-                                <div class="form-group" th:each="num: ${#numbers.sequence(0,4)}">
-                                    <div class="option-name">
-                                        <input type="text" th:field="*{itemOptionDtoList[__${num}__].optionName}" class="input input-bordered input-md w-full" placeholder="옵션명을 입력해주세요">
-                                        <input type="text" th:field="*{itemOptionDtoList[__${num}__].extraAmount}" class="input input-bordered input-md w-80" placeholder="옵션 추가 가격을 입력해주세요">
+                            <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">
+                                <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">
+                                    <div class="custom-opt op-div">
+                                        <input type="text" class="file-input file-input-bordered file-input-md w-full" name="optionName" placeholder="옵션명을 입력해주세요">
+                                        <input type="number" class="file-input file-input-bordered file-input-md w-full" name="extraAmount" placeholder="옵션 추가가격을 입력해주세요">
                                     </div>
                                 </div>
                             </div>
 
-
-<!--                            <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">-->
-<!--                                <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">-->
-<!--                                    <div class="option-name">-->
-<!--                                        <input type="text" th:field="${itemFormDto.itemOptionDtoList.get(num).}" class="input input-bordered input-md w-full w-80" placeholder="옵션명을 입력해주세요">-->
-<!--                                    </div>-->
-<!--                                    <div class="option-price">-->
-<!--                                        <input type="text" th:field="*{}" class="input input-bordered input-md w-full w-80" placeholder="옵션 추가 가격을 입력해주세요">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-
-<!--                            <div class="w-full" th:if="${not #lists.isEmpty(itemFormDto.itemOptionDtoList)}">-->
-<!--                                <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">-->
-<!--                                    <div class="option-name">-->
-<!--                                        <input type="text" th:field="${itemFormDto.itemOptionDtoList.get(num).}" class="input input-bordered input-md w-full w-80" placeholder="옵션명을 입력해주세요">-->
-<!--                                    </div>-->
-<!--                                    <div class="option-price">-->
-<!--                                        <input type="text" th:field="*{}" class="input input-bordered input-md w-full w-80" placeholder="옵션 추가 가격을 입력해주세요">-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
+                            <div class="w-full" th:if = "${not #lists.isEmpty(itemFormDto.itemImgDtoList)}">
+                                <div class="form-group" th:each="itemImgDto, status: ${itemFormDto.itemImgDtoList}">
+                                    <div class="custom-file img-div">
+                                        <input type="file" class="file-input file-input-bordered file-input-md w-full" name="itemImgFile">
+                                        <input type="hidden" name="itemImgIds" th:value="${itemImgDto.id}">
+                                        <label class="text-sm" th:text="${not #strings.isEmpty(itemImgDto.oriImgName)} ? ${itemImgDto.oriImgName} : '등록된 이미지 없음'"></label>
+                                    </div>
+                                </div>
+                            </div>
 
                         </dd>
                     </dl>
+
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
                             재고
@@ -240,25 +229,6 @@
                             <p th:if="${#fields.hasErrors('stockNumber')}" th:errors="*{stockNumber}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>
-
-                    <div class="detail-toast-ui-box flex flex-col">
-
-                        <div id="editor"></div>
-
-                        <!-- TOAST UI Editor CDN URL(JS) -->
-                        <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-
-
-                        <!-- TOAST UI Editor 생성 JavaScript 코드 -->
-                        <script>
-                            const editor = new toastui.Editor({
-                                el: document.querySelector('#editor'),
-                                previewStyle: 'vertical',
-                                height: '500px',
-                                initialValue: '안녕하세요.'
-                            });
-                        </script>
-                    </div>
 
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
