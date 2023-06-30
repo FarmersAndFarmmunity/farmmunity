@@ -23,4 +23,9 @@ public class ItemOption {
     private String optionName; // 옵션 이름
 
     private int extraAmount; // 추가 가격
+
+    public void updateItemOption(String optionName, int extraAmount) {
+        this.optionName = optionName;
+        this.extraAmount = extraAmount;
+    }
 }

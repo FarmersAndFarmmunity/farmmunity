@@ -74,7 +74,7 @@ public class OrderService {
         OrderDtlDto orderDtlDto = new OrderDtlDto(order, CLIENT_KEY, baseUrl);
 
         for (OrderItem orderItem : orderItems) {
-            ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
+            ItemImg itemImg = itemImgRepository.findByItemIdAndRepImgYn
                     (orderItem.getItem().getId(), "Y");
             OrderItemDtlDto orderItemDtlDto =
                     new OrderItemDtlDto(orderItem, itemImg.getImgUrl());
@@ -96,7 +96,7 @@ public class OrderService {
             OrderHistDto orderHistDto = new OrderHistDto(order);
             List<OrderItem> orderItems = order.getOrderItems();
             for (OrderItem orderItem : orderItems) {
-                ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
+                ItemImg itemImg = itemImgRepository.findByItemIdAndRepImgYn
                         (orderItem.getItem().getId(), "Y");
                 OrderItemDto orderItemDto =
                         new OrderItemDto(orderItem, itemImg.getImgUrl());

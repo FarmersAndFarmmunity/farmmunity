@@ -3,6 +3,7 @@ package com.shop.farmmunity.domain.item.service;
 import com.shop.farmmunity.domain.item.dto.*;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
+import com.shop.farmmunity.domain.item.entity.ItemOption;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -11,7 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -27,6 +27,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
+    private ItemOptionService itemOptionService;
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
@@ -34,14 +35,29 @@ public class ItemService {
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
 
+        List<ItemOptionDto> itemOptionList = itemFormDto.getItemOptionDtoList();
+
+        // 아이템 옵션
+        for (int i = 0; i < itemOptionList.size(); i++) {
+            ItemOption itemOption = new ItemOption();
+            itemOption.setItem(item);
+
+            ItemOptionDto data = itemOptionList.get(i);
+
+            itemOption.updateItemOption(data.getOptionName(), data.getExtraAmount());
+
+            itemOptionService.saveItemOption(itemOption);
+        }
+
+        // 아이템 이미지
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
             ItemImg itemImg = new ItemImg();
             itemImg.setItem(item);
 
             if (i == 0) { // 첫번 째 이미지면 "Y"를 아니라면 "N"를 부여
-                itemImg.setRepimgYn("Y");
+                itemImg.setRepImgYn("Y");
             } else {
-                itemImg.setRepimgYn("N");
+                itemImg.setRepImgYn("N");
             }
             // 상품의 이미지 정보를 저장
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));

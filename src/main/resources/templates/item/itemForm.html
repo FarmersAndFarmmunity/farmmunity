@@ -194,6 +194,45 @@
                     </dl>
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
+                            상품 옵션
+                        </dt>
+                        <dd class="detail-content">
+                            <div class="w-full">
+                                <div class="form-group" th:each="num: ${#numbers.sequence(0,4)}">
+                                    <div class="option-name">
+                                        <input type="text" th:field="*{itemOptionDtoList[__${num}__].optionName}" class="input input-bordered input-md w-full" placeholder="옵션명을 입력해주세요">
+                                        <input type="text" th:field="*{itemOptionDtoList[__${num}__].extraAmount}" class="input input-bordered input-md w-80" placeholder="옵션 추가 가격을 입력해주세요">
+                                    </div>
+                                </div>
+                            </div>
+
+
+<!--                            <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">-->
+<!--                                <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">-->
+<!--                                    <div class="option-name">-->
+<!--                                        <input type="text" th:field="${itemFormDto.itemOptionDtoList.get(num).}" class="input input-bordered input-md w-full w-80" placeholder="옵션명을 입력해주세요">-->
+<!--                                    </div>-->
+<!--                                    <div class="option-price">-->
+<!--                                        <input type="text" th:field="*{}" class="input input-bordered input-md w-full w-80" placeholder="옵션 추가 가격을 입력해주세요">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+<!--                            <div class="w-full" th:if="${not #lists.isEmpty(itemFormDto.itemOptionDtoList)}">-->
+<!--                                <div class="form-group" th:each="num: ${#numbers.sequence(1,5)}">-->
+<!--                                    <div class="option-name">-->
+<!--                                        <input type="text" th:field="${itemFormDto.itemOptionDtoList.get(num).}" class="input input-bordered input-md w-full w-80" placeholder="옵션명을 입력해주세요">-->
+<!--                                    </div>-->
+<!--                                    <div class="option-price">-->
+<!--                                        <input type="text" th:field="*{}" class="input input-bordered input-md w-full w-80" placeholder="옵션 추가 가격을 입력해주세요">-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+
+                        </dd>
+                    </dl>
+                    <dl class="detail-line price-box flex flex-row">
+                        <dt class="detail-title">
                             재고
                         </dt>
                         <dd class="detail-content">
