@@ -40,8 +40,6 @@ public class ItemService {
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
 
-        List<ItemOptionDto> itemOptionList = itemFormDto.getItemOptionDtoList();
-
         // 아이템 옵션
         for (int i = 0; i < optionNameList.size(); i++) {
             ItemOption itemOption = new ItemOption();
