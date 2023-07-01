@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
 import java.util.Optional;
 
 
@@ -73,6 +74,14 @@ public class MemberController {
         return "member/memberLoginForm";
     }
 
+    @GetMapping(value = {"/members/mypage"})
+    public String memberList(Model model, Principal principal) throws Exception {
+        Member member = memberService.findByEmail(principal.getName());
+        model.addAttribute("member", member);
+
+        return "member/memberMyPage";
+    }
+    //////// 관리자 영역
     // 멤버 관리 기능
 
     @GetMapping(value = {"/admin/member", "/admin/member/{page}"})
