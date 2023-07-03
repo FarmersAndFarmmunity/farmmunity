@@ -28,6 +28,9 @@ public class OrderItem extends BaseEntity {
 
     private int count;  //수량
 
+    private boolean isGroupBuying; // 개별 물품의 공동구매 여부(아직 미사용)
+
+    // 일반 구매 orderItem 생성
     public static OrderItem createOrderItem(Item item, int count) {
 
         item.checkRestStock(count); // 주문 전에 상품 재고 체크부터
@@ -39,6 +42,7 @@ public class OrderItem extends BaseEntity {
         return orderItem;
     }
 
+    // 공동 구매 orderItem 생성
     public static OrderItem createGroupBuyingOrderItem(Item item, int orderPrice, int count) {
 
         item.checkRestStock(count); // 주문 전에 상품 재고 체크부터

@@ -1,5 +1,7 @@
 package com.shop.farmmunity.domain.order.controller;
 
+import com.shop.farmmunity.domain.member.entity.Member;
+import com.shop.farmmunity.domain.member.service.MemberService;
 import com.shop.farmmunity.domain.order.dto.OrderCplDto;
 import com.shop.farmmunity.domain.order.dto.OrderDtlDto;
 import com.shop.farmmunity.domain.order.dto.OrderDto;
@@ -29,16 +31,18 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final MemberService memberService;
 
     @GetMapping("/order/{orderId}")
     public String orderDtl(@PathVariable("orderId") Long orderId, Principal principal, Model model) {
         if (!orderService.validateOrder(orderId, principal.getName())) { // 현재 로그인한 회원이랑 주문한 회원 비교
             return "/";
         }
-
+        Member member = memberService.findByEmail(principal.getName());
         OrderDtlDto orderDtlDto = orderService.getOrderDtl(orderId);
 
         model.addAttribute("order", orderDtlDto);
+        model.addAttribute("member", member);
         return "order/orderDtl";
     }
 

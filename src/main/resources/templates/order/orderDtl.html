@@ -258,7 +258,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="customerName" class="input  input-bordered w-full"
-                                           placeholder="이름을 입력해주세요">
+                                           placeholder="이름을 입력해주세요" th:value="${member.getUsername()}">
                                     <div id="customerNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -278,7 +278,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="customerEmail" class="input input-bordered w-full"
-                                           placeholder="이메일을 입력해주세요">
+                                           placeholder="이메일을 입력해주세요" th:value="${member.getEmail()}">
                                     <div id="customerEmailError" class="fieldError"></div>
                                 </dd>
                             </dl>

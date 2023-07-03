@@ -45,12 +45,14 @@ public class Order extends BaseEntity {
 
     private boolean isPaid; // 결제 여부
 
+    private boolean isGroupBuying; // 해당 주문건의 공동구매 여부
+
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(Member member, List<OrderItem> orderItemList) {
+    public static Order createOrder(Member member, List<OrderItem> orderItemList, boolean isGroupBuying) {
         Order order = new Order();
         order.setMember(member);
         for (OrderItem orderItem : orderItemList) {
@@ -58,6 +60,7 @@ public class Order extends BaseEntity {
         }
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
+        order.setGroupBuying(isGroupBuying);
         return order;
     }
 

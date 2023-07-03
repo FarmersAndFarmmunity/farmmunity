@@ -44,6 +44,7 @@ public class OrderService {
     @Value("${custom.site.baseUrl}")
     private String baseUrl;
 
+    // 일반 주문
     public Long order(OrderDto orderDto, String email) {
         Item item = itemRepository.findById(orderDto.getItemId()) // 주문할 상품 조회
                 .orElseThrow(EntityNotFoundException::new);
@@ -53,12 +54,13 @@ public class OrderService {
         OrderItem orderItem = OrderItem.createOrderItem(item, orderDto.getCount()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
         orderItemList.add(orderItem);
 
-        Order order = Order.createOrder(member, orderItemList); // 회원 정보와 주문할 상품 리스트 정보를 이용하여 주문 엔티티를 생성
+        Order order = Order.createOrder(member, orderItemList, false); // 회원 정보와 주문할 상품 리스트 정보를 이용하여 주문 엔티티를 생성
         orderRepository.save(order); // 생성한 주문 엔티티를 저장
 
         return order.getId();
     }
 
+    // 공동구매 주문
     public Long groupOrder(OrderDto orderDto, String email) {
         Item item = itemRepository.findById(orderDto.getItemId()) // 주문할 상품 조회
                 .orElseThrow(EntityNotFoundException::new);
@@ -69,7 +71,7 @@ public class OrderService {
         OrderItem orderItem = OrderItem.createGroupBuyingOrderItem(item, groupBuying.getDiscount(), orderDto.getCount()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
         orderItemList.add(orderItem);
 
-        Order order = Order.createOrder(member, orderItemList); // 회원 정보와 주문할 상품 리스트 정보를 이용하여 주문 엔티티를 생성
+        Order order = Order.createOrder(member, orderItemList, true); // 회원 정보와 주문할 상품 리스트 정보를 이용하여 주문 엔티티를 생성
         orderRepository.save(order); // 생성한 주문 엔티티를 저장
 
         return order.getId();
@@ -160,7 +162,8 @@ public class OrderService {
         }
 
         // 최종 주문을 생성
-        Order order = Order.createOrder(member, orderItemList);
+        // 현재는 공동구매 장바구니 기능을 지원하지 않았으므로 공동구매 여부가 무조건 false
+        Order order = Order.createOrder(member, orderItemList, false);
 
         // 주문 데이터를 저장
         orderRepository.save(order);
