@@ -17,6 +17,7 @@ public class OrderHistDto {
         this.orderId = order.getId();
         this.orderDate = order.getOrderDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.orderStatus = order.getOrderStatus();
+        this.isGroupBuying = order.isGroupBuying();
     }
 
     private Long orderId; // 주문아이디
@@ -25,6 +26,7 @@ public class OrderHistDto {
 
     private OrderStatus orderStatus; // 주문 상태
 
+    private boolean isGroupBuying; // 해당 주문의 공동구매 여부
 
     private List<OrderItemDto> orderItemDtoList = new ArrayList<>(); //주문상품리스트
 
