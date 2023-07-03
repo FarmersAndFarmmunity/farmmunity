@@ -2,7 +2,9 @@ package com.shop.farmmunity.domain.order.entity;
 
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.member.entity.Member;
+import com.shop.farmmunity.domain.order.constant.Customer;
 import com.shop.farmmunity.domain.order.constant.OrderStatus;
+import com.shop.farmmunity.domain.order.constant.Recipient;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,6 +37,11 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL,
             orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @Embedded
+    private Customer customer;
+    @Embedded
+    private Recipient recipient;
 
     private boolean isPaid; // 결제 여부
 
@@ -87,5 +94,4 @@ public class Order extends BaseEntity {
 
         return name;
     }
-
 }
