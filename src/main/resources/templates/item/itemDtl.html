@@ -25,8 +25,11 @@
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
+            var gbPrice = $("#gbPrice").val();
             var totalPrice = price*count;
+            var totalGBPrice = gbPrice*count;
             $("#totalPrice").html(totalPrice + '원');
+            $("#totalGBPrice").html(totalGBPrice + '원');
         }
 
         function order(){
@@ -34,6 +37,45 @@
             var header = $("meta[name='_csrf_header']").attr("content");
 
             var url = "/order";
+            var paramData = {
+                itemId : $("#itemId").val(),
+                count : $("#count").val()
+            };
+
+            var param = JSON.stringify(paramData);
+
+            $.ajax({
+                url      : url,
+                type     : "POST",
+                contentType : "application/json",
+                data     : param,
+                beforeSend : function(xhr){
+                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType : "json",
+                cache   : false,
+                success  : function(result, status){
+                    location.href = '/order/' + result;
+                },
+                error : function(jqXHR, status, error){
+
+                    if(jqXHR.status == '401'){
+                        alert('로그인 후 이용해주세요');
+                        location.href='/members/login';
+                    } else{
+                        alert(jqXHR.responseText);
+                    }
+
+                }
+            });
+        }
+
+        function groupOrder(){
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var url = "/grouporder";
             var paramData = {
                 itemId : $("#itemId").val(),
                 count : $("#count").val()
@@ -167,6 +209,9 @@
             <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="badge badge-accent badge-outline">
                 판매중
             </span>
+            <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="badge badge-error">
+                공동구매 진행중
+            </span>
             <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="badge badge-accent badge-outline" >
                 품절
             </span>
@@ -184,6 +229,16 @@
                         </dd>
                     </dl>
 
+                    <dl class="detail-line price-box flex flex-row">
+                        <dt class="detail-title font-bold">
+                            <span th:text="공동구매가"></span>
+                        </dt>
+                        <dd class="detail-content">
+                            <input type="hidden" th:value="${gbPrice}" id="gbPrice" name="gbPrice">
+                            <span th:text="${gbPrice}"></span>원
+                        </dd>
+                    </dl>
+
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">
                             <span th:text="재고"></span>
@@ -191,6 +246,13 @@
                         <dd class="detail-content">
                             <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" th:text="|${item.stockNumber}개 남음|"></span>
                             <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}">-</span>
+                        </dd>
+                    </dl>
+                    <dl class="detail-line count-box flex flex-row">
+                        <dt class="detail-title font-bold">
+                            <span th:text="옵션선택"></span>
+                        </dt>
+                        <dd class="detail-content">
                         </dd>
                     </dl>
 
@@ -209,6 +271,8 @@
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="mr-2">총 결제 금액: </span>
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-3xl text-accent"><h3 name="totalPrice" id="totalPrice" class="font-weight-bold" style="display: contents;"></h3></span>
 
+                        <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="mr-2">공동구매시 총 결제 금액: </span>
+                        <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-3xl text-error"><h3 name="totalGBPrice" id="totalGBPrice" class="font-weight-bold" style="display: contents;"></h3></span>
                         <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}">구매 불가</span>
                     </span>
                 </div>
@@ -216,6 +280,8 @@
                 <div th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-accent" onclick="addCart()">장바구니 담기</button>
                     <button type="button" class="btn btn-warning" onclick="order()">주문하기</button>
+                    <button type="button" class="btn btn-accent" onclick="">공동구매 장바구니 담기</button>
+                    <button type="button" class="btn btn-warning" onclick="groupOrder()">공동구매 주문하기</button>
                 </div>
                 <div th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">
                     <span class="text-3xl font-bold text-red-700">품절</span>
@@ -224,6 +290,12 @@
 
 
         </div>
+    </div>
+
+    <div class="tabs menu-container flex flex-row">
+        <a class="tab tab-bordered tab-active item-detail-box">상품 정보</a>
+        <a class="tab tab-bordered tab-active item-review-box">상품 리뷰</a>
+        <a class="tab tab-bordered tab-active item-faq-box">문의 하기</a>
     </div>
 
     <div class="jumbotron jumbotron-fluid mgt-30">

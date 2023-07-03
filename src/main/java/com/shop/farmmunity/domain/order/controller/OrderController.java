@@ -70,6 +70,34 @@ public class OrderController {
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/grouporder")
+    // 자바 객체를 HTTP 요청의 body로 전달
+    public @ResponseBody ResponseEntity groupOrder(@RequestBody @Valid OrderDto orderDto,
+                                              BindingResult bindingResult, Principal principal) {
+
+        if (bindingResult.hasErrors()) { // orderDto객체에 데이터 바인딩 시 에러 검사
+            StringBuilder sb = new StringBuilder();
+            List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+            for (FieldError fieldError : fieldErrors) {
+                sb.append(fieldError.getDefaultMessage());
+            }
+            return new ResponseEntity<String>(sb.toString(),
+                    HttpStatus.BAD_REQUEST); // 에러 정보를 ResponseEntity 객체에 담아서 반환
+        }
+
+        String email = principal.getName(); // principal 객체에서 현재 로그인한 회원의 이메일 정보를 조회
+
+        Long orderId;
+
+        try {
+            orderId = orderService.groupOrder(orderDto, email);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<Long>(orderId, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/order/{orderId}/complete")
     public @ResponseBody ResponseEntity orderComplete(@PathVariable("orderId") Long orderId, @RequestBody @Valid OrderCplDto orderCplDto,
                                                       BindingResult bindingResult, Principal principal) {

@@ -160,9 +160,11 @@ public class ItemController {
     public String itemDtl(Model model, @PathVariable Long itemId) {
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         List<Review> reviewList = reviewService.getList(itemId);
+        int groupBuyPrice = itemService.getGroupBuyingPrice(itemId);
 
         model.addAttribute("reviews", reviewList);
         model.addAttribute("item", itemFormDto);
+        model.addAttribute("gbPrice", groupBuyPrice);
         return "item/itemDtl";
     }
 
@@ -173,4 +175,5 @@ public class ItemController {
         }
         throw new AccessDeniedException("접근 권한이 없습니다.");
     }
+
 }
