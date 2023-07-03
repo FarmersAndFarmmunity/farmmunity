@@ -25,8 +25,11 @@
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
+            var gbPrice = $("#gbPrice").val();
             var totalPrice = price*count;
+            var totalGBPrice = gbPrice*count;
             $("#totalPrice").html(totalPrice + '원');
+            $("#totalGBPrice").html(totalGBPrice + '원');
         }
 
         function order(){
@@ -226,6 +229,16 @@
                         </dd>
                     </dl>
 
+                    <dl class="detail-line price-box flex flex-row">
+                        <dt class="detail-title font-bold">
+                            <span th:text="공동구매가"></span>
+                        </dt>
+                        <dd class="detail-content">
+                            <input type="hidden" th:value="${gbPrice}" id="gbPrice" name="gbPrice">
+                            <span th:text="${gbPrice}"></span>원
+                        </dd>
+                    </dl>
+
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">
                             <span th:text="재고"></span>
@@ -258,6 +271,8 @@
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="mr-2">총 결제 금액: </span>
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-3xl text-accent"><h3 name="totalPrice" id="totalPrice" class="font-weight-bold" style="display: contents;"></h3></span>
 
+                        <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="mr-2">공동구매시 총 결제 금액: </span>
+                        <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-3xl text-error"><h3 name="totalGBPrice" id="totalGBPrice" class="font-weight-bold" style="display: contents;"></h3></span>
                         <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}">구매 불가</span>
                     </span>
                 </div>

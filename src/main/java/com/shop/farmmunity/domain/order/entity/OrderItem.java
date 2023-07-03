@@ -39,6 +39,17 @@ public class OrderItem extends BaseEntity {
         return orderItem;
     }
 
+    public static OrderItem createGroupBuyingOrderItem(Item item, int orderPrice, int count) {
+
+        item.checkRestStock(count); // 주문 전에 상품 재고 체크부터
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item); // 주문한 아이템을 지정
+        orderItem.setCount(count); // 주문한 아이템을 몇 개를 살지
+        orderItem.setOrderPrice(orderPrice); // 해당 상품의 가격을 저장
+
+        return orderItem;
+    }
+
     public int getTotalPrice() {
         return orderPrice * count;
     }

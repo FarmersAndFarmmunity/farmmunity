@@ -3,6 +3,7 @@ package com.shop.farmmunity.domain.item.service;
 import com.shop.farmmunity.domain.item.dto.*;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
+import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,6 +28,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
+    private final GroupBuyingRepository groupBuyingRepository;
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
@@ -109,6 +111,11 @@ public class ItemService {
 
     public Optional<Item> findById(Long itemId) {
         return itemRepository.findById(itemId);
+    }
+
+
+    public int getGroupBuyingPrice(Long itemId){
+        return groupBuyingRepository.findByItemId(itemId).getDiscount();
     }
 }
 
