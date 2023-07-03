@@ -2,6 +2,7 @@ package com.shop.farmmunity.domain.item.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
+import com.shop.farmmunity.domain.item.dto.ItemOptionDto;
 import com.shop.farmmunity.domain.item.dto.ItemSearchDto;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.service.ItemService;
@@ -44,6 +45,7 @@ public class ItemController {
     @GetMapping(value = "/vendor/item/new")
     public String itemForm(Model model){
         model.addAttribute("itemFormDto", new ItemFormDto());
+        model.addAttribute("itemOptionDto", new ItemOptionDto());
         return "item/itemForm";
     }
 
