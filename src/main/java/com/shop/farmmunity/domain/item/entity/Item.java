@@ -41,8 +41,6 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
 
-//    @OneToMany(mappedBy = "review", cascade = CascadeType.REMOVE)
-//    private List<Review> reviewList;
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();
