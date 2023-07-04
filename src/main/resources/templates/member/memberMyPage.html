@@ -141,26 +141,6 @@
             <a th:href="@{/members/mypage/address}">배송지 관리</a>
           </dt>
         </dl>
-        <dl class="mb-3">
-          <dt class="detail-title">
-            <label>연락처</label>
-          </dt>
-          <dd class="detail-content">
-            <input type="text" id="contact" class="input input-bordered w-full"
-                   placeholder="'-'없이 숫자 입력">
-            <div id="contactError" class="fieldError"></div>
-          </dd>
-        </dl>
-        <dl class="mb-3 order-line">
-          <dt class="detail-title">
-            <label>이메일</label>
-          </dt>
-          <dd class="detail-content">
-            <input type="text" id="customerEmail" class="input input-bordered w-full"
-                   placeholder="이메일을 입력해주세요" th:value="${member.getEmail()}">
-            <div id="customerEmailError" class="fieldError"></div>
-          </dd>
-        </dl>
       </div>
 
     </div>

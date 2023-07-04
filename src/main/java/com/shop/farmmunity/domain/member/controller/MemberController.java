@@ -5,7 +5,9 @@ import com.shop.farmmunity.domain.member.constant.Role;
 import com.shop.farmmunity.domain.member.dto.AddressFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
+import com.shop.farmmunity.domain.member.entity.Address;
 import com.shop.farmmunity.domain.member.entity.Member;
+import com.shop.farmmunity.domain.member.service.AddressService;
 import com.shop.farmmunity.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -37,6 +39,7 @@ import java.util.Optional;
 public class MemberController {
     private final CustomUserDetailsService customUserDetailsService;
     private final MemberService memberService;
+    private final AddressService addressService;
     private final PasswordEncoder passwordEncoder;
     @Value("${custom.postForPage}")
     private int postForPage;
@@ -90,11 +93,19 @@ public class MemberController {
     }
 
     @PostMapping(value = "/members/mypage/address")
-    public String newAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model) {
+    public String newAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "member/addressForm";
         }
 
+        try {
+            Member member = memberService.findByEmail(principal.getName());
+            Address address = addressFormDto.createAddressForm(member);
+            addressService.saveAddress(address);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/addressForm";
+        }
 
         return "redirect:/";
     }

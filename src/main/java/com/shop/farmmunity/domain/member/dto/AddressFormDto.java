@@ -1,6 +1,7 @@
 package com.shop.farmmunity.domain.member.dto;
 
 import com.shop.farmmunity.domain.member.entity.Address;
+import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -31,9 +32,12 @@ public class AddressFormDto {
 
     private Boolean is_default; // 기본 배송지 등록 여부
 
+    private Member member;
+
     private static ModelMapper modelMapper = new ModelMapper();
 
-    public Address createAddressForm() {
+    public Address createAddressForm(Member member) {
+        this.member = member;
         return modelMapper.map(this, Address.class);
     }
 
