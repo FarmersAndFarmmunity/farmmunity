@@ -160,11 +160,11 @@ public class ItemController {
     public String itemDtl(Model model, @PathVariable Long itemId) {
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         List<Review> reviewList = reviewService.getList(itemId);
-        int groupBuyPrice = itemService.getGroupBuyingPrice(itemId);
+//        int groupBuyPrice = itemService.getGroupBuyingPrice(itemId);
 
         model.addAttribute("reviews", reviewList);
         model.addAttribute("item", itemFormDto);
-        model.addAttribute("gbPrice", groupBuyPrice);
+//        model.addAttribute("gbPrice", groupBuyPrice);
         return "item/itemDtl";
     }
 

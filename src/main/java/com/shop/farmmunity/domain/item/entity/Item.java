@@ -41,6 +41,9 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_buying_id")
+    private GroupBuying groupBuying;
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();

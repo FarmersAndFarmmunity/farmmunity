@@ -1,6 +1,7 @@
 package com.shop.farmmunity.domain.item.service;
 
 import com.shop.farmmunity.domain.item.dto.*;
+import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
 import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
@@ -33,8 +34,11 @@ public class ItemService {
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
                          List<MultipartFile> itemImgFileList) throws Exception {
+        GroupBuying groupBuying = itemFormDto.createGroupBuying();
         Item item = itemFormDto.createItem();
+        item.setGroupBuying(groupBuying);
         itemRepository.save(item);
+        groupBuyingRepository.save(groupBuying);
 
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
             ItemImg itemImg = new ItemImg();
@@ -64,6 +68,7 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+        itemFormDto.setDiscount(item.getGroupBuying().getDiscount());
         return itemFormDto;
     }
 
@@ -113,9 +118,8 @@ public class ItemService {
         return itemRepository.findById(itemId);
     }
 
-
-    public int getGroupBuyingPrice(Long itemId){
-        return groupBuyingRepository.findByItemId(itemId).getDiscount();
-    }
+//    public int getGroupBuyingPrice(Long itemId){
+//        return groupBuyingRepository.findByItemId(itemId).getDiscount();
+//    }
 }
 
