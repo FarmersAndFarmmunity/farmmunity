@@ -2,6 +2,7 @@ package com.shop.farmmunity.domain.member.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
 import com.shop.farmmunity.domain.member.constant.Role;
+import com.shop.farmmunity.domain.member.dto.AddressFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
 import com.shop.farmmunity.domain.member.entity.Member;
@@ -80,6 +81,22 @@ public class MemberController {
         model.addAttribute("member", member);
 
         return "member/memberMyPage";
+    }
+
+    @GetMapping(value = "/members/mypage/address")
+    public String addressForm(Model model) throws Exception {
+        model.addAttribute("addressFormDto", new AddressFormDto());
+        return "member/addressForm";
+    }
+
+    @PostMapping(value = "/members/mypage/address")
+    public String newAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "member/addressForm";
+        }
+
+
+        return "redirect:/";
     }
     //////// 관리자 영역
     // 멤버 관리 기능

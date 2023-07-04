@@ -79,13 +79,10 @@
 <div layout:fragment="content">
   <div class="flex w-full justify-center">
     <div style="width: 650px;">
-      <div th:object="${member}">
 
         <p class="text-3xl font-bold my-4 ml-3 pb-3">
           내 정보 관리
         </p>
-
-        <input type="hidden" th:field="*{id}">
 
         <div class="item-form-box mb-4">
           <dl class="detail-line price-box flex flex-row items-center">
@@ -116,22 +113,6 @@
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
             <dt class="detail-title">
-              비밀번호
-            </dt>
-            <dd class="detail-content">
-              <div th:text="${member.getPassword()}"></div>
-            </dd>
-          </dl>
-          <dl class="detail-line price-box flex flex-row items-center">
-            <dt class="detail-title">
-              기본 주소
-            </dt>
-            <dd class="detail-content">
-              <div th:text="${member.getAddress()}"></div>
-            </dd>
-          </dl>
-          <dl class="detail-line price-box flex flex-row items-center">
-            <dt class="detail-title">
               가입 일자
             </dt>
             <dd class="detail-content">
@@ -144,18 +125,44 @@
             </dt>
             <dd class="detail-content">
               <div th:if="${member.providerTypeCode == 'Farmers'}">일반 회원가입</div>
-              <div th:if="${member.role == 'NAVER'}">소셜 회원가입(네이버)</div>
-              <div th:if="${member.role == 'KAKAO'}">소셜 회원가입(카카오)</div>
+              <div th:if="${member.providerTypeCode == 'NAVER'}">소셜 회원가입(네이버)</div>
+              <div th:if="${member.providerTypeCode == 'KAKAO'}">소셜 회원가입(카카오)</div>
             </dd>
           </dl>
-
         </div>
 
-        <div style="text-align: center">
-          <button type="submit" class="btn btn-accent">저장</button>
-        </div>
-
+      <h3 class="card-title text-2xl mb-3">쇼핑</h3>
+      <div class="join-form flex justify-center flex-col">
+        <dl class="mb-3">
+          <dt class="detail-title mb-3">
+            <a th:href="@{/members/mypage/address}">배송지 관리</a>
+          </dt>
+          <dt class="detail-title">
+            <a th:href="@{/members/mypage/address}">배송지 관리</a>
+          </dt>
+        </dl>
+        <dl class="mb-3">
+          <dt class="detail-title">
+            <label>연락처</label>
+          </dt>
+          <dd class="detail-content">
+            <input type="text" id="contact" class="input input-bordered w-full"
+                   placeholder="'-'없이 숫자 입력">
+            <div id="contactError" class="fieldError"></div>
+          </dd>
+        </dl>
+        <dl class="mb-3 order-line">
+          <dt class="detail-title">
+            <label>이메일</label>
+          </dt>
+          <dd class="detail-content">
+            <input type="text" id="customerEmail" class="input input-bordered w-full"
+                   placeholder="이메일을 입력해주세요" th:value="${member.getEmail()}">
+            <div id="customerEmailError" class="fieldError"></div>
+          </dd>
+        </dl>
       </div>
+
     </div>
   </div>
 
