@@ -146,6 +146,10 @@ public class OrderService {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(EntityNotFoundException::new);
         order.cancelOrder(); // 주문 취소 하면 변경 감지 기능에 의해서 트랜잭션이 끝날 때 update 쿼리가 실행됨
+        if(order.isGroupBuying()) {
+            // 공동구매가 진행중이었다면 상태값을 실패로 변경
+            groupRepository.findByOrderId(orderId).setStatus(GroupBuyStatus.FAIL);
+        }
     }
 
     // 장바구니의 상품 주문 메서드
