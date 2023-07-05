@@ -1,9 +1,12 @@
 package com.shop.farmmunity.domain.order.service;
 
+import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
+import com.shop.farmmunity.domain.item.entity.Group;
 import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
 import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
+import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
 import com.shop.farmmunity.domain.member.entity.Member;
@@ -36,8 +39,7 @@ public class OrderService {
     private final MemberRepository memberRepository;
     private final OrderRepository orderRepository;
     private final ItemImgRepository itemImgRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final GroupBuyingRepository groupBuyingRepository;
+    private final GroupRepository groupRepository;
 
     @Value("${custom.toss_client}")
     private String CLIENT_KEY;
@@ -70,9 +72,10 @@ public class OrderService {
         OrderItem orderItem = OrderItem.createGroupBuyingOrderItem(item, item.getGroupBuying().getDiscount(), orderDto.getCount()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
         orderItemList.add(orderItem);
 
+        if(groupRepository.findByMemberIdAndStatus(member.getId(), GroupBuyStatus.WAIT) != null) return -1L; // 이미 대기열에 있는 본인의 공동구매 주문건이 있을경우 주문을 취소시킴
+
         Order order = Order.createOrder(member, orderItemList, true); // 회원 정보와 주문할 상품 리스트 정보를 이용하여 주문 엔티티를 생성
         orderRepository.save(order); // 생성한 주문 엔티티를 저장
-
         return order.getId();
     }
 

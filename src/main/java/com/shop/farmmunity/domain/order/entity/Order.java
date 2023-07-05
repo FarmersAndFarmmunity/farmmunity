@@ -83,7 +83,7 @@ public class Order extends BaseEntity {
     public void payDone() {
 
         for (OrderItem orderItem : orderItems) {
-            orderItem.payDone();
+            orderItem.payDone(); // 재고 차감
         }
         this.setPaid(true);
     }

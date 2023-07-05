@@ -95,6 +95,7 @@ public class OrderController {
 
         try {
             orderId = orderService.groupOrder(orderDto, email);
+            if(orderId == -1L) new ResponseEntity<String>("자신에게 매칭될 수 없습니다.", HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

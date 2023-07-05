@@ -280,7 +280,6 @@
                 <div th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">
                     <button type="button" class="btn btn-accent" onclick="addCart()">장바구니 담기</button>
                     <button type="button" class="btn btn-warning" onclick="order()">주문하기</button>
-                    <button type="button" class="btn btn-accent" onclick="">공동구매 장바구니 담기</button>
                     <button type="button" class="btn btn-warning" onclick="groupOrder()">공동구매 주문하기</button>
                 </div>
                 <div th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">

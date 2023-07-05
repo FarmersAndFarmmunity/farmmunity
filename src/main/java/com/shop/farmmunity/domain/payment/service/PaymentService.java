@@ -3,9 +3,13 @@ package com.shop.farmmunity.domain.payment.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
+import com.shop.farmmunity.domain.item.entity.Group;
+import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.MemberRepository;
 import com.shop.farmmunity.domain.order.entity.Order;
+import com.shop.farmmunity.domain.order.entity.OrderItem;
 import com.shop.farmmunity.domain.order.repository.OrderRepository;
 import com.shop.farmmunity.domain.payment.constant.PaymentDtlDto;
 import com.shop.farmmunity.domain.payment.entity.Payment;
@@ -35,6 +39,7 @@ public class PaymentService {
     private final OrderRepository orderRepository;
     private final MemberRepository memberRepository;
     private final PaymentRepository paymentRepository;
+    private final GroupRepository groupRepository;
 
 
     @Value("${custom.toss_secret}")
@@ -77,6 +82,19 @@ public class PaymentService {
     public void payDone(Order order, JsonNode jsonNode) { // 결제 완료하면 결제 정보 데이터베이스에 저장
         order.payDone();
         Payment payment = Payment.createPayment(order, jsonNode);
+        if(order.isGroupBuying()){
+            //공동구매라면 결제 완료시 파트너를 매칭시키거나 대기 상태로 변경
+            Group group = Group.createHostGroup(order.getMember(), order);
+            Group partner = groupRepository.findByItemIdAndStatus(group.getItemId(), GroupBuyStatus.WAIT); // 매칭을 찾는 사람이 있는지 확인
+            if(partner != null){
+                // 본인이 아닌 공동구매를 대기하는 파트너가 있는 경우
+                group.updateClientGroup(partner.getMember());
+                partner.setPartner(group.getMember());
+            }else{
+                group.setStatus(GroupBuyStatus.WAIT);
+            }
+            groupRepository.save(group); // 생성한 공동구매 엔티티를 저장
+        }
         paymentRepository.save(payment);
     }
 
