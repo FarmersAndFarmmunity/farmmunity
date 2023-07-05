@@ -81,13 +81,8 @@ public class OrderService {
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(EntityNotFoundException::new);
-        Delivery delivery = new Delivery();
-        delivery.setCustomer(orderCplDto.createCustomer());
-        delivery.setRecipient(orderCplDto.createRecipient());
+        Delivery delivery = orderCplDto.createDelivery();
         order.setDelivery(delivery);
-
-//        order.setCustomer(orderCplDto.createCustomer());
-//        order.setRecipient(orderCplDto.createRecipient());
     }
 
     @Transactional(readOnly = true)
