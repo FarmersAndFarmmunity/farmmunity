@@ -12,6 +12,8 @@ import org.modelmapper.ModelMapper;
 @Setter
 public class AddressFormDto {
 
+    private Long addressId;
+
     @NotBlank(message = "배송지명은 필수 입력 값입니다.")
     private String shippingName;
 

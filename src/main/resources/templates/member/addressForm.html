@@ -123,7 +123,7 @@
             <p class="text-3xl font-bold my-4 ml-3">
                 배송지 등록
             </p>
-            <form action="/members/mypage/address" role="form" method="post" th:object="${addressFormDto}">
+            <form role="form" method="post" th:object="${addressFormDto}">
                 <div class="flex w-full justify-center">
                     <div class="order-box card bg-base-100 shadow-xl">
                         <div class="card-body">
@@ -197,10 +197,13 @@
                                     <input type="hidden" id="is_default" name="is_default" value="false">
                                 </dl>
                             </div>
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-                            <div class="flex flex-col">
-                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <div class="flex flex-col" th:if="${#strings.isEmpty(addressFormDto.addressId)}">
                                 <button type="submit" class="btn btn-accent" style="">등록하기</button>
+                            </div>
+                            <div class="flex flex-col" th:unless="${#strings.isEmpty(addressFormDto.addressId)}">
+                                <button type="submit" class="btn btn-accent" style="">수정하기</button>
                             </div>
                         </div>
                     </div>

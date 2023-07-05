@@ -2,6 +2,7 @@ package com.shop.farmmunity.domain.member.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
 import com.shop.farmmunity.domain.member.constant.Role;
+import com.shop.farmmunity.domain.member.dto.AddressDto;
 import com.shop.farmmunity.domain.member.dto.AddressFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -87,12 +89,21 @@ public class MemberController {
     }
 
     @GetMapping(value = "/members/mypage/address")
-    public String addressForm(Model model) throws Exception {
+    public String addressList(Model model, Principal principal){
+
+        Member member = memberService.findByEmail(principal.getName());
+        List<AddressDto> addressList = addressService.getAddressList(member.getId());
+        model.addAttribute("addressList", addressList);
+        return "member/addressList";
+    }
+
+    @GetMapping(value = "/members/mypage/address/new")
+    public String addressForm(Model model){
         model.addAttribute("addressFormDto", new AddressFormDto());
         return "member/addressForm";
     }
 
-    @PostMapping(value = "/members/mypage/address")
+    @PostMapping(value = "/members/mypage/address/new")
     public String newAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "member/addressForm";
@@ -107,7 +118,38 @@ public class MemberController {
             return "member/addressForm";
         }
 
-        return "redirect:/";
+        return "redirect:/members/mypage/address";
+    }
+
+    @GetMapping(value = "/members/mypage/address/modify/{addressId}")
+    public String modifyAddress(@PathVariable Long addressId, Model model) {
+
+        AddressDto address = addressService.getAddress(addressId);
+        model.addAttribute("addressFormDto", address);
+        return "member/addressForm";
+    }
+
+    @PostMapping(value = "/members/mypage/address/modify/{addressId}")
+    public String modifyAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model, Principal principal){
+
+        Member member = memberService.findByEmail(principal.getName());
+        Address addressById = addressService.findAddressById(addressFormDto.getAddressId());
+        if (member.getId() != addressById.getMember().getId()) {
+            model.addAttribute("errorMessage", "권한이 없습니다.");
+            return "redirect:/";
+        }
+        if (bindingResult.hasErrors()) {
+            return "member/addressForm";
+        }
+
+        try {
+            addressService.updateAddress(addressFormDto);
+        } catch (IllegalStateException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/addressForm";
+        }
+
+        return "redirect:/members/mypage/address";
     }
     //////// 관리자 영역
     // 멤버 관리 기능
