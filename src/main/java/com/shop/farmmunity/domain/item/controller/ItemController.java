@@ -127,7 +127,10 @@ public class ItemController {
 
     // 수정 기능
     @PostMapping(value = { "/vendor/item/{itemId}", "/admin/item/{itemId}"})
-    public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model){
+    public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
+                             @RequestParam("optionNameList") List<String> optionNameList,
+                             @RequestParam("extraAmountList") List<Integer> extraAmountList,
+                             @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model){
 
         if(bindingResult.hasErrors()){
             return "item/itemForm";
@@ -139,7 +142,7 @@ public class ItemController {
         }
 
         try {
-            itemService.updateItem(itemFormDto, itemImgFileList);
+            itemService.updateItem(itemFormDto, itemImgFileList, optionNameList, extraAmountList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다.");
             return "item/itemForm";

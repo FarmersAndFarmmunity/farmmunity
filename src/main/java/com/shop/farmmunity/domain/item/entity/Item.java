@@ -79,4 +79,7 @@ public class Item extends BaseEntity {
         this.stockNumber += stockNumber;
     }
 
+    public void addOption(ItemOption option) {
+        this.itemOptionList.add(option);
+    }
 }

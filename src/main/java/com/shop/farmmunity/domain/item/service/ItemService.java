@@ -40,7 +40,6 @@ public class ItemService {
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
 
-        // 아이템 옵션
         for (int i = 0; i < optionNameList.size(); i++) {
             ItemOption itemOption = new ItemOption();
             itemOption.setItem(item);
@@ -95,10 +94,15 @@ public class ItemService {
     }
 
     // 수정
-    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+    public Long updateItem(ItemFormDto itemFormDto,
+                           List<MultipartFile> itemImgFileList,
+                           List<String> optionNameList,
+                           List<Integer> extraAmountList) throws Exception {
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
+
+        itemOptionService.updateItemOption(item, optionNameList, extraAmountList);
 
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
