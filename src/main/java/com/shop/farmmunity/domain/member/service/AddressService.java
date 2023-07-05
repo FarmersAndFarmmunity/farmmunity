@@ -3,6 +3,7 @@ package com.shop.farmmunity.domain.member.service;
 import com.shop.farmmunity.domain.member.dto.AddressDto;
 import com.shop.farmmunity.domain.member.dto.AddressFormDto;
 import com.shop.farmmunity.domain.member.entity.Address;
+import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.AddressRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,18 @@ public class AddressService {
         Address address = findAddressById(addressFormDto.getAddressId());
         address.updateAddress(addressFormDto);
         return address.getId();
+    }
+
+    public void deleteAddress(Long addressId) {
+        addressRepository.deleteById(addressId);
+    }
+
+    public void modifyDefaultAddress(Long memberId) {
+
+        Address defaultAddress = addressRepository.findDefaultAddress(memberId);
+        if (defaultAddress != null) {
+            defaultAddress.setIs_default(false);
+        }
     }
 
     @Transactional(readOnly = true)

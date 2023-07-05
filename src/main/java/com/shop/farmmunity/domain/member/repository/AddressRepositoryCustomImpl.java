@@ -6,7 +6,9 @@ import com.shop.farmmunity.domain.cart.dto.CartDetailDto;
 import com.shop.farmmunity.domain.cart.entity.QCartItem;
 import com.shop.farmmunity.domain.item.entity.QItemImg;
 import com.shop.farmmunity.domain.member.dto.AddressDto;
+import com.shop.farmmunity.domain.member.entity.Address;
 import com.shop.farmmunity.domain.member.entity.QAddress;
+import com.shop.farmmunity.domain.member.entity.QMember;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.repository.query.Param;
 
@@ -28,5 +30,15 @@ public class AddressRepositoryCustomImpl implements AddressRepositoryCustom{
                 .orderBy(QAddress.address.is_default.desc())
                 .fetch();
         return addressDtoList;
+    }
+
+    @Override
+    public Address findDefaultAddress(Long memberId) {
+
+        Address address = queryFactory
+                .selectFrom(QAddress.address)
+                .where(QAddress.address.is_default.eq(true), QAddress.address.member.id.eq(memberId))
+                .fetchFirst();
+        return address;
     }
 }

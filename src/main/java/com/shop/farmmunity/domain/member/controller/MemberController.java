@@ -111,6 +111,9 @@ public class MemberController {
 
         try {
             Member member = memberService.findByEmail(principal.getName());
+            if (addressFormDto.getIs_default()) {
+                addressService.modifyDefaultAddress(member.getId());
+            }
             Address address = addressFormDto.createAddressForm(member);
             addressService.saveAddress(address);
         } catch (IllegalStateException e) {
@@ -122,8 +125,14 @@ public class MemberController {
     }
 
     @GetMapping(value = "/members/mypage/address/modify/{addressId}")
-    public String modifyAddress(@PathVariable Long addressId, Model model) {
+    public String modifyAddress(@PathVariable Long addressId, Model model, Principal principal) {
 
+        Member member = memberService.findByEmail(principal.getName());
+        Address addressById = addressService.findAddressById(addressId);
+        if (member.getId() != addressById.getMember().getId()) {
+            model.addAttribute("errorMessage", "권한이 없습니다.");
+            return "redirect:/";
+        }
         AddressDto address = addressService.getAddress(addressId);
         model.addAttribute("addressFormDto", address);
         return "member/addressForm";
@@ -143,11 +152,28 @@ public class MemberController {
         }
 
         try {
+            if (addressFormDto.getIs_default()) {
+                addressService.modifyDefaultAddress(member.getId());
+            }
             addressService.updateAddress(addressFormDto);
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "member/addressForm";
         }
+
+        return "redirect:/members/mypage/address";
+    }
+
+    @GetMapping("/members/mypage/address/delete/{addressId}")
+    public String deleteAddress(@PathVariable Long addressId, Principal principal, Model model) {
+        Member member = memberService.findByEmail(principal.getName());
+        Address addressById = addressService.findAddressById(addressId);
+        if (member.getId() != addressById.getMember().getId()) {
+            model.addAttribute("errorMessage", "권한이 없습니다.");
+            return "redirect:/";
+        }
+
+        addressService.deleteAddress(addressId);
 
         return "redirect:/members/mypage/address";
     }

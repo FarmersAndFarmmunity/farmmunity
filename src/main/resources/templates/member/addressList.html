@@ -62,19 +62,22 @@
                 <div class="order-box card bg-base-100 shadow-xl">
                     <div class="card-body">
                         <div class="join-form flex justify-center flex-col">
-                            <dl class="mb-3">
-                                <dt class="detail-title">
-                                    <div class="font-bold" th:text="${address.recipientName}"></div>
-                                    <div class="font-bold" th:text="${address.shippingName}"></div>
-                                    <div th:if="${address.is_default == true}">기본 배송지</div>
+                            <dl>
+                                <dt class="detail-title mb-2">
+                                    <span class="font-bold" th:text="${address.recipientName}"></span>
+                                    <span class="font-bold" th:text="${address.shippingName}"></span>
+                                    <span th:if="${address.is_default == true}">기본 배송지</span>
                                 </dt>
-                                <dd class="detail-content">
+                                <dd class="detail-content mb-3">
                                     <div th:text="${address.addr + ' ' + address.addr_detail}"></div>
                                     <div th:text="${address.recipientContact}"></div>
                                 </dd>
-                                <a class="btn btn-accent"
+                                <a type="button" class="btn btn-accent float-right ml-2"
                                    th:href="@{|/members/mypage/address/modify/${address.addressId}|}"
                                    th:text="|수정|"></a>
+                                <a type="button" class="btn btn-error float-right"
+                                   th:href="@{|/members/mypage/address/delete/${address.addressId}|}"
+                                   th:text="|삭제|"></a>
                             </dl>
                         </div>
                     </div>

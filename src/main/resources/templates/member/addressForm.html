@@ -124,7 +124,7 @@
                 배송지 등록
             </p>
             <form role="form" method="post" th:object="${addressFormDto}">
-                <div class="flex w-full justify-center">
+                <div class="flex w-full justify-center mb-3">
                     <div class="order-box card bg-base-100 shadow-xl">
                         <div class="card-body">
                             <div class="join-form flex justify-center flex-col">
@@ -189,24 +189,26 @@
                                     <dt class="detail-title">
                                         <label>상세 주소</label>
                                     </dt>
-                                    <dd class="detail-content">
+                                    <dd class="detail-content mb-3">
                                         <input type="text" th:field="*{addr_detail}" class="input input-bordered w-full"
                                                placeholder="상세 주소를 입력해주세요">
                                     </dd>
                                     <input type="checkbox" class="form-check-input" th:name="is_default" id="isDefaultCheckbox" onchange="updateDefaultValue()"> 기본 배송지로 등록
                                     <input type="hidden" id="is_default" name="is_default" value="false">
                                 </dl>
+
                             </div>
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-
-                            <div class="flex flex-col" th:if="${#strings.isEmpty(addressFormDto.addressId)}">
-                                <button type="submit" class="btn btn-accent" style="">등록하기</button>
-                            </div>
-                            <div class="flex flex-col" th:unless="${#strings.isEmpty(addressFormDto.addressId)}">
-                                <button type="submit" class="btn btn-accent" style="">수정하기</button>
-                            </div>
                         </div>
                     </div>
+                </div>
+                <div th:if="${#strings.isEmpty(addressFormDto.addressId)}" style="text-align: center">
+                    <button type="submit" class="btn btn-accent">등록하기</button>
+                    <button type="button" class="btn btn-error" onclick="window.history.back()">취소하기</button>
+                </div>
+                <div th:unless="${#strings.isEmpty(addressFormDto.addressId)}" style="text-align: center">
+                    <button type="submit" class="btn btn-accent">수정하기</button>
+                    <button type="button" class="btn btn-error" onclick="window.history.back()">취소하기</button>
                 </div>
             </form>
         </div>
