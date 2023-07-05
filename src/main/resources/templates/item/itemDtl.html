@@ -264,6 +264,30 @@
                             <input type="number" name="count" id="count" class="input input-bordered h-10 w-20 mr-2 text-lg" value="1" min="1"> 개
                         </dd>
                     </dl>
+
+                    <dl class="detail-line count-box flex flex-row">
+                        <dt class="detail-title font-bold">
+                            <span></span>
+                        </dt>
+                        <dd class="detail-content">
+                            <span>현재까지 <span class="font-bold text-accent" th:text="${groupBuyInfo.count}"></span>명 공동구매 완료!</span>
+                        </dd>
+                    </dl>
+
+                    <dl class="detail-line count-box flex flex-row">
+                        <dt class="detail-title font-bold">
+                            <span></span>
+                        </dt>
+                        <dd class="detail-content">
+                            <div th:if="${(groupBuyInfo.username) != null}">
+                                <span class="font-bold text-error" th:text="${groupBuyInfo.username}"></span> 님이 함께 구매할 분을 찾고 있습니다.
+                            </div>
+
+                            <div th:unless="${(groupBuyInfo.username) != null}">
+                                <span class="font-bold text-warning" >대기열이 없습니다.</span>
+                            </div>
+                        </dd>
+                    </dl>
                 </div>
 
                 <div class="text-right my-2">

@@ -1,6 +1,7 @@
 package com.shop.farmmunity.domain.item.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
+import com.shop.farmmunity.domain.item.dto.GroupBuyDto;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
 import com.shop.farmmunity.domain.item.dto.ItemSearchDto;
 import com.shop.farmmunity.domain.item.entity.Item;
@@ -160,11 +161,11 @@ public class ItemController {
     public String itemDtl(Model model, @PathVariable Long itemId) {
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         List<Review> reviewList = reviewService.getList(itemId);
-//        int groupBuyPrice = itemService.getGroupBuyingPrice(itemId);
+        GroupBuyDto groupBuyDto = itemService.getGroupBuyInfo(itemId);
 
         model.addAttribute("reviews", reviewList);
         model.addAttribute("item", itemFormDto);
-//        model.addAttribute("gbPrice", groupBuyPrice);
+        model.addAttribute("groupBuyInfo", groupBuyDto);
         return "item/itemDtl";
     }
 

@@ -1,12 +1,16 @@
 package com.shop.farmmunity.domain.item.service;
 
+import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.item.dto.*;
+import com.shop.farmmunity.domain.item.entity.Group;
 import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
 import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
+import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
+import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +34,7 @@ public class ItemService {
     private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
     private final GroupBuyingRepository groupBuyingRepository;
+    private final GroupRepository groupRepository;
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
@@ -118,8 +123,13 @@ public class ItemService {
         return itemRepository.findById(itemId);
     }
 
-//    public int getGroupBuyingPrice(Long itemId){
-//        return groupBuyingRepository.findByItemId(itemId).getDiscount();
-//    }
+    public GroupBuyDto getGroupBuyInfo(Long itemId) {
+        GroupBuyDto groupBuyDto = new GroupBuyDto();
+        Group group = groupRepository.findByItemIdAndStatus(itemId, GroupBuyStatus.WAIT);
+        groupBuyDto.setCount(groupRepository.countByItemIdAndStatus(itemId, GroupBuyStatus.SUCCESS));
+        if(group != null) groupBuyDto.setUsername(group.getMember().getUsername());
+        return groupBuyDto;
+    }
+
 }
 
