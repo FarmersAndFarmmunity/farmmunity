@@ -71,7 +71,7 @@
                    th:href="@{/members/mypage/address/new}"
                    th:text="|신규 배송지|"></a>
               <button type="button" class="btn btn-primary float-right mb-3 ml-1"
-                      onclick="sendSelectedId()">배송지 변경</button>
+                      onclick="sendSelectedId()">배송지 선택</button>
             </span>
       <div th:each="address : ${addressList}" class="flex mb-3">
         <div class="order-box card bg-base-100 shadow-xl">

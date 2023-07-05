@@ -9,6 +9,7 @@ import com.shop.farmmunity.domain.item.repository.ItemRepository;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.MemberRepository;
 import com.shop.farmmunity.domain.order.dto.*;
+import com.shop.farmmunity.domain.order.entity.Delivery;
 import com.shop.farmmunity.domain.order.entity.Order;
 import com.shop.farmmunity.domain.order.entity.OrderItem;
 import com.shop.farmmunity.domain.order.repository.OrderItemRepository;
@@ -80,8 +81,13 @@ public class OrderService {
 
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(EntityNotFoundException::new);
-        order.setCustomer(orderCplDto.createCustomer());
-        order.setRecipient(orderCplDto.createRecipient());
+        Delivery delivery = new Delivery();
+        delivery.setCustomer(orderCplDto.createCustomer());
+        delivery.setRecipient(orderCplDto.createRecipient());
+        order.setDelivery(delivery);
+
+//        order.setCustomer(orderCplDto.createCustomer());
+//        order.setRecipient(orderCplDto.createRecipient());
     }
 
     @Transactional(readOnly = true)
