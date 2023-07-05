@@ -44,6 +44,10 @@ public class AddressService {
         return addressRepository.findDefaultAddress(memberId);
     }
 
+    public AddressDto findDefaultAddressDto(Long memberId) {
+        return addressRepository.findDefaultAddress(memberId).toDto();
+    }
+
     @Transactional(readOnly = true)
     public List<AddressDto> getAddressList(Long memberId) {
         return addressRepository.findAddressList(memberId);

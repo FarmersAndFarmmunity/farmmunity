@@ -2,12 +2,10 @@ package com.shop.farmmunity.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class AddressDto {
 
@@ -27,4 +25,12 @@ public class AddressDto {
 
     private Boolean is_default;
 
+    public AddressDto() {
+        this.shippingName = "";
+        this.recipientName = "";
+        this.recipientContact = "";
+        this.zipcode = "";
+        this.addr = "";
+        this.addr_detail = "";
+    }
 }

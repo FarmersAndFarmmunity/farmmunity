@@ -1,6 +1,9 @@
 package com.shop.farmmunity.domain.order.controller;
 
+import com.shop.farmmunity.domain.member.dto.AddressDto;
+import com.shop.farmmunity.domain.member.entity.Address;
 import com.shop.farmmunity.domain.member.entity.Member;
+import com.shop.farmmunity.domain.member.service.AddressService;
 import com.shop.farmmunity.domain.member.service.MemberService;
 import com.shop.farmmunity.domain.order.dto.OrderCplDto;
 import com.shop.farmmunity.domain.order.dto.OrderDtlDto;
@@ -32,6 +35,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final MemberService memberService;
+    private final AddressService addressService;
 
     @GetMapping("/order/{orderId}")
     public String orderDtl(@PathVariable("orderId") Long orderId, Principal principal, Model model) {
@@ -40,6 +44,13 @@ public class OrderController {
         }
         Member member = memberService.findByEmail(principal.getName());
         OrderDtlDto orderDtlDto = orderService.getOrderDtl(orderId);
+        Address defaultAddress = addressService.findDefaultAddress(member.getId());
+
+        if (defaultAddress == null) {
+            model.addAttribute("address", new AddressDto());
+        } else {
+            model.addAttribute("address", defaultAddress.toDto());
+        }
 
         model.addAttribute("order", orderDtlDto);
         model.addAttribute("member", member);

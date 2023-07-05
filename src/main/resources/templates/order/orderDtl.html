@@ -285,7 +285,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="shippingName" class="input input-bordered w-full"
-                                           placeholder="배송지명을 입력해주세요">
+                                           placeholder="배송지명을 입력해주세요" th:value="${address.shippingName}">
                                     <div id="shippingNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -295,7 +295,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="recipientName" class="input input-bordered w-full"
-                                           placeholder="이름을 입력해주세요">
+                                           placeholder="이름을 입력해주세요" th:value="${address.recipientName}">
                                     <div id="recipientNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -305,7 +305,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="recipientContact" class="input input-bordered w-full"
-                                           placeholder="연락처를 입력해주세요">
+                                           placeholder="연락처를 입력해주세요" th:value="${address.recipientContact}">
                                     <div id="recipientContactError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -315,14 +315,14 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="zipcode" class="input input-bordered"
-                                           placeholder="우편번호" readonly>
+                                           placeholder="우편번호" th:value="${address.zipcode}" readonly>
                                     <div id="zipcodeError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
                                 <dd class="detail-content">
                                     <input type="text" id="addr" class="input input-bordered w-full"
-                                           placeholder="기본주소" readonly>
+                                           placeholder="기본주소" th:value="${address.addr}" readonly>
                                     <div id="addrError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -332,7 +332,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="addr_detail" class="input input-bordered w-full"
-                                           placeholder="상세 주소를 입력해주세요">
+                                           placeholder="상세 주소를 입력해주세요" th:value="${address.addr_detail}">
                                 </dd>
                             </dl>
                             <dl class="mb-3">
