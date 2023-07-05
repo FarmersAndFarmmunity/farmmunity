@@ -55,9 +55,12 @@
 
     <div class="flex w-full justify-center">
         <div class="flex flex-col" style="width: 650px;">
-            <p class="text-3xl font-bold my-4 ml-3">
+            <span class="text-3xl font-bold my-4 ml-3">
                 배송지 목록
-            </p>
+                <a type="button" class="btn btn-accent float-right"
+                   th:href="@{/members/mypage/address/new}"
+                   th:text="|신규 배송지|"></a>
+            </span>
             <div th:each="address : ${addressList}" class="flex mb-3">
                 <div class="order-box card bg-base-100 shadow-xl">
                     <div class="card-body">

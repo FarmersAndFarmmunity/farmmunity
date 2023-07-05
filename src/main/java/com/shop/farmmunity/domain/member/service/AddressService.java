@@ -3,7 +3,6 @@ package com.shop.farmmunity.domain.member.service;
 import com.shop.farmmunity.domain.member.dto.AddressDto;
 import com.shop.farmmunity.domain.member.dto.AddressFormDto;
 import com.shop.farmmunity.domain.member.entity.Address;
-import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.AddressRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +34,14 @@ public class AddressService {
 
     public void modifyDefaultAddress(Long memberId) {
 
-        Address defaultAddress = addressRepository.findDefaultAddress(memberId);
+        Address defaultAddress = findDefaultAddress(memberId);
         if (defaultAddress != null) {
             defaultAddress.setIs_default(false);
         }
+    }
+
+    public Address findDefaultAddress(Long memberId) {
+        return addressRepository.findDefaultAddress(memberId);
     }
 
     @Transactional(readOnly = true)
@@ -47,8 +50,8 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public AddressDto getAddress(Long memberId) {
-        Address address = findAddressById(memberId);
+    public AddressDto getAddress(Long addressId) {
+        Address address = findAddressById(addressId);
         return address.toDto();
     }
 

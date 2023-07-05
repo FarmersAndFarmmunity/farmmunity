@@ -2,13 +2,9 @@ package com.shop.farmmunity.domain.member.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
 import com.shop.farmmunity.domain.member.constant.Role;
-import com.shop.farmmunity.domain.member.dto.AddressDto;
-import com.shop.farmmunity.domain.member.dto.AddressFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
-import com.shop.farmmunity.domain.member.entity.Address;
 import com.shop.farmmunity.domain.member.entity.Member;
-import com.shop.farmmunity.domain.member.service.AddressService;
 import com.shop.farmmunity.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -32,7 +28,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -41,7 +36,6 @@ import java.util.Optional;
 public class MemberController {
     private final CustomUserDetailsService customUserDetailsService;
     private final MemberService memberService;
-    private final AddressService addressService;
     private final PasswordEncoder passwordEncoder;
     @Value("${custom.postForPage}")
     private int postForPage;
@@ -88,95 +82,6 @@ public class MemberController {
         return "member/memberMyPage";
     }
 
-    @GetMapping(value = "/members/mypage/address")
-    public String addressList(Model model, Principal principal){
-
-        Member member = memberService.findByEmail(principal.getName());
-        List<AddressDto> addressList = addressService.getAddressList(member.getId());
-        model.addAttribute("addressList", addressList);
-        return "member/addressList";
-    }
-
-    @GetMapping(value = "/members/mypage/address/new")
-    public String addressForm(Model model){
-        model.addAttribute("addressFormDto", new AddressFormDto());
-        return "member/addressForm";
-    }
-
-    @PostMapping(value = "/members/mypage/address/new")
-    public String newAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model, Principal principal) {
-        if (bindingResult.hasErrors()) {
-            return "member/addressForm";
-        }
-
-        try {
-            Member member = memberService.findByEmail(principal.getName());
-            if (addressFormDto.getIs_default()) {
-                addressService.modifyDefaultAddress(member.getId());
-            }
-            Address address = addressFormDto.createAddressForm(member);
-            addressService.saveAddress(address);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "member/addressForm";
-        }
-
-        return "redirect:/members/mypage/address";
-    }
-
-    @GetMapping(value = "/members/mypage/address/modify/{addressId}")
-    public String modifyAddress(@PathVariable Long addressId, Model model, Principal principal) {
-
-        Member member = memberService.findByEmail(principal.getName());
-        Address addressById = addressService.findAddressById(addressId);
-        if (member.getId() != addressById.getMember().getId()) {
-            model.addAttribute("errorMessage", "권한이 없습니다.");
-            return "redirect:/";
-        }
-        AddressDto address = addressService.getAddress(addressId);
-        model.addAttribute("addressFormDto", address);
-        return "member/addressForm";
-    }
-
-    @PostMapping(value = "/members/mypage/address/modify/{addressId}")
-    public String modifyAddress(@Valid AddressFormDto addressFormDto, BindingResult bindingResult, Model model, Principal principal){
-
-        Member member = memberService.findByEmail(principal.getName());
-        Address addressById = addressService.findAddressById(addressFormDto.getAddressId());
-        if (member.getId() != addressById.getMember().getId()) {
-            model.addAttribute("errorMessage", "권한이 없습니다.");
-            return "redirect:/";
-        }
-        if (bindingResult.hasErrors()) {
-            return "member/addressForm";
-        }
-
-        try {
-            if (addressFormDto.getIs_default()) {
-                addressService.modifyDefaultAddress(member.getId());
-            }
-            addressService.updateAddress(addressFormDto);
-        } catch (IllegalStateException e) {
-            model.addAttribute("errorMessage", e.getMessage());
-            return "member/addressForm";
-        }
-
-        return "redirect:/members/mypage/address";
-    }
-
-    @GetMapping("/members/mypage/address/delete/{addressId}")
-    public String deleteAddress(@PathVariable Long addressId, Principal principal, Model model) {
-        Member member = memberService.findByEmail(principal.getName());
-        Address addressById = addressService.findAddressById(addressId);
-        if (member.getId() != addressById.getMember().getId()) {
-            model.addAttribute("errorMessage", "권한이 없습니다.");
-            return "redirect:/";
-        }
-
-        addressService.deleteAddress(addressId);
-
-        return "redirect:/members/mypage/address";
-    }
     //////// 관리자 영역
     // 멤버 관리 기능
 
