@@ -32,7 +32,7 @@
             });
         }
 
-        const addTextBox = () => {
+        function addTextBox() {
             const box = document.getElementById("opt-box");
             const newDiv = document.createElement('div');
             newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
@@ -41,21 +41,9 @@
             box.appendChild(newDiv);
         }
 
-        const addExtraTextBox = () => {
-            const box = document.getElementById("extra-opt-box");
-            const newDiv = document.createElement('div');
-            newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
-                "<input type='number' className='option-input option-input-md w-full' name='extraAmountList' placeholder='옵션 추가가격을 입력해주세요'>" +
-                "<input type='button' value='삭제' onclick='remove(this)'>"
-            box.appendChild(newDiv);
-        }
-
-        const remove = (obj) => {
+        function remove(obj) {
             if (document.getElementById('opt-box')) {
                 document.getElementById('opt-box').removeChild(obj.parentNode);
-            }
-            else {
-                document.getElementById('extra-opt-box').removeChild(obj.parentNode);
             }
         }
 
