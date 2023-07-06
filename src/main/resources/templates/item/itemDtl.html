@@ -6,7 +6,6 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-<!--    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">-->
 </head>
 
 <!-- 사용자 스크립트 추가 -->
@@ -282,21 +281,15 @@
                     </dl>
 
                     <dl class="detail-line count-box flex flex-row">
-                        <dt class="detail-title font-bold">
-                            <span></span>
-                        </dt>
-                        <dd class="detail-content">
-                            <span>현재까지 <span class="font-bold text-accent" th:text="${groupBuyInfo.count}"></span>명 공동구매 완료!</span>
-                            <button class="btn btn-accent" th:value="${item.id}" onclick="groupBuyList(this.value)">공동구매 성공 목록</button>
+                        <dd class="detail-content flex justify-between w-full">
+                            <span>현재까지 <span class="font-bold text-accent">2</span>명 공동구매 완료!</span>
+                            <button class="btn btn-sm btn-accent" value="3" onclick="groupBuyList(this.value)">공동구매 성공 목록</button>
                         </dd>
                     </dl>
 
                     <dl class="detail-line count-box flex flex-row">
-                        <dt class="detail-title font-bold">
-                            <span></span>
-                        </dt>
-                        <dd class="detail-content">
-                            <div th:if="${(groupBuyInfo.username) != null}">
+                        <dd class="detail-content w-full">
+                            <div th:if="${(groupBuyInfo.username) != null}" class="flex justify-between w-full">
                                 <span><span class="font-bold text-error" th:text="${groupBuyInfo.username}"></span> 님이 함께 구매할 분을 찾고 있습니다.</span>
                                 <span>매칭 마감 시간 : <span class="font-bold text-warning" th:text="${groupBuyInfo.getMatchEndTime()}"></span></span>
                             </div>
