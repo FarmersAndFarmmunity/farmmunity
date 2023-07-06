@@ -69,7 +69,7 @@
                                 <dt class="detail-title mb-2">
                                     <span class="font-bold" th:text="${address.recipientName}"></span>
                                     <span class="font-bold" th:text="${address.shippingName}"></span>
-                                    <span th:if="${address.is_default == true}">기본 배송지</span>
+                                    <span class="text-primary ml-1" th:if="${address.is_default == true}">기본 배송지</span>
                                 </dt>
                                 <dd class="detail-content mb-3">
                                     <div th:text="${address.addr + ' ' + address.addr_detail}"></div>
