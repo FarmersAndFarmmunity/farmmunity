@@ -98,7 +98,7 @@ public class OrderController {
         try {
             orderId = orderService.groupOrder(orderDto, email);
             if(orderId == -1L)
-                return new ResponseEntity<String>("자신의 공동구매에 매칭될 수 없습니다.", HttpStatus.ALREADY_REPORTED);
+                return new ResponseEntity<String>("자신의 공동구매에 중복 매칭할 수 없습니다.", HttpStatus.ALREADY_REPORTED);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
