@@ -43,12 +43,8 @@ public class ItemOptionService {
             ItemOption option = new ItemOption();
             option.setItem(item);
             option.updateItemOption(optionName, extraAmount);
-            item.addOption(option);
             saveItemOption(option);
         }
-
-        // 아이템 저장
-        itemRepository.save(item);
     }
 
 //    public void deleteItemOption()
