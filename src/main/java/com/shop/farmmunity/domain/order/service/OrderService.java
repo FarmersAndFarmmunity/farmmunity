@@ -22,17 +22,26 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
+import java.sql.SQLOutput;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
+@EnableScheduling
 public class OrderService {
 
     private final ItemRepository itemRepository;
@@ -72,7 +81,7 @@ public class OrderService {
         OrderItem orderItem = OrderItem.createGroupBuyingOrderItem(item, item.getGroupBuying().getDiscount(), orderDto.getCount()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
         orderItemList.add(orderItem);
 
-        if(groupRepository.findByMemberIdAndStatus(member.getId(), GroupBuyStatus.WAIT) != null) return -1L; // 이미 대기열에 있는 본인의 공동구매 주문건이 있을경우 주문을 취소시킴
+        if(groupRepository.findByMemberIdAndItemIdAndStatus(member.getId(), item.getId(), GroupBuyStatus.WAIT) != null) return -1L; // 이미 대기열에 있는 본인의 공동구매 주문건이 있을경우 주문을 취소시킴
 
         Order order = Order.createOrder(member, orderItemList, true); // 회원 정보와 주문할 상품 리스트 정보를 이용하여 주문 엔티티를 생성
         orderRepository.save(order); // 생성한 주문 엔티티를 저장
@@ -150,6 +159,19 @@ public class OrderService {
             // 공동구매가 진행중이었다면 상태값을 실패로 변경
             groupRepository.findByOrderId(orderId).setStatus(GroupBuyStatus.FAIL);
         }
+    }
+
+    // 공동구매 자동 취소 로직
+    @Scheduled(cron = "0 0 * * * *")
+    public void autoCancelOrder() {
+        // 매 시 정각마다 현재 대기중 상태이나 공동구매 대기 마감 시간이 지난 것들을 취소시킴
+        List<Group> failGroupOrder = groupRepository.findByStatusAndGroupBuyEndTimeBefore(GroupBuyStatus.WAIT, LocalDateTime.now());
+        for(Group fail : failGroupOrder){
+            fail.setStatus(GroupBuyStatus.FAIL);
+            Optional<Order> order = orderRepository.findById(fail.getOrder().getId());
+            order.get().cancelOrder();
+        }
+        log.info("자동 주문 취소가 실행되었습니다.");
     }
 
     // 장바구니의 상품 주문 메서드
