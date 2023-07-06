@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 import org.thymeleaf.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -83,19 +84,31 @@ public class PaymentService {
         order.payDone();
         Payment payment = Payment.createPayment(order, jsonNode);
         if(order.isGroupBuying()){
-            //공동구매라면 결제 완료시 파트너를 매칭시키거나 대기 상태로 변경
-            Group group = Group.createHostGroup(order.getMember(), order);
-            Group partner = groupRepository.findByItemIdAndStatus(group.getItemId(), GroupBuyStatus.WAIT); // 매칭을 찾는 사람이 있는지 확인
-            if(partner != null){
-                // 본인이 아닌 공동구매를 대기하는 파트너가 있는 경우
-                group.updateClientGroup(partner.getMember());
-                partner.setPartner(group.getMember());
-            }else{
-                group.setStatus(GroupBuyStatus.WAIT);
-            }
-            groupRepository.save(group); // 생성한 공동구매 엔티티를 저장
+            checkGroupBuying(order); // 공동구매일 경우 공동구매 그룹 생성 처리를 진행
         }
         paymentRepository.save(payment);
+    }
+
+    public void checkGroupBuying(Order order){
+        //공동구매라면 결제 완료시 파트너를 매칭시키거나 대기 상태로 변경
+        Group group = Group.createHostGroup(order.getMember(), order);
+        Group partner = groupRepository.findByItemIdAndStatus(group.getItemId(), GroupBuyStatus.WAIT); // 매칭을 찾는 사람이 있는지 확인
+        if(partner != null){
+            // 본인이 아닌 공동구매를 대기하는 파트너가 있는 경우
+            if(partner.getGroupBuyEndTime().isBefore(LocalDateTime.now())){
+                //마감시간이 지난 파트너라면 파트너를 실패상태로 만듦
+                partner.setStatus(GroupBuyStatus.FAIL);
+                group.setStatus(GroupBuyStatus.WAIT);
+            } else{
+                //정상 상태일 경우 공동구매를 성공시킴
+                group.updateClientGroup(partner.getMember());
+                partner.setPartner(group.getMember());
+            }
+        }else{
+            // 대기자가 아무도 없는 경우 대기상태에 들어감
+            group.setStatus(GroupBuyStatus.WAIT);
+        }
+        groupRepository.save(group); // 생성한 공동구매 엔티티를 저장
     }
 
     @Transactional(readOnly = true)

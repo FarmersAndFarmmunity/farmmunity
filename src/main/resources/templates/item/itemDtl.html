@@ -20,8 +20,14 @@
             $("#count").change( function(){
                 calculateTotalPrice();
             });
-        });
 
+            var errorMessage = [[${errorMessage}]];
+            if(errorMessage != null){
+                alert(errorMessage);
+            }
+
+            bindDomEvent();
+        });
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
@@ -106,6 +112,12 @@
                         alert(jqXHR.responseText);
                     }
 
+                    if(jqXHR.status == '208'){
+                        alert('자신의 공동구매에 매칭될 수 없습니다.');
+                        location.href='/item/'+ paramData.itemId;
+                    } else{
+                        alert(jqXHR.responseText);
+                    }
                 }
             });
         }
