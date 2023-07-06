@@ -135,6 +135,14 @@ public class OrderService {
                 orderHistDto.addOrderItemDto(orderItemDto);
             }
 
+            if(order.isGroupBuying()) {
+                Group group = groupRepository.findByOrderId(order.getId());
+                orderHistDto.setGroupBuyStatus(group.getStatus());
+                orderHistDto.setMatchEndTime(group.getGroupBuyEndTime().toString().substring(0,19).replace("T", " "));
+                if(group.getStatus() == GroupBuyStatus.SUCCESS) orderHistDto.updatePartnerUsername(group.getPartnerMember().getUsername());
+                System.out.println(orderHistDto.getMatchEndTime());
+                System.out.println(orderHistDto.getPartnerUsername());
+            }
             orderHistDtos.add(orderHistDto);
         }
 

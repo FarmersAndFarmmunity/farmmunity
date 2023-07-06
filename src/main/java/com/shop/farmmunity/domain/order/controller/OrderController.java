@@ -1,5 +1,6 @@
 package com.shop.farmmunity.domain.order.controller;
 
+import com.shop.farmmunity.domain.item.dto.GroupBuyDto;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.service.MemberService;
 import com.shop.farmmunity.domain.order.dto.OrderCplDto;
