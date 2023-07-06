@@ -161,7 +161,11 @@
                 }
             });
         }
-
+        function groupBuyList(itemId) {
+            const popOption = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
+            const openUrl = '/item/' + itemId + '/groupBuyList';
+            window.open(openUrl, 'groupBuy', popOption);
+        }
     </script>
 </th:block>
 
@@ -283,6 +287,7 @@
                         </dt>
                         <dd class="detail-content">
                             <span>현재까지 <span class="font-bold text-accent" th:text="${groupBuyInfo.count}"></span>명 공동구매 완료!</span>
+                            <button class="btn btn-accent" th:value="${item.id}" onclick="groupBuyList(this.value)">공동구매 성공 목록</button>
                         </dd>
                     </dl>
 
@@ -292,7 +297,8 @@
                         </dt>
                         <dd class="detail-content">
                             <div th:if="${(groupBuyInfo.username) != null}">
-                                <span class="font-bold text-error" th:text="${groupBuyInfo.username}"></span> 님이 함께 구매할 분을 찾고 있습니다.
+                                <span><span class="font-bold text-error" th:text="${groupBuyInfo.username}"></span> 님이 함께 구매할 분을 찾고 있습니다.</span>
+                                <span>매칭 마감 시간 : <span class="font-bold text-warning" th:text="${groupBuyInfo.getMatchEndTime()}"></span></span>
                             </div>
 
                             <div th:unless="${(groupBuyInfo.username) != null}">

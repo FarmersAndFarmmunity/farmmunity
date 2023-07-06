@@ -127,9 +127,25 @@ public class ItemService {
         GroupBuyDto groupBuyDto = new GroupBuyDto();
         Group group = groupRepository.findByItemIdAndStatus(itemId, GroupBuyStatus.WAIT);
         groupBuyDto.setCount(groupRepository.countByItemIdAndStatus(itemId, GroupBuyStatus.SUCCESS));
-        if(group != null) groupBuyDto.setUsername(group.getMember().getUsername());
+        if(group != null) {
+            groupBuyDto.setUsername(group.getMember().getUsername());
+            groupBuyDto.setMatchEndTime(group.getGroupBuyEndTime().toString().substring(0,19).replace("T", " "));
+        }
         return groupBuyDto;
     }
 
+    public List<GroupBuyDto> getGroupBuyList(Long itemId) {
+        List<GroupBuyDto> groupBuyDtos = new ArrayList<>();
+        List<Group> groups = groupRepository.findByItemIdAndStatusAndIsHost(itemId, GroupBuyStatus.SUCCESS, true);
+        for(Group group : groups){
+            GroupBuyDto groupBuyDto = new GroupBuyDto();
+            groupBuyDto.setUsername(group.getMember().getUsername());
+            groupBuyDto.setPartnerUsername(group.getPartnerMember().getUsername());
+            groupBuyDto.setMatchedTime(group.getGroupBuyMatchedTime().toString().substring(0, 19).replace("T", " "));
+
+            groupBuyDtos.add(groupBuyDto);
+        }
+        return groupBuyDtos;
+    }
 }
 

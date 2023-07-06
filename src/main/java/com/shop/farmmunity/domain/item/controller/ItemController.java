@@ -6,6 +6,7 @@ import com.shop.farmmunity.domain.item.dto.ItemFormDto;
 import com.shop.farmmunity.domain.item.dto.ItemSearchDto;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.service.ItemService;
+import com.shop.farmmunity.domain.payment.constant.PaymentDtlDto;
 import com.shop.farmmunity.domain.review.entity.Review;
 import com.shop.farmmunity.domain.review.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
@@ -167,6 +168,15 @@ public class ItemController {
         model.addAttribute("item", itemFormDto);
         model.addAttribute("groupBuyInfo", groupBuyDto);
         return "item/itemDtl";
+    }
+
+    @GetMapping("/item/{itemId}/groupBuyList") // 결제내역
+    public String paymentDtl(Model model, @PathVariable Long itemId, Principal principal) {
+        List<GroupBuyDto> groupBuyDtos = itemService.getGroupBuyList(itemId);
+
+        model.addAttribute("groups", groupBuyDtos);
+
+        return "item/groupBuyList";
     }
 
     public boolean checkAuthority(Long itemId, Principal principal){

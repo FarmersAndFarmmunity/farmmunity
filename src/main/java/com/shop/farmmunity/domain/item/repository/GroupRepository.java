@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     Group findByItemIdAndStatus(long itemId, GroupBuyStatus status);
-    Group findByMemberIdAndStatus(long memberId, GroupBuyStatus status);
+    List<Group> findByItemIdAndStatusAndIsHost(long itemId, GroupBuyStatus status, boolean isHost);
     Group findByMemberIdAndItemIdAndStatus(long memberId, long itemId, GroupBuyStatus status);
     List<Group> findByStatusAndGroupBuyEndTimeBefore(GroupBuyStatus status, LocalDateTime now);
     Group findByOrderId(long orderId);
