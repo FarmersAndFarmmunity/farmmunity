@@ -6,7 +6,6 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
 </head>
 
 <!-- 사용자 스크립트 추가 -->
@@ -33,7 +32,7 @@
 
         const tossPayments = TossPayments(CLIENT_KEY);
 
-        function orderCpmplete() {
+        function orderComplete() {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
@@ -73,7 +72,6 @@
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
                     } else {
-                        // alert(jqXHR.responseText);
                         var errors = jqXHR.responseJSON;
                         displayErrors(errors);
                     }
@@ -200,14 +198,6 @@
         .repImgDiv {
             padding: 10px;
             text-overflow: ellipsis;
-        }
-
-        .fs18 {
-            font-size: 18px
-        }
-
-        .fs24 {
-            font-size: 24px
         }
 
         .order-box {
@@ -368,7 +358,7 @@
                             <div class="text-xl font-bold text-center mb-2">
                                 총 주문 금액 : <span class="text-accent" th:text="${order.getTotalPrice() + '원'}">0원</span>
                             </div>
-                            <button type="button" class="btn btn-accent" onclick="orderCpmplete()">주문하기</button>
+                            <button type="button" class="btn btn-accent" onclick="orderComplete()">주문하기</button>
                         </div>
                     </div>
                 </div>

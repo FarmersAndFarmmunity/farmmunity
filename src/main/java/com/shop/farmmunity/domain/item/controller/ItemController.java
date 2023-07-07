@@ -5,26 +5,29 @@ import com.shop.farmmunity.domain.item.dto.ItemFormDto;
 import com.shop.farmmunity.domain.item.dto.ItemOptionDto;
 import com.shop.farmmunity.domain.item.dto.ItemSearchDto;
 import com.shop.farmmunity.domain.item.entity.Item;
+import com.shop.farmmunity.domain.item.entity.ItemOption;
+import com.shop.farmmunity.domain.item.service.ItemOptionService;
 import com.shop.farmmunity.domain.item.service.ItemService;
 import com.shop.farmmunity.domain.review.entity.Review;
 import com.shop.farmmunity.domain.review.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -33,11 +36,14 @@ import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class ItemController {
     @Value("${custom.postForPage}")
     private int postForPage;
 
     private final ItemService itemService;
+
+    private final ItemOptionService itemOptionService;
 
     private final ReviewService reviewService;
 
@@ -51,15 +57,20 @@ public class ItemController {
 
     @PostMapping(value = "/vendor/item/new")
     public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
-                          @RequestParam("optionNameList") List<String> optionNameList,
-                          @RequestParam("extraAmountList") List<Integer> extraAmountList,
+                          @RequestParam(value = "optionNameList", required = false) List<String> optionNameList,
+                          @RequestParam(value = "extraAmountList", required = false) List<Integer> extraAmountList,
                           @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()){
             return "item/itemForm";
         }
 
-        if(itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null){
+        if (CollectionUtils.isEmpty(optionNameList) || CollectionUtils.isEmpty(extraAmountList)) {
+            model.addAttribute("errorMessage", "옵션은 필수 입력 값 입니다.");
+            return "item/itemForm";
+        }
+
+        if (itemImgFileList.get(0).isEmpty() && itemFormDto.getId() == null){
             model.addAttribute("errorMessage", "첫번째 상품 이미지는 필수 입력 값 입니다.");
             return "item/itemForm";
         }
@@ -124,15 +135,33 @@ public class ItemController {
         return "item/itemForm";
     }
 
+    @DeleteMapping(value = {"/vendor/item/itemOption/{itemOptionId}", "/admin/item/itemOption/{itemOptionId}"})
+    public @ResponseBody ResponseEntity deleteItemOption(@PathVariable Long itemOptionId, Principal principal) {
+
+        try {
+            ItemOption itemOption = itemOptionService.findByItemOptionId(itemOptionId);
+            Long itemId = itemOption.getItem().getId();
+            checkAuthority(itemId, principal);
+            itemOptionService.deleteItemOption(itemOptionId);
+        } catch (Exception e) {
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.FORBIDDEN);
+        }
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     // 수정 기능
     @PostMapping(value = { "/vendor/item/{itemId}", "/admin/item/{itemId}"})
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
-                             @RequestParam("optionNameList") List<String> optionNameList,
-                             @RequestParam("extraAmountList") List<Integer> extraAmountList,
-                             @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList, Model model){
+                             @RequestParam(name = "optionNameList",required = false) List<String> optionNameList,
+                             @RequestParam(name = "extraAmountList", required = false) List<Integer> extraAmountList,
+                             @RequestParam(name = "itemImgFile") List<MultipartFile> itemImgFileList, Model model){
 
         if(bindingResult.hasErrors()){
+            return "item/itemForm";
+        }
+
+        if (CollectionUtils.isEmpty(optionNameList) || CollectionUtils.isEmpty(extraAmountList)) {
+            model.addAttribute("errorMessage", "옵션은 필수 입력 값 입니다.");
             return "item/itemForm";
         }
 
@@ -144,7 +173,8 @@ public class ItemController {
         try {
             itemService.updateItem(itemFormDto, itemImgFileList, optionNameList, extraAmountList);
         } catch (Exception e){
-            model.addAttribute("errorMessage", "상품 수정 중 에러가 발생하였습니다.");
+            log.error("상품 등록 중 에러가 발생했습니다. ", e);
+            model.addAttribute("errorMessage", e.getMessage());
             return "item/itemForm";
         }
 

@@ -8,7 +8,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +19,19 @@ public class ItemOptionService {
 
     private final ItemRepository itemRepository;
 
-    public void saveItemOption(ItemOption itemOption) {
-        itemOptionRepository.save(itemOption);
+    public void saveItemOption(List<String> optionNameList, List<Integer> extraAmountList, Item item) {
+        for (int i = 0; i < optionNameList.size(); i++) {
+            ItemOption itemOption = new ItemOption();
+            itemOption.setItem(item);
+
+            if (!(optionNameList.get(i).equals(""))) {
+                String optName = optionNameList.get(i);
+                int extraAmount = extraAmountList.get(i);
+
+                itemOption.updateItemOption(optName, extraAmount);
+                itemOptionRepository.save(itemOption);
+            }
+        }
     }
 
     public void updateItemOption(Item item, List<String> optionNameList, List<Integer> extraAmountList) {
@@ -29,23 +40,40 @@ public class ItemOptionService {
             throw new IllegalArgumentException("옵션 개수와 추가 가격 개수가 일치하지 않습니다.");
         }
 
-        // 아이템 엔티티에 연결된 옵션 삭제
-        item.getItemOptionList().clear();
+        List<ItemOption> itemOptionList = item.getItemOptionList();
+        int diff = optionNameList.size() - itemOptionList.size();
 
-        // 옵션 엔티티의 원래 아이템에 해당하는 옵션 삭제
-        itemOptionRepository.deleteAllByItemId(item.getId());
+        if (diff > 0) {
+            createExtraItemOption(itemOptionList.size(), optionNameList.size() + diff - 1, item, optionNameList, extraAmountList);
+        }
 
-        // 새로운 옵션 추가
-        for (int i = 0; i < optionNameList.size(); i++) {
-            String optionName = optionNameList.get(i);
-            Integer extraAmount = extraAmountList.get(i);
-
-            ItemOption option = new ItemOption();
-            option.setItem(item);
-            option.updateItemOption(optionName, extraAmount);
-            saveItemOption(option);
+        for (int i = 0; i < itemOptionList.size(); i++) {
+            itemOptionList.get(i).updateItemOption(optionNameList.get(i), extraAmountList.get(i));
         }
     }
 
-//    public void deleteItemOption()
+    public void createExtraItemOption(int start, int end, Item item, List<String> optionNameList, List<Integer> extraAmountList) {
+
+        for (int i = start; i < end; i++) {
+            ItemOption itemOption = new ItemOption();
+            itemOption.setItem(item);
+
+            if (!(optionNameList.get(i).equals(""))) {
+                String optName = optionNameList.get(i);
+                int extraAmount = extraAmountList.get(i);
+
+                itemOption.updateItemOption(optName, extraAmount);
+                itemOptionRepository.save(itemOption);
+            }
+        }
+    }
+
+
+    public ItemOption findByItemOptionId(Long itemOptionId) {
+        return itemOptionRepository.findById(itemOptionId).orElse(null);
+    }
+
+    public void deleteItemOption(Long optionId) {
+        itemOptionRepository.deleteById(optionId);
+    }
 }

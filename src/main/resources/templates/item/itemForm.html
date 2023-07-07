@@ -3,18 +3,23 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
 
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
+
         $(document).ready(function(){
             var errorMessage = [[${errorMessage}]];
             if(errorMessage != null){
                 alert(errorMessage);
+                history.back();
             }
-
             bindDomEvent();
-
         });
 
         function bindDomEvent(){
@@ -41,6 +46,15 @@
             box.appendChild(newDiv);
         }
 
+        const addExtraTextBox = () => {
+            const box = document.getElementById("extra-opt-box");
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' className='option-input option-input-md w-full' name='extraAmountList' placeholder='옵션 추가가격을 입력해주세요'>" +
+                "<input type='button' value='삭제' onclick='remove(this)'>"
+            box.appendChild(newDiv);
+        }
+
         function remove(obj) {
             if (document.getElementById('opt-box')) {
                 document.getElementById('opt-box').removeChild(obj.parentNode);
@@ -48,6 +62,33 @@
         }
 
         function removeOption(button) {
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var optionId = button.getAttribute('data-id');
+            var url = "/vendor/item/itemOption/" + optionId;
+
+                $.ajax({
+                    url: url,
+                    type: "DELETE",
+                    contentType: "application/json",
+                    beforeSend: function (xhr) {
+                        /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                        xhr.setRequestHeader(header, token);
+                    },
+                    dataType: "json",
+                    cache: false,
+                    error: function (jqXHR) {
+                        if (jqXHR.status == '401') {
+                            alert('로그인 후 이용해주세요');
+                            location.href = '/members/login';
+                        } else {
+                            var errors = jqXHR.responseJSON;
+                            displayErrors(errors);
+                        }
+                    }
+                });
             // Get the parent div of the option
             var optionDiv = button.parentNode;
 
@@ -166,8 +207,11 @@
         <div style="width: 650px;">
             <form role="form" method="post" enctype="multipart/form-data" th:object="${itemFormDto}">
 
-                <p class="text-3xl font-bold my-4 ml-3 pb-3">
+                <p class="text-3xl font-bold my-4 ml-3 pb-3" th:if="${#strings.isEmpty(itemFormDto.id)}">
                     상품 등록
+                </p>
+                <p class="text-3xl font-bold my-4 ml-3 pb-3" th:unless="${#strings.isEmpty(itemFormDto.id)}">
+                    상품 수정
                 </p>
 
                 <input type="hidden" th:field="*{id}">
@@ -232,7 +276,7 @@
                                     <div id="existing-opt-box" class="opt-div">
                                         <input type="text" th:value="${itemOptionDto.optionName}" class="option-input option-input-md w-full" name="optionNameList" placeholder="옵션명을 입력해주세요">
                                         <input type="number" th:value="${itemOptionDto.extraAmount}" class="option-input option-input-md w-full" name="extraAmountList" placeholder="옵션 추가가격을 입력해주세요">
-                                        <input type="button" value="삭제" onclick="removeOption(this)">
+                                        <input type="button" value="삭제" onclick="removeOption(this)" th:data-id="${itemOptionDto.id}">
                                     </div>
                                 </div>
                                 <div id="extra-opt-box" class="form-group opt-div">

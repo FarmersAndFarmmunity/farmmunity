@@ -11,6 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ItemOption {
+
     @Id
     @Column(name = "item_option_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -37,21 +38,11 @@ public class ItemService {
                          List<MultipartFile> itemImgFileList,
                          List<String> optionNameList,
                          List<Integer> extraAmountList) throws Exception {
+
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
-
-        for (int i = 0; i < optionNameList.size(); i++) {
-            ItemOption itemOption = new ItemOption();
-            itemOption.setItem(item);
-
-            if (!(optionNameList.get(i).equals(""))) {
-                String optName = optionNameList.get(i);
-                int extraAmount = extraAmountList.get(i);
-
-                itemOption.updateItemOption(optName, extraAmount);
-                itemOptionService.saveItemOption(itemOption);
-            }
-        }
+        // 아이템 옵션
+        itemOptionService.saveItemOption(optionNameList, extraAmountList, item);
 
         // 아이템 이미지
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
@@ -102,7 +93,7 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
 
-        itemOptionService.updateItemOption(item, optionNameList, extraAmountList);
+            itemOptionService.updateItemOption(item, optionNameList, extraAmountList);
 
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
