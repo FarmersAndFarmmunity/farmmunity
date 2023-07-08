@@ -1,6 +1,5 @@
 package com.shop.farmmunity.domain.item.repository;
 
-
 import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.item.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;

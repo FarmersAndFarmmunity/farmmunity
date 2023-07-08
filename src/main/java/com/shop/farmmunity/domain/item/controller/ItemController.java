@@ -170,7 +170,7 @@ public class ItemController {
         return "item/itemDtl";
     }
 
-    @GetMapping("/item/{itemId}/groupBuyList") // 결제내역
+    @GetMapping("/item/{itemId}/groupBuyList") // 공동구매 매칭 성공 목록
     public String paymentDtl(Model model, @PathVariable Long itemId, Principal principal) {
         List<GroupBuyDto> groupBuyDtos = itemService.getGroupBuyList(itemId);
 

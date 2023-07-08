@@ -282,8 +282,8 @@
 
                     <dl class="detail-line count-box flex flex-row">
                         <dd class="detail-content flex justify-between w-full">
-                            <span>현재까지 <span class="font-bold text-accent">2</span>명 공동구매 완료!</span>
-                            <button class="btn btn-sm btn-accent" value="3" onclick="groupBuyList(this.value)">공동구매 성공 목록</button>
+                            <span>현재까지 <span th:text="${groupBuyInfo.getCount()}" class="font-bold text-accent"></span>명 공동구매 완료!</span>
+                            <button class="btn btn-sm btn-accent" th:value="${item.id}" onclick="groupBuyList(this.value)">공동구매 성공 목록</button>
                         </dd>
                     </dl>
 
