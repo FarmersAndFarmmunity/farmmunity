@@ -2,9 +2,12 @@ package com.shop.farmmunity.domain.order.entity;
 
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.item.entity.Item;
+import com.shop.farmmunity.domain.item.entity.ItemOption;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -28,13 +31,19 @@ public class OrderItem extends BaseEntity {
 
     private int count;  //수량
 
-    public static OrderItem createOrderItem(Item item, int count) {
+    public static OrderItem createOrderItem(Item item, int count, Long itemOptionId) {
 
+        int price = item.getPrice();
+        if (itemOptionId != 0) {
+            ItemOption itemOption = item.getItemOptionList().stream().filter(i -> Objects.equals(i.getId(), itemOptionId)).findAny().orElseThrow(EntityNotFoundException::new);
+            count *= itemOption.getQuantity();
+            price += itemOption.getExtraAmount();
+        }
         item.checkRestStock(count); // 주문 전에 상품 재고 체크부터
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item); // 주문한 아이템을 지정
         orderItem.setCount(count); // 주문한 아이템을 몇 개를 살지
-        orderItem.setOrderPrice(item.getPrice()); // 해당 상품의 가격을 저장
+        orderItem.setOrderPrice(price); // 해당 상품의 가격을 저장
 
         return orderItem;
     }
@@ -53,5 +62,4 @@ public class OrderItem extends BaseEntity {
         // 기존 코드는 주문만 하고 결제를 안해도 재고가 빠지는 문제점이 있었음
         this.getItem().removeStock(count);
     }
-
 }
