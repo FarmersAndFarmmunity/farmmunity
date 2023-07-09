@@ -36,6 +36,7 @@
             var url = "/order";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -198,9 +199,14 @@
                     </dl>
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">
-                            <span th:text="옵션선택"></span>
+                            <span th:text="옵션"></span>
                         </dt>
                         <dd class="detail-content">
+                            <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" >
+                                <option th:value="0">옵션을 선택해주세요</option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}"></option>
+                            </select>
+                            <span th:unless="${item.getItemOptionDtoList().size() != 0}" th:text="--"></span>
                         </dd>
                     </dl>
 

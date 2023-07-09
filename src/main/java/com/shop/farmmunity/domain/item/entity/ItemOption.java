@@ -23,10 +23,13 @@ public class ItemOption {
 
     private String optionName; // 옵션 이름
 
+    private int quantity; // 옵션 수량
+
     private int extraAmount; // 추가 가격
 
-    public void updateItemOption(String optionName, int extraAmount) {
+    public void updateItemOption(String optionName, int extraAmount, int quantity) {
         this.optionName = optionName;
         this.extraAmount = extraAmount;
+        this.quantity = quantity;
     }
 }

@@ -11,6 +11,7 @@ public class ItemOptionDto {
     private Long id;
     private String optionName; // 옵션 이름
     private int extraAmount; // 추가 가격
+    private int quantity; // 옵션 수량
     private static ModelMapper modelMapper = new ModelMapper();
 
     public static ItemOptionDto of(ItemOption itemOption) {

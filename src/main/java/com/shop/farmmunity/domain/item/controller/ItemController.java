@@ -57,16 +57,9 @@ public class ItemController {
 
     @PostMapping(value = "/vendor/item/new")
     public String itemNew(@Valid ItemFormDto itemFormDto, BindingResult bindingResult, Model model,
-                          @RequestParam(value = "optionNameList", required = false) List<String> optionNameList,
-                          @RequestParam(value = "extraAmountList", required = false) List<Integer> extraAmountList,
                           @RequestParam("itemImgFile") List<MultipartFile> itemImgFileList){
 
         if (bindingResult.hasErrors()){
-            return "item/itemForm";
-        }
-
-        if (CollectionUtils.isEmpty(optionNameList) || CollectionUtils.isEmpty(extraAmountList)) {
-            model.addAttribute("errorMessage", "옵션은 필수 입력 값 입니다.");
             return "item/itemForm";
         }
 
@@ -76,7 +69,7 @@ public class ItemController {
         }
 
         try {
-            itemService.saveItem(itemFormDto, itemImgFileList, optionNameList, extraAmountList);
+            itemService.saveItem(itemFormDto, itemImgFileList);
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
             return "item/itemForm";
@@ -152,16 +145,9 @@ public class ItemController {
     // 수정 기능
     @PostMapping(value = { "/vendor/item/{itemId}", "/admin/item/{itemId}"})
     public String itemUpdate(@Valid ItemFormDto itemFormDto, BindingResult bindingResult,
-                             @RequestParam(name = "optionNameList",required = false) List<String> optionNameList,
-                             @RequestParam(name = "extraAmountList", required = false) List<Integer> extraAmountList,
                              @RequestParam(name = "itemImgFile") List<MultipartFile> itemImgFileList, Model model){
 
         if(bindingResult.hasErrors()){
-            return "item/itemForm";
-        }
-
-        if (CollectionUtils.isEmpty(optionNameList) || CollectionUtils.isEmpty(extraAmountList)) {
-            model.addAttribute("errorMessage", "옵션은 필수 입력 값 입니다.");
             return "item/itemForm";
         }
 
@@ -171,7 +157,7 @@ public class ItemController {
         }
 
         try {
-            itemService.updateItem(itemFormDto, itemImgFileList, optionNameList, extraAmountList);
+            itemService.updateItem(itemFormDto, itemImgFileList);
         } catch (Exception e){
             log.error("상품 등록 중 에러가 발생했습니다. ", e);
             model.addAttribute("errorMessage", e.getMessage());

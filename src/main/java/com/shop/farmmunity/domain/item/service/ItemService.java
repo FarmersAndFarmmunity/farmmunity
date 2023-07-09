@@ -34,15 +34,14 @@ public class ItemService {
 
 
     // 등록
-    public Long saveItem(ItemFormDto itemFormDto,
-                         List<MultipartFile> itemImgFileList,
-                         List<String> optionNameList,
-                         List<Integer> extraAmountList) throws Exception {
+    public Long saveItem(ItemFormDto itemFormDto,List<MultipartFile> itemImgFileList) throws Exception {
 
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
         // 아이템 옵션
-        itemOptionService.saveItemOption(optionNameList, extraAmountList, item);
+        if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
+            itemOptionService.saveItemOption(itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), item);
+        }
 
         // 아이템 이미지
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
@@ -86,14 +85,14 @@ public class ItemService {
 
     // 수정
     public Long updateItem(ItemFormDto itemFormDto,
-                           List<MultipartFile> itemImgFileList,
-                           List<String> optionNameList,
-                           List<Integer> extraAmountList) throws Exception {
+                           List<MultipartFile> itemImgFileList) throws Exception {
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
 
-            itemOptionService.updateItemOption(item, optionNameList, extraAmountList);
+        if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
+            itemOptionService.updateItemOption(item, itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList());
+        }
 
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 

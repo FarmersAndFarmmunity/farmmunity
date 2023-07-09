@@ -34,7 +34,7 @@ public class Item extends BaseEntity {
     private int price; // 가격
 
     @Column(nullable = false)
-    private int stockNumber; // 재고수량
+    private int stockNumber; // 재고 수량
 
     @Lob
     @Column(nullable = false, columnDefinition = "TEXT")

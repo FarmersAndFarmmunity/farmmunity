@@ -42,6 +42,7 @@
             const newDiv = document.createElement('div');
             newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
                 "<input type='number' className='option-input option-input-md w-full' name='extraAmountList' placeholder='옵션 추가가격을 입력해주세요'>" +
+                "<input type='number' className='option-input option-input-md w-full' name='quantityList' placeholder='옵션당 수량을 입력해주세요'>" +
                 "<input type='button' value='삭제' onclick='remove(this)'>"
             box.appendChild(newDiv);
         }
@@ -51,6 +52,7 @@
             const newDiv = document.createElement('div');
             newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
                 "<input type='number' className='option-input option-input-md w-full' name='extraAmountList' placeholder='옵션 추가가격을 입력해주세요'>" +
+                "<input type='number' className='option-input option-input-md w-full' name='quantityList' placeholder='옵션당 수량을 입력해주세요'>" +
                 "<input type='button' value='삭제' onclick='remove(this)'>"
             box.appendChild(newDiv);
         }
@@ -276,6 +278,7 @@
                                     <div id="existing-opt-box" class="opt-div">
                                         <input type="text" th:value="${itemOptionDto.optionName}" class="option-input option-input-md w-full" name="optionNameList" placeholder="옵션명을 입력해주세요">
                                         <input type="number" th:value="${itemOptionDto.extraAmount}" class="option-input option-input-md w-full" name="extraAmountList" placeholder="옵션 추가가격을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.quantity}" class="option-input option-input-md w-full" name="quantityList" placeholder="옵션 당 수량을 입력해주세요">
                                         <input type="button" value="삭제" onclick="removeOption(this)" th:data-id="${itemOptionDto.id}">
                                     </div>
                                 </div>
