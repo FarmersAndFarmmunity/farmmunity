@@ -36,7 +36,15 @@ public class ItemFormDto {
 
     private ItemClassifyStatus itemClassifyStatus;
 
+    private List<String> optionNameList = new ArrayList<>(); // 옵션 이름
+
+    private List<Integer> extraAmountList = new ArrayList<>(); // 추가 가격
+
+    private List<Integer> quantityList = new ArrayList<>(); // 옵션 수량
+
     private List<ItemImgDto> itemImgDtoList = new ArrayList<>(); //수정 시, 상품 이미지 정보 저장하는 리스트
+
+    private List<ItemOptionDto> itemOptionDtoList = new ArrayList<>(); // 아이템 옵션 정보를 저장
 
     private List<Long> itemImgIds = new ArrayList<>(); //수정 시, 상품의 이미지 아이디를 저장하는 리스트
 

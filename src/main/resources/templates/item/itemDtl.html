@@ -12,6 +12,9 @@
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
+
+        let selectedExtraAmount = 0;
+
         $(document).ready(function(){
 
             calculateTotalPrice();
@@ -20,17 +23,27 @@
                 calculateTotalPrice();
             });
 
-            var errorMessage = [[${errorMessage}]];
+          var errorMessage = [[${errorMessage}]];
             if(errorMessage != null){
                 alert(errorMessage);
             }
 
             bindDomEvent();
         });
+      
+        function selectOption(selectElement) {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            selectedExtraAmount = selectedOption.getAttribute('data-extraAmount');
+            $("#totalPrice").html(($("#count").val() * selectedExtraAmount) + '원');
+        }
+
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
             var gbPrice = $("#gbPrice").val();
+            if (selectedExtraAmount != 0) {
+                price = selectedExtraAmount;
+            }
             var totalPrice = price*count;
             var totalGBPrice = gbPrice*count;
             $("#totalPrice").html(totalPrice + '원');
@@ -44,6 +57,7 @@
             var url = "/order";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -265,9 +279,16 @@
                     </dl>
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">
-                            <span th:text="옵션선택"></span>
+                            <span th:text="옵션"></span>
                         </dt>
                         <dd class="detail-content">
+                            <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" onchange="selectOption(this)">
+                                <option th:value="0">옵션을 선택해주세요</option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}"></option>
+                            </select>
+                            <span th:if="${#arrays.isEmpty(item.getItemOptionDtoList())}" th:text="--"></span>
+                            <span th:text="옵션선택"></span>
+                        </dt>
                         </dd>
                     </dl>
 
@@ -321,8 +342,6 @@
                     <span class="text-3xl font-bold text-red-700">품절</span>
                 </div>
             </div>
-
-
         </div>
     </div>
 

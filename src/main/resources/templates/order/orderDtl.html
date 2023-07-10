@@ -6,7 +6,6 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
 </head>
 
 <!-- 사용자 스크립트 추가 -->
@@ -34,7 +33,7 @@
 
         const tossPayments = TossPayments(CLIENT_KEY);
 
-        function orderCpmplete() {
+        function orderComplete() {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
@@ -232,7 +231,8 @@
                                          th:alt="${orderItem.itemNm}">
                                 </div>
                                 <div class="text-base repImgDiv" style="width: 350px">
-                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"></div>
+                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"/>
+                                    <span th:if="${orderItem.getOptionNm() != null}" th:text="${'옵션 ' + orderItem.getOptionNm()}"></span>
                                     <div th:text="${'상품 가격 : ' + orderItem.orderPrice} +'원'"></div>
                                     <div th:text="${'주문 개수 : ' + orderItem.count} +'개'"></div>
                                     <div th:text="${'주문 번호 : ' + order.getOrderId() + '번'}"></div>
@@ -358,7 +358,7 @@
                             <div class="text-xl font-bold text-center mb-2">
                                 총 주문 금액 : <span class="text-accent" th:text="${order.getTotalPrice() + '원'}">0원</span>
                             </div>
-                            <button type="button" class="btn btn-accent" onclick="orderCpmplete()">주문하기</button>
+                            <button type="button" class="btn btn-accent" onclick="orderComplete()">주문하기</button>
                         </div>
                     </div>
                 </div>

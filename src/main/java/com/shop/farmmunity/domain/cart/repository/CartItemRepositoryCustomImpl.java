@@ -26,7 +26,7 @@ public class CartItemRepositoryCustomImpl implements CartItemRepositoryCustom {
                 .join(QCartItem.cartItem.item)
                 .where(QCartItem.cartItem.cart.id.eq(cartId),
                         QItemImg.itemImg.item.id.eq(QCartItem.cartItem.item.id),
-                        QItemImg.itemImg.repimgYn.eq("Y"))
+                        QItemImg.itemImg.repImgYn.eq("Y"))
                 .orderBy(QCartItem.cartItem.regTime.desc())
                 .fetch();
 
