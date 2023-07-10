@@ -1,11 +1,16 @@
 package com.shop.farmmunity.domain.item.service;
 
+import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.item.dto.*;
+import com.shop.farmmunity.domain.item.entity.Group;
+import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
 import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
+import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
+import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,12 +34,16 @@ public class ItemService {
     private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
     private final GroupBuyingRepository groupBuyingRepository;
+    private final GroupRepository groupRepository;
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
                          List<MultipartFile> itemImgFileList) throws Exception {
+        GroupBuying groupBuying = itemFormDto.createGroupBuying();
         Item item = itemFormDto.createItem();
+        item.setGroupBuying(groupBuying);
         itemRepository.save(item);
+        groupBuyingRepository.save(groupBuying);
 
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
             ItemImg itemImg = new ItemImg();
@@ -64,6 +73,7 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+        itemFormDto.setDiscount(item.getGroupBuying().getDiscount());
         return itemFormDto;
     }
 
@@ -113,9 +123,29 @@ public class ItemService {
         return itemRepository.findById(itemId);
     }
 
+    public GroupBuyDto getGroupBuyInfo(Long itemId) {
+        GroupBuyDto groupBuyDto = new GroupBuyDto();
+        Group group = groupRepository.findByItemIdAndStatus(itemId, GroupBuyStatus.WAIT);
+        groupBuyDto.setCount(groupRepository.countByItemIdAndStatus(itemId, GroupBuyStatus.SUCCESS));
+        if(group != null) {
+            groupBuyDto.setUsername(group.getMember().getUsername());
+            groupBuyDto.setMatchEndTime(group.getGroupBuyEndTime().toString().substring(0,19).replace("T", " "));
+        }
+        return groupBuyDto;
+    }
 
-    public int getGroupBuyingPrice(Long itemId){
-        return groupBuyingRepository.findByItemId(itemId).getDiscount();
+    public List<GroupBuyDto> getGroupBuyList(Long itemId) {
+        List<GroupBuyDto> groupBuyDtos = new ArrayList<>();
+        List<Group> groups = groupRepository.findByItemIdAndStatusAndIsHost(itemId, GroupBuyStatus.SUCCESS, true);
+        for(Group group : groups){
+            GroupBuyDto groupBuyDto = new GroupBuyDto();
+            groupBuyDto.setUsername(group.getMember().getUsername());
+            groupBuyDto.setPartnerUsername(group.getPartnerMember().getUsername());
+            groupBuyDto.setMatchedTime(group.getGroupBuyMatchedTime().toString().substring(0, 19).replace("T", " "));
+
+            groupBuyDtos.add(groupBuyDto);
+        }
+        return groupBuyDtos;
     }
 }
 

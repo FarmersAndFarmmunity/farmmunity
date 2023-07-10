@@ -1,5 +1,8 @@
 package com.shop.farmmunity.domain.order.controller;
 
+import com.shop.farmmunity.domain.item.dto.GroupBuyDto;
+import com.shop.farmmunity.domain.member.entity.Member;
+import com.shop.farmmunity.domain.member.service.MemberService;
 import com.shop.farmmunity.domain.order.dto.OrderCplDto;
 import com.shop.farmmunity.domain.order.dto.OrderDtlDto;
 import com.shop.farmmunity.domain.order.dto.OrderDto;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,16 +33,18 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final MemberService memberService;
 
     @GetMapping("/order/{orderId}")
     public String orderDtl(@PathVariable("orderId") Long orderId, Principal principal, Model model) {
         if (!orderService.validateOrder(orderId, principal.getName())) { // 현재 로그인한 회원이랑 주문한 회원 비교
             return "/";
         }
-
+        Member member = memberService.findByEmail(principal.getName());
         OrderDtlDto orderDtlDto = orderService.getOrderDtl(orderId);
 
         model.addAttribute("order", orderDtlDto);
+        model.addAttribute("member", member);
         return "order/orderDtl";
     }
 
@@ -91,6 +97,8 @@ public class OrderController {
 
         try {
             orderId = orderService.groupOrder(orderDto, email);
+            if(orderId == -1L)
+                return new ResponseEntity<String>("자신의 공동구매에 중복 매칭할 수 없습니다.", HttpStatus.ALREADY_REPORTED);
         } catch (Exception e) {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -139,4 +147,6 @@ public class OrderController {
 
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
+
+
 }

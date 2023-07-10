@@ -1,6 +1,7 @@
 package com.shop.farmmunity.domain.member.service;
 
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
+import com.shop.farmmunity.domain.member.dto.MemberUpdateRequestDto;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
