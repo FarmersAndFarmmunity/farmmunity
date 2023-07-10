@@ -6,13 +6,15 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-<!--    <link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">-->
 </head>
 
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
+
+        let selectedExtraAmount = 0;
+
         $(document).ready(function(){
 
             calculateTotalPrice();
@@ -22,9 +24,18 @@
             });
         });
 
+        function selectOption(selectElement) {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            selectedExtraAmount = selectedOption.getAttribute('data-extraAmount');
+            $("#totalPrice").html(($("#count").val() * selectedExtraAmount) + '원');
+        }
+
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
+            if (selectedExtraAmount != 0) {
+                price = selectedExtraAmount;
+            }
             var totalPrice = price*count;
             $("#totalPrice").html(totalPrice + '원');
         }
@@ -202,11 +213,11 @@
                             <span th:text="옵션"></span>
                         </dt>
                         <dd class="detail-content">
-                            <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" >
-                                <option>옵션을 선택해주세요</option>
-                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}"></option>
+                            <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" onchange="selectOption(this)">
+                                <option th:value="0">옵션을 선택해주세요</option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}"></option>
                             </select>
-                            <span th:unless="${item.getItemOptionDtoList().size() != 0}" th:text="--"></span>
+                            <span th:if="${#arrays.isEmpty(item.getItemOptionDtoList())}" th:text="--"></span>
                         </dd>
                     </dl>
 
@@ -239,8 +250,6 @@
                     <span class="text-3xl font-bold text-red-700">품절</span>
                 </div>
             </div>
-
-
         </div>
     </div>
 

@@ -232,7 +232,8 @@
                                          th:alt="${orderItem.itemNm}">
                                 </div>
                                 <div class="text-base repImgDiv" style="width: 350px">
-                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"></div>
+                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"/>
+                                    <span th:if="${orderItem.getOptionNm() != null}" th:text="${'옵션 ' + orderItem.getOptionNm()}"></span>
                                     <div th:text="${'상품 가격 : ' + orderItem.orderPrice} +'원'"></div>
                                     <div th:text="${'주문 개수 : ' + orderItem.count} +'개'"></div>
                                     <div th:text="${'주문 번호 : ' + order.getOrderId() + '번'}"></div>

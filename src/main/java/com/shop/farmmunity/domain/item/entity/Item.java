@@ -4,9 +4,7 @@ import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.base.exception.OutOfStockException;
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
-import com.shop.farmmunity.domain.item.constant.TimeSaleStatus;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
-import com.shop.farmmunity.domain.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,9 +46,6 @@ public class Item extends BaseEntity {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOption> itemOptionList = new ArrayList<>(); // 상품 옵션
-
-    @Enumerated(EnumType.STRING)
-    private TimeSaleStatus timeSaleStatus; // 세일 유무
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();

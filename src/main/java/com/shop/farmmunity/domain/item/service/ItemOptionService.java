@@ -50,7 +50,7 @@ public class ItemOptionService {
         int diff = optionNameList.size() - itemOptionList.size();
 
         if (diff > 0) {
-            createExtraItemOption(itemOptionList.size(), optionNameList.size() + diff - 1, item, optionNameList, extraAmountList, quantityList);
+            createExtraItemOption(itemOptionList.size(), itemOptionList.size() + diff, item, optionNameList, extraAmountList, quantityList);
         }
 
         for (int i = 0; i < itemOptionList.size(); i++) {
