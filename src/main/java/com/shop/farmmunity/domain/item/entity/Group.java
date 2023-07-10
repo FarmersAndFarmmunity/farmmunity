@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 
 @Entity
-@Table(name = "groups")
+@Table(name = "group_buy_member")
 @Getter
 @Setter
 @ToString
