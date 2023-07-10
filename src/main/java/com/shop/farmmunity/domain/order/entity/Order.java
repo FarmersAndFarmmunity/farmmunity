@@ -74,16 +74,15 @@ public class Order extends BaseEntity {
 
     public void cancelOrder() {
         this.orderStatus = OrderStatus.CANCEL;
-
         for (OrderItem orderItem : orderItems) {
-            orderItem.cancel();
+            orderItem.cancel(); // 재고 수복
         }
     }
 
     public void payDone() {
 
         for (OrderItem orderItem : orderItems) {
-            orderItem.payDone();
+            orderItem.payDone(); // 재고 차감
         }
         this.setPaid(true);
     }

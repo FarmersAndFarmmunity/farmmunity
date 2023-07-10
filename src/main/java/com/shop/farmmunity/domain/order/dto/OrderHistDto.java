@@ -1,10 +1,12 @@
 package com.shop.farmmunity.domain.order.dto;
 
+import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.order.constant.OrderStatus;
 import com.shop.farmmunity.domain.order.entity.Order;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +30,20 @@ public class OrderHistDto {
 
     private boolean isGroupBuying; // 해당 주문의 공동구매 여부
 
+    private GroupBuyStatus groupBuyStatus; // 공동구매 상태
+
+    private String partnerUsername; // 공동구매 시 파트너 이름
+
+    private String MatchEndTime; // 공동구매 파트너 구인 마감 시간
+
     private List<OrderItemDto> orderItemDtoList = new ArrayList<>(); //주문상품리스트
 
     public void addOrderItemDto(OrderItemDto orderItemDto) {
         orderItemDtoList.add(orderItemDto);
+    }
+
+    public void updatePartnerUsername(String partnerUsername){
+        this.partnerUsername = partnerUsername.charAt(0) + "** 님";
     }
 
 }
