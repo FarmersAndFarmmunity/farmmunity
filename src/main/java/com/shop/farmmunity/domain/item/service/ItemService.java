@@ -1,10 +1,15 @@
 package com.shop.farmmunity.domain.item.service;
 
+import com.shop.farmmunity.domain.cart.entity.CartItem;
+import com.shop.farmmunity.domain.cart.service.CartService;
 import com.shop.farmmunity.domain.item.dto.*;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
+import com.shop.farmmunity.domain.itemTag.service.ItemTagService;
+import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,23 +21,28 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
-
+    private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
 
     // 등록
     public Long saveItem(ItemFormDto itemFormDto,
-                         List<MultipartFile> itemImgFileList) throws Exception {
+                         List<MultipartFile> itemImgFileList, String itemTagContents) throws Exception {
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
+        itemTagService.applyItemTags(item, itemTagContents);
 
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
             ItemImg itemImg = new ItemImg();

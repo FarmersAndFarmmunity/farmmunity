@@ -5,10 +5,19 @@ import com.shop.farmmunity.base.exception.OutOfStockException;
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "item")
@@ -16,6 +25,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Item extends BaseEntity {
+    @Builder.Default
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    Set<ItemTag> itemTags = new LinkedHashSet<>();
 
     @Id
     @Column(name = "item_id")
@@ -69,4 +82,34 @@ public class Item extends BaseEntity {
         this.stockNumber += stockNumber;
     }
 
+    public String getExtra_itemTagLinks() {
+        return itemTags
+                .stream()
+                .map(itemTag -> {
+                    String text = "#" + itemTag.getItemKeyword().getContent();
+
+                    return """
+                            <a href="%s" class="text-link">%s</a>
+                            """
+                            .stripIndent()
+                            .formatted(itemTag.getItemKeyword().getListUrl(), text);
+                })
+                .sorted()
+                .collect(Collectors.joining(" "));
+    }
+
+    public void updateItemTags(Set<ItemTag> newItemTags) {
+        Set<ItemTag> needToDelete = itemTags
+                .stream()
+                .filter(Predicate.not(newItemTags::contains))
+                .collect(Collectors.toSet());
+
+        needToDelete
+                .stream()
+                .forEach(itemTags::remove);
+
+        newItemTags
+                .stream()
+                .forEach(itemTags::add);
+    }
 }

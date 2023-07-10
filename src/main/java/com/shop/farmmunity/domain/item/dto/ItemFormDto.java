@@ -35,6 +35,11 @@ public class ItemFormDto {
 
     private ItemClassifyStatus itemClassifyStatus;
 
+    @NotNull
+    private Long postKeywordId;
+
+    private String itemTagContents;
+
     private List<ItemImgDto> itemImgDtoList = new ArrayList<>(); //수정 시, 상품 이미지 정보 저장하는 리스트
 
     private List<Long> itemImgIds = new ArrayList<>(); //수정 시, 상품의 이미지 아이디를 저장하는 리스트
