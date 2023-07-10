@@ -46,6 +46,10 @@ public class Item extends BaseEntity {
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOption> itemOptionList = new ArrayList<>(); // 상품 옵션
+  
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_buying_id")
+    private GroupBuying groupBuying;
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();

@@ -53,6 +53,10 @@
                     <li class="dropdown">
                         <label tabindex="0" class="btn btn-outline w-40">마이 페이지</label>
                         <ul tabindex="0" class="dropdown-content menu p-2 text-base font-normal shadow bg-base-100 rounded-box w-52">
+                            <li class="hover:text-accent" sec:authorize="isAuthenticated()">
+                                <a href="/members/mypage">내 정보 관리</a>
+                            </li>
+
                             <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDOR')">
                                 <a href="/vendor/item/new">상품 등록</a>
                             </li>

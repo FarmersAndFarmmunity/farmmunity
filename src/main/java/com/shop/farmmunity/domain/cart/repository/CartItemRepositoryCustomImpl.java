@@ -12,8 +12,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-import static com.shop.farmmunity.domain.item.entity.QItem.item;
-
 public class CartItemRepositoryCustomImpl implements CartItemRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     public CartItemRepositoryCustomImpl(EntityManager em){ this.queryFactory = new JPAQueryFactory(em); }

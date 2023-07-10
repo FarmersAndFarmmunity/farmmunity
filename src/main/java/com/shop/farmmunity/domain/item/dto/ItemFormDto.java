@@ -2,6 +2,7 @@ package com.shop.farmmunity.domain.item.dto;
 
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
+import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -47,10 +48,18 @@ public class ItemFormDto {
 
     private List<Long> itemImgIds = new ArrayList<>(); //수정 시, 상품의 이미지 아이디를 저장하는 리스트
 
+    private int discount; // 공동구매 할인률
+
+    private boolean active;
+
     private static ModelMapper modelMapper = new ModelMapper();
 
     public Item createItem() {
         return modelMapper.map(this, Item.class);
+    }
+
+    public GroupBuying createGroupBuying() {
+        return modelMapper.map(this, GroupBuying.class);
     }
 
     public static ItemFormDto of(Item item) {

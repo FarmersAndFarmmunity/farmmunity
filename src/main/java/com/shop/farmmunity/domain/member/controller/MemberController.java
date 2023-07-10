@@ -125,4 +125,12 @@ public class MemberController {
         return newAuth;
     }
 
+    @Transactional
+    @GetMapping(value = "/members/myInfo")
+    public String memberInfoModify(Model model, Principal principal) {
+        Member member = memberService.findByEmail(principal.getName());
+        model.addAttribute("member", member);
+
+        return "member/memberInfoModifyForm";
+    }
 }
