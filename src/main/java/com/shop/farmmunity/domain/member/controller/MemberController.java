@@ -4,6 +4,7 @@ import com.shop.farmmunity.base.security.CustomUserDetailsService;
 import com.shop.farmmunity.domain.member.constant.Role;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
+import com.shop.farmmunity.domain.member.dto.MemberUpdateRequestDto;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -125,12 +126,12 @@ public class MemberController {
         return newAuth;
     }
 
-    @Transactional
     @GetMapping(value = "/members/myInfo")
-    public String memberInfoModify(Model model, Principal principal) {
+    public String memberInfoModify(Model model, Principal principal, MemberUpdateRequestDto memberUpdateRequestDto) {
         Member member = memberService.findByEmail(principal.getName());
+
         model.addAttribute("member", member);
 
-        return "member/memberInfoModifyForm";
+        return "member/memberMyPage";
     }
 }
