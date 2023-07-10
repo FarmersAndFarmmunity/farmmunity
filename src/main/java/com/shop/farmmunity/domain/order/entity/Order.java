@@ -38,10 +38,10 @@ public class Order extends BaseEntity {
             orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @Embedded
-    private Customer customer;
-    @Embedded
-    private Recipient recipient;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "delivery_id")
+    private Delivery delivery;
+
 
     private boolean isPaid; // 결제 여부
 
@@ -95,5 +95,10 @@ public class Order extends BaseEntity {
         }
 
         return name;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
     }
 }

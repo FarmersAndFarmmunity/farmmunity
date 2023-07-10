@@ -50,7 +50,6 @@ public class MemberService {
         return memberRepository.findByUsername(username);
     }
 
-    @Transactional
     // 소셜 로그인 시 실행되는 함수
     public Member whenSocialLogin(String providerTypeCode, String username) {
         Optional<Member> opMember = findByUsername(username);

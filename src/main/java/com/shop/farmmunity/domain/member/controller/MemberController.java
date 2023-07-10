@@ -81,6 +81,7 @@ public class MemberController {
 
         return "member/memberMyPage";
     }
+
     //////// 관리자 영역
     // 멤버 관리 기능
 
