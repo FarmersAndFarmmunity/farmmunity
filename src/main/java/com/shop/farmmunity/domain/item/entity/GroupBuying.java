@@ -12,12 +12,8 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @ToString
 public class GroupBuying {
+
     @Id
-
-    @OneToOne
-    @JoinColumn(name = "item_id")
-    private Item item;
-
     @Column(name = "group_buying_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 공동구매 코드
