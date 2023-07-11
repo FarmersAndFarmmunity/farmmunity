@@ -52,7 +52,10 @@ public class ItemService {
     public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList, String itemTagContents) throws Exception {
         GroupBuying groupBuying = itemFormDto.createGroupBuying();
         Item item = itemFormDto.createItem();
+
+        groupBuyingRepository.save(groupBuying);
         item.setGroupBuying(groupBuying);
+
         itemRepository.save(item);
         itemTagService.applyItemTags(item, itemTagContents);
       
@@ -60,7 +63,6 @@ public class ItemService {
         if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
             itemOptionService.saveItemOption(itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), itemFormDto.getGbPriceList(), item);
         }
-        groupBuyingRepository.save(groupBuying);
 
         // 아이템 이미지
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
