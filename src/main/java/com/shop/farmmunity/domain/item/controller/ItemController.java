@@ -1,10 +1,12 @@
 package com.shop.farmmunity.domain.item.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
+import com.shop.farmmunity.domain.item.dto.GroupBuyDto;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
 import com.shop.farmmunity.domain.item.dto.ItemSearchDto;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.service.ItemService;
+import com.shop.farmmunity.domain.payment.constant.PaymentDtlDto;
 import com.shop.farmmunity.domain.review.entity.Review;
 import com.shop.farmmunity.domain.review.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
@@ -160,10 +162,21 @@ public class ItemController {
     public String itemDtl(Model model, @PathVariable Long itemId) {
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         List<Review> reviewList = reviewService.getList(itemId);
+        GroupBuyDto groupBuyDto = itemService.getGroupBuyInfo(itemId);
 
         model.addAttribute("reviews", reviewList);
         model.addAttribute("item", itemFormDto);
+        model.addAttribute("groupBuyInfo", groupBuyDto);
         return "item/itemDtl";
+    }
+
+    @GetMapping("/item/{itemId}/groupBuyList") // 공동구매 매칭 성공 목록
+    public String paymentDtl(Model model, @PathVariable Long itemId, Principal principal) {
+        List<GroupBuyDto> groupBuyDtos = itemService.getGroupBuyList(itemId);
+
+        model.addAttribute("groups", groupBuyDtos);
+
+        return "item/groupBuyList";
     }
 
     public boolean checkAuthority(Long itemId, Principal principal){
@@ -173,4 +186,5 @@ public class ItemController {
         }
         throw new AccessDeniedException("접근 권한이 없습니다.");
     }
+
 }

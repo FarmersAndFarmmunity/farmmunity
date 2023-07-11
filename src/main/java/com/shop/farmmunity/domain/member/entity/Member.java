@@ -3,6 +3,7 @@ package com.shop.farmmunity.domain.member.entity;
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.member.constant.Role;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
+import com.shop.farmmunity.domain.member.dto.MemberUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -77,5 +78,10 @@ public class Member extends BaseEntity {
 
     public void updateRole(Role role) {
         this.role = role;
+    }
+
+    public void modifyMemberInfo(MemberUpdateRequestDto memberUpdateRequestDto, PasswordEncoder passwordEncoder) {
+        this.username = memberUpdateRequestDto.getUsername();
+        this.password = passwordEncoder.encode(memberUpdateRequestDto.getConfirmPassword());
     }
 }
