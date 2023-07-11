@@ -19,17 +19,14 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static jakarta.persistence.FetchType.LAZY;
+
 @Entity
 @Table(name = "item")
 @Getter
 @Setter
 @ToString
 public class Item extends BaseEntity {
-    @Builder.Default
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.EXTRA)
-    Set<ItemTag> itemTags = new LinkedHashSet<>();
-
     @Id
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +51,10 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
 
+    @Builder.Default
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    Set<ItemTag> itemTags = new LinkedHashSet<>();
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();
@@ -80,22 +81,6 @@ public class Item extends BaseEntity {
     // 주문 취소 시 주문 수량 만큼 상품 재고를 증가
     public void addStock(int stockNumber) {
         this.stockNumber += stockNumber;
-    }
-
-    public String getExtra_itemTagLinks() {
-        return itemTags
-                .stream()
-                .map(itemTag -> {
-                    String text = "#" + itemTag.getItemKeyword().getContent();
-
-                    return """
-                            <a href="%s" class="text-link">%s</a>
-                            """
-                            .stripIndent()
-                            .formatted(itemTag.getItemKeyword().getListUrl(), text);
-                })
-                .sorted()
-                .collect(Collectors.joining(" "));
     }
 
     public void updateItemTags(Set<ItemTag> newItemTags) {

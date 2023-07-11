@@ -165,7 +165,6 @@ public class ItemController {
 
         model.addAttribute("reviews", reviewList);
         model.addAttribute("item", itemFormDto);
-        model.addAttribute("itemEntity", item);
         return "item/itemDtl";
     }
 
