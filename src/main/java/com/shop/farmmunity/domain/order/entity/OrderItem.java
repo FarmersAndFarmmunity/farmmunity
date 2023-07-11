@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.NumberFormat;
 import java.util.Objects;
 
 @Entity
@@ -47,7 +48,9 @@ public class OrderItem extends BaseEntity {
         if (itemOptionId != null) {
             ItemOption itemOption = item.getItemOptionList().stream().filter(i -> Objects.equals(i.getId(), itemOptionId)).findAny().orElseThrow(EntityNotFoundException::new);
             price = itemOption.getExtraAmount();
-            fullOptionNm = itemOption.getOptionName() + " : " + itemOption.getQuantity() + " (" + itemOption.getExtraAmount() + "원)";
+            NumberFormat numberFormat = NumberFormat.getNumberInstance();
+            String formattedPrice = numberFormat.format(itemOption.getExtraAmount());
+            fullOptionNm = itemOption.getOptionName() + " " + itemOption.getQuantity() + " (" + formattedPrice + ")";
             optQuntity = itemOption.getQuantity();
         }
         item.checkRestStock(count * optQuntity); // 주문 전에 상품 재고 체크부터

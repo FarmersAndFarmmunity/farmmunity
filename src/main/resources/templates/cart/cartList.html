@@ -274,8 +274,9 @@
                             <div class="item-detail flex items-center justify-between">
                                 <!--상품 이름-->
                                 <div class="item-name flex items-center">
-                                    <div th:text="${cartItem.itemNm}" class="text-lg font-bold truncate"></div>
+                                    <div th:text="${cartItem.itemNm}" class="text-lg font-bold truncate"></div><br>
                                 </div>
+                                <div th:if="${cartItem.getOptionNm() != null}" th:text="${cartItem.getOptionNm()}"></div>
                                 <!--가격&장바구니상품갯수-->
                                 <div class="flex">
                                     <div class="flex items-center">

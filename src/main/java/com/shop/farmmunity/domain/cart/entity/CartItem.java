@@ -27,11 +27,14 @@ public class CartItem extends BaseEntity {
 
     private int count;
 
-    public static CartItem createCartItem(Cart cart, Item item, int count) {
+    private Long itemOptionId;
+
+    public static CartItem createCartItem(Cart cart, Item item, int count, Long itemOptionId) {
         CartItem cartItem = new CartItem();
         cartItem.setCart(cart);
         cartItem.setItem(item);
         cartItem.setCount(count);
+        cartItem.setItemOptionId(itemOptionId);
         return cartItem;
     }
 
