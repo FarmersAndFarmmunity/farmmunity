@@ -288,10 +288,9 @@
                         <dd class="detail-content">
                             <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" onchange="selectOption(this)">
                                 <option th:value="0">옵션을 선택해주세요</option>
-                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}" th:data-gbPrice="${option.gbPrice}"></option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + '개 남음 ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}" th:data-gbPrice="${option.gbPrice}"></option>
                             </select>
                             <span th:if="${#arrays.isEmpty(item.getItemOptionDtoList())}" th:text="--"></span>
-                            <span th:text="옵션선택"></span>
                         </dt>
                         </dd>
                     </dl>
