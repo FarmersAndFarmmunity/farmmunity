@@ -127,7 +127,7 @@
             height: fit-content;
         }
         .detail-title {
-             width:150px;
+             width:200px;
              display: flex;
              align-items: center;
              font-weight: bold;
@@ -208,7 +208,7 @@
                         <dd class="detail-content">
                             <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">
                                 <div id="opt-box" class="form-group opt-div">
-                                    <input type="button" value="옵션 추가하기" onclick="addTextBox()">
+                                    <input type="button" class="btn btn-warning btn-sm mb-2 w-full" value="옵션 추가하기" onclick="addTextBox()">
                                 </div>
                             </div>
 
