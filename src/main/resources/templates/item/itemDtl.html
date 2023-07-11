@@ -185,6 +185,9 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         .mgb-15{
             margin-bottom:15px;
         }
@@ -345,14 +348,14 @@
         </div>
     </div>
 
-    <div class="tabs menu-container flex flex-row">
-        <a class="tab tab-bordered tab-active item-detail-box">상품 정보</a>
-        <a class="tab tab-bordered tab-active item-review-box">상품 리뷰</a>
-        <a class="tab tab-bordered tab-active item-faq-box">문의 하기</a>
+    <div class="tabs menu-container flex flex-row w-full">
+        <a class="tab tab-bordered tab-active item-detail-box w-4/12" href="#item-detail">상품 정보</a>
+        <a class="tab tab-bordered tab-active item-review-box w-4/12" href="#review">상품 리뷰</a>
+        <a class="tab tab-bordered tab-active item-faq-box w-4/12">문의 하기</a>
     </div>
 
     <div class="jumbotron jumbotron-fluid mgt-30">
-        <div class="container">
+        <div class="container" id="item-detail">
             <h4 class="h4 text-3xl font-bold my-4 ml-3">상품 상세 설명</h4>
             <p class="m-3 p-3 text-lg" th:text="${item.itemDetail}" style="border-top: 1px solid #efefef;"></p>
             <div th:each="itemImg : ${item.itemImgDtoList}" class="flex justify-center">
@@ -361,7 +364,7 @@
         </div>
     </div>
 
-    <div class="container my-3">
+    <div class="container my-3" id="review">
         <table class="table">
             <thead>
             <h4 class="h4 text-3xl font-bold my-4 ml-3" th:text="|${#lists.size(reviews)}개의 후기|"></h4>
