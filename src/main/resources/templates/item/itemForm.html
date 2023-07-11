@@ -45,6 +45,10 @@
                 "<input type='number' className='option-input option-input-md w-full' name='gbPriceList' placeholder='옵션 공동구매 가격을 입력해주세요'>" +
                 "<input type='number' className='option-input option-input-md w-full' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
                 "<input type='button' value='삭제' onclick='remove(this)'>"
+            newDiv.innerHTML = "<input type='text' class='option-input input input-bordered input-sm w-full mb-2' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
+                "<input type='number' class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
+                "<input type='button' class='btn btn-error btn-sm' value='삭제' onclick='remove(this)'>"
             box.appendChild(newDiv);
         }
 
@@ -56,6 +60,10 @@
                 "<input type='number' className='option-input option-input-md w-full' name='gbPriceList' placeholder='옵션 공동구매 가격을 입력해주세요'>" +
                 "<input type='number' className='option-input option-input-md w-full' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
                 "<input type='button' value='삭제' onclick='remove(this)'>"
+            newDiv.innerHTML = "<input type='text' class='option-input input input-bordered input-sm w-full mb-2' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
+                "<input type='number' class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
+                "<input type='button' class='btn btn-error btn-sm' value='삭제' onclick='remove(this)'>"
             box.appendChild(newDiv);
         }
 
@@ -269,9 +277,9 @@
                             상품 옵션
                         </dt>
                         <dd class="detail-content">
-                            <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">
-                                <div id="opt-box" class="form-group opt-div">
-                                    <input type="button" value="옵션 추가하기" onclick="addTextBox()">
+                            <div class="flex w-full justify-end" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">
+                                <div id="opt-box" class="form-group opt-div mt-2 w-full">
+                                    <input type="button" class="btn btn-warning btn-sm mb-2 w-full" value="옵션 추가하기" onclick="addTextBox()">
                                 </div>
                             </div>
 
@@ -283,10 +291,15 @@
                                         <input type="number" th:value="${itemOptionDto.gbPrice}" class="option-input option-input-md w-full" name="gbPriceList" placeholder="옵션 공동구매 가격을 입력해주세요">
                                         <input type="number" th:value="${itemOptionDto.quantity}" class="option-input option-input-md w-full" name="quantityList" placeholder="옵션 수량을 입력해주세요">
                                         <input type="button" value="삭제" onclick="removeOption(this)" th:data-id="${itemOptionDto.id}">
+                                    <div id="existing-opt-box" class="opt-div mb-2">
+                                        <input type="text" th:value="${itemOptionDto.optionName}" class="option-input input input-bordered input-sm w-full mb-2" name="optionNameList" placeholder="옵션명을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.extraAmount}" class="option-input input input-bordered input-sm w-full mb-2" name="extraAmountList" placeholder="옵션 가격을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.quantity}" class="option-input input input-bordered input-sm w-80 mr-2 mb-2" name="quantityList" placeholder="옵션 수량을 입력해주세요">
+                                        <input type="button" class="btn btn-error btn-sm" value="삭제" onclick="removeOption(this)" th:data-id="${itemOptionDto.id}">
                                     </div>
                                 </div>
                                 <div id="extra-opt-box" class="form-group opt-div">
-                                    <input type="button" value="옵션 추가하기" onclick="addExtraTextBox()">
+                                    <input type="button" class="btn btn-warning btn-sm mb-2 w-full" value="옵션 추가하기" onclick="addExtraTextBox()">
                                 </div>
                             </div>
                         </dd>

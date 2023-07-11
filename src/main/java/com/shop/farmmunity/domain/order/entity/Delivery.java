@@ -9,7 +9,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "delivery")
+@Table(name = "delivery_list")
 @Getter
 @Setter
 @ToString
@@ -17,7 +17,7 @@ public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "delivery_id")
+    @Column(name = "delivery_list_id")
     private Long id;
 
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
