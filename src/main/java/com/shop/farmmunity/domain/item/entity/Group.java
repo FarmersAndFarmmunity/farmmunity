@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 public class Group extends BaseEntity {
 
     @Id
-    @Column(name = "group_id")
+    @Column(name = "group_buy_member_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

@@ -4,14 +4,17 @@
       layout:decorate="~{layouts/layout1}">
 
 <head>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf?.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
 </head>
 
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
+
+        let selectedExtraAmount = 0;
+
         $(document).ready(function(){
 
             calculateTotalPrice();
@@ -20,17 +23,29 @@
                 calculateTotalPrice();
             });
 
-            var errorMessage = [[${errorMessage}]];
+          var errorMessage = [[${errorMessage}]];
             if(errorMessage != null){
                 alert(errorMessage);
             }
 
             bindDomEvent();
         });
+      
+        function selectOption(selectElement) {
+            var selectedOption = selectElement.options[selectElement.selectedIndex];
+            selectedExtraAmount = selectedOption.getAttribute('data-extraAmount');
+            selectedGbPrice = selectedOption.getAttribute('data-gbPrice');
+            $("#totalPrice").html(($("#count").val() * selectedExtraAmount) + '원');
+            $("#totalGBPrice").html(($("#count").val() * selectedGbPrice) + '원');
+        }
+
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
             var gbPrice = $("#gbPrice").val();
+            if (selectedExtraAmount != 0) {
+                price = selectedExtraAmount;
+            }
             var totalPrice = price*count;
             var totalGBPrice = gbPrice*count;
             $("#totalPrice").html(totalPrice + '원');
@@ -44,6 +59,7 @@
             var url = "/order";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -83,6 +99,7 @@
             var url = "/grouporder";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -107,11 +124,8 @@
                     if(jqXHR.status == '401'){
                         alert('로그인 후 이용해주세요');
                         location.href='/members/login';
-                    } else{
-                        alert(jqXHR.responseText);
                     }
-
-                    if(jqXHR.status == '208'){
+                    else if(jqXHR.status == '208'){
                         // alert('자신의 공동구매에 매칭될 수 없습니다.');
                         location.href='/item/'+ paramData.itemId;
                     } else{
@@ -128,6 +142,7 @@
             var url = "/cart";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -171,6 +186,9 @@
 <!-- 사용자 CSS 추가 -->
 <th:block layout:fragment="css">
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
         .mgb-15{
             margin-bottom:15px;
         }
@@ -265,9 +283,16 @@
                     </dl>
                     <dl class="detail-line count-box flex flex-row">
                         <dt class="detail-title font-bold">
-                            <span th:text="옵션선택"></span>
+                            <span th:text="옵션"></span>
                         </dt>
                         <dd class="detail-content">
+                            <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" onchange="selectOption(this)">
+                                <option th:value="0">옵션을 선택해주세요</option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}" th:data-gbPrice="${option.gbPrice}"></option>
+                            </select>
+                            <span th:if="${#arrays.isEmpty(item.getItemOptionDtoList())}" th:text="--"></span>
+                            <span th:text="옵션선택"></span>
+                        </dt>
                         </dd>
                     </dl>
 
@@ -321,19 +346,19 @@
                     <span class="text-3xl font-bold text-red-700">품절</span>
                 </div>
             </div>
-
-
         </div>
     </div>
 
-    <div class="tabs menu-container flex flex-row">
-        <a class="tab tab-bordered tab-active item-detail-box">상품 정보</a>
-        <a class="tab tab-bordered tab-active item-review-box">상품 리뷰</a>
-        <a class="tab tab-bordered tab-active item-faq-box">문의 하기</a>
+    <div th:utext="${item.extra_itemTagLinks}"></div>
+
+    <div class="tabs menu-container flex flex-row w-full">
+        <a class="tab tab-bordered tab-active item-detail-box w-4/12" href="#item-detail">상품 정보</a>
+        <a class="tab tab-bordered tab-active item-review-box w-4/12" href="#review">상품 리뷰</a>
+        <a class="tab tab-bordered tab-active item-faq-box w-4/12">문의 하기</a>
     </div>
 
     <div class="jumbotron jumbotron-fluid mgt-30">
-        <div class="container">
+        <div class="container" id="item-detail">
             <h4 class="h4 text-3xl font-bold my-4 ml-3">상품 상세 설명</h4>
             <p class="m-3 p-3 text-lg" th:text="${item.itemDetail}" style="border-top: 1px solid #efefef;"></p>
             <div th:each="itemImg : ${item.itemImgDtoList}" class="flex justify-center">
@@ -342,7 +367,7 @@
         </div>
     </div>
 
-    <div class="container my-3">
+    <div class="container my-3" id="review">
         <table class="table">
             <thead>
             <h4 class="h4 text-3xl font-bold my-4 ml-3" th:text="|${#lists.size(reviews)}개의 후기|"></h4>

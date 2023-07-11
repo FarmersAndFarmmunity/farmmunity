@@ -12,6 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Setter
 @ToString
 public class GroupBuying {
+
     @Id
     @Column(name = "group_buying_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
