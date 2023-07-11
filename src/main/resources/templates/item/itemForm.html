@@ -40,6 +40,11 @@
         function addTextBox() {
             const box = document.getElementById("opt-box");
             const newDiv = document.createElement('div');
+            newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' className='option-input option-input-md w-full' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
+                "<input type='number' className='option-input option-input-md w-full' name='gbPriceList' placeholder='옵션 공동구매 가격을 입력해주세요'>" +
+                "<input type='number' className='option-input option-input-md w-full' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
+                "<input type='button' value='삭제' onclick='remove(this)'>"
             newDiv.innerHTML = "<input type='text' class='option-input input input-bordered input-sm w-full mb-2' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
                 "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
                 "<input type='number' class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
@@ -50,6 +55,11 @@
         const addExtraTextBox = () => {
             const box = document.getElementById("extra-opt-box");
             const newDiv = document.createElement('div');
+            newDiv.innerHTML = "<input type='text' className='option-input option-input-md w-full' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' className='option-input option-input-md w-full' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
+                "<input type='number' className='option-input option-input-md w-full' name='gbPriceList' placeholder='옵션 공동구매 가격을 입력해주세요'>" +
+                "<input type='number' className='option-input option-input-md w-full' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
+                "<input type='button' value='삭제' onclick='remove(this)'>"
             newDiv.innerHTML = "<input type='text' class='option-input input input-bordered input-sm w-full mb-2' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
                 "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
                 "<input type='number' class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
@@ -275,6 +285,12 @@
 
                             <div class="w-full" th:if = "${not #lists.isEmpty(itemFormDto.itemOptionDtoList)}">
                                 <div class="form-group" th:each="itemOptionDto, status: ${itemFormDto.itemOptionDtoList}">
+                                    <div id="existing-opt-box" class="opt-div">
+                                        <input type="text" th:value="${itemOptionDto.optionName}" class="option-input option-input-md w-full" name="optionNameList" placeholder="옵션명을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.extraAmount}" class="option-input option-input-md w-full" name="extraAmountList" placeholder="옵션 가격을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.gbPrice}" class="option-input option-input-md w-full" name="gbPriceList" placeholder="옵션 공동구매 가격을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.quantity}" class="option-input option-input-md w-full" name="quantityList" placeholder="옵션 수량을 입력해주세요">
+                                        <input type="button" value="삭제" onclick="removeOption(this)" th:data-id="${itemOptionDto.id}">
                                     <div id="existing-opt-box" class="opt-div mb-2">
                                         <input type="text" th:value="${itemOptionDto.optionName}" class="option-input input input-bordered input-sm w-full mb-2" name="optionNameList" placeholder="옵션명을 입력해주세요">
                                         <input type="number" th:value="${itemOptionDto.extraAmount}" class="option-input input input-bordered input-sm w-full mb-2" name="extraAmountList" placeholder="옵션 가격을 입력해주세요">

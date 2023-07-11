@@ -21,7 +21,7 @@ public class CartItemRepositoryCustomImpl implements CartItemRepositoryCustom {
     public List<CartDetailDto> findCartDetailDtoList(@Param("cartId") Long cartId){
 
         List<CartDetailDto> cartDetailDtoList = queryFactory
-                .select(Projections.constructor(CartDetailDto.class, QCartItem.cartItem.id, QCartItem.cartItem.item.itemNm, QCartItem.cartItem.item.price, QCartItem.cartItem.count, QItemImg.itemImg.imgUrl))
+                .select(Projections.constructor(CartDetailDto.class, QCartItem.cartItem.id, QCartItem.cartItem.item.itemNm, QCartItem.cartItem.itemOptionId, QCartItem.cartItem.item.price, QCartItem.cartItem.count, QItemImg.itemImg.imgUrl, QCartItem.cartItem.item))
                 .from(QCartItem.cartItem, QItemImg.itemImg)
                 .join(QCartItem.cartItem.item)
                 .where(QCartItem.cartItem.cart.id.eq(cartId),

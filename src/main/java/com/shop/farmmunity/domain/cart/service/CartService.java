@@ -52,7 +52,7 @@ public class CartService {
             savedCartItem.addCount(cartItemDto.getCount());
             return savedCartItem.getId();
         } else {
-            CartItem cartItem = CartItem.createCartItem(cart, item, cartItemDto.getCount());
+            CartItem cartItem = CartItem.createCartItem(cart, item, cartItemDto.getCount(), cartItemDto.getItemOptionId());
 
             cartItemRepository.save(cartItem);
 
@@ -115,6 +115,7 @@ public class CartService {
             OrderDto orderDto = new OrderDto();
             orderDto.setItemId(cartItem.getItem().getId());
             orderDto.setCount(cartItem.getCount());
+            orderDto.setItemOptionId(cartItem.getItemOptionId());
 
             orderDtoList.add(orderDto);
         }

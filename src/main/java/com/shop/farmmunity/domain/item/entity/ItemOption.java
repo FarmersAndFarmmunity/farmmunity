@@ -27,9 +27,12 @@ public class ItemOption {
 
     private int extraAmount; // 추가 가격
 
-    public void updateItemOption(String optionName, int extraAmount, int quantity) {
+    private int gbPrice; // 공동구매 가격
+
+    public void updateItemOption(String optionName, int extraAmount, int quantity, int gbPrice) {
         this.optionName = optionName;
         this.extraAmount = extraAmount;
         this.quantity = quantity;
+        this.gbPrice = gbPrice;
     }
 }

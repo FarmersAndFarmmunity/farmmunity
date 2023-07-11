@@ -4,8 +4,8 @@
       layout:decorate="~{layouts/layout1}">
 
 <head>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="_csrf" th:content="${_csrf?.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}"/>
 </head>
 
 <!-- 사용자 스크립트 추가 -->
@@ -34,7 +34,9 @@
         function selectOption(selectElement) {
             var selectedOption = selectElement.options[selectElement.selectedIndex];
             selectedExtraAmount = selectedOption.getAttribute('data-extraAmount');
+            selectedGbPrice = selectedOption.getAttribute('data-gbPrice');
             $("#totalPrice").html(($("#count").val() * selectedExtraAmount) + '원');
+            $("#totalGBPrice").html(($("#count").val() * selectedGbPrice) + '원');
         }
 
         function calculateTotalPrice(){
@@ -97,6 +99,7 @@
             var url = "/grouporder";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -121,11 +124,8 @@
                     if(jqXHR.status == '401'){
                         alert('로그인 후 이용해주세요');
                         location.href='/members/login';
-                    } else{
-                        alert(jqXHR.responseText);
                     }
-
-                    if(jqXHR.status == '208'){
+                    else if(jqXHR.status == '208'){
                         // alert('자신의 공동구매에 매칭될 수 없습니다.');
                         location.href='/item/'+ paramData.itemId;
                     } else{
@@ -142,6 +142,7 @@
             var url = "/cart";
             var paramData = {
                 itemId : $("#itemId").val(),
+                itemOptionId : $("#option").val(),
                 count : $("#count").val()
             };
 
@@ -287,7 +288,7 @@
                         <dd class="detail-content">
                             <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" onchange="selectOption(this)">
                                 <option th:value="0">옵션을 선택해주세요</option>
-                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}"></option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + ' ' + option.extraAmount + '원'}" th:data-quantity="${option.quantity}" th:data-extraAmount="${option.extraAmount}" th:data-gbPrice="${option.gbPrice}"></option>
                             </select>
                             <span th:if="${#arrays.isEmpty(item.getItemOptionDtoList())}" th:text="--"></span>
                             <span th:text="옵션선택"></span>

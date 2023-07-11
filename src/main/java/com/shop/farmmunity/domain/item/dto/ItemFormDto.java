@@ -38,7 +38,9 @@ public class ItemFormDto {
 
     private List<String> optionNameList = new ArrayList<>(); // 옵션 이름
 
-    private List<Integer> extraAmountList = new ArrayList<>(); // 추가 가격
+    private List<Integer> extraAmountList = new ArrayList<>(); // 옵션 가격
+
+    private List<Integer> gbPriceList = new ArrayList<>(); // 옵션 공동구매 가격
 
     private List<Integer> quantityList = new ArrayList<>(); // 옵션 수량
 

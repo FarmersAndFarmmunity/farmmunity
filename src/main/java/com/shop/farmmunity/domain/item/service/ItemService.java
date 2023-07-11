@@ -49,7 +49,7 @@ public class ItemService {
         itemRepository.save(item);
         // 아이템 옵션
         if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
-            itemOptionService.saveItemOption(itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), item);
+            itemOptionService.saveItemOption(itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), itemFormDto.getGbPriceList(), item);
         }
         groupBuyingRepository.save(groupBuying);
 
@@ -102,7 +102,7 @@ public class ItemService {
         item.updateItem(itemFormDto);
 
         if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
-            itemOptionService.updateItemOption(item, itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList());
+            itemOptionService.updateItemOption(item, itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), itemFormDto.getGbPriceList());
         }
 
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
@@ -149,7 +149,7 @@ public class ItemService {
         GroupBuyDto groupBuyDto = new GroupBuyDto();
         Group group = groupRepository.findByItemIdAndStatus(itemId, GroupBuyStatus.WAIT);
         groupBuyDto.setCount(groupRepository.countByItemIdAndStatus(itemId, GroupBuyStatus.SUCCESS));
-        if(group != null) {
+        if (group != null) {
             groupBuyDto.setUsername(group.getMember().getUsername());
             groupBuyDto.setMatchEndTime(group.getGroupBuyEndTime().toString().substring(0,19).replace("T", " "));
         }
