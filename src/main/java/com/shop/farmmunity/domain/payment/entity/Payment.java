@@ -50,8 +50,8 @@ public class Payment extends BaseEntity {
         payment.setPayType(jsonNode.get("method").asText());
         payment.setPaymentKey(jsonNode.get("paymentKey").asText());
         payment.setAmount(order.getTotalPrice());
-        payment.setCustomerName(order.getDelivery().getCustomer().getCustomerName());
-        payment.setCustomerEmail(order.getDelivery().getCustomer().getCustomerEmail());
+        payment.setCustomerName(order.getCustomer().getCustomerName());
+        payment.setCustomerEmail(order.getCustomer().getCustomerEmail());
         payment.setMember(order.getMember());
         payment.setOrderId(order.getId());
         payment.setOrderName(order.makeName());

@@ -38,21 +38,19 @@ public class Order extends BaseEntity {
             orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "delivery_id")
-    private Delivery delivery;
-
+    @Embedded
+    private Customer customer;
+    @Embedded
+    private Recipient recipient;
 
     private boolean isPaid; // 결제 여부
-
-    private boolean isGroupBuying; // 해당 주문건의 공동구매 여부
 
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(Member member, List<OrderItem> orderItemList, boolean isGroupBuying) {
+    public static Order createOrder(Member member, List<OrderItem> orderItemList) {
         Order order = new Order();
         order.setMember(member);
         for (OrderItem orderItem : orderItemList) {
@@ -60,7 +58,6 @@ public class Order extends BaseEntity {
         }
         order.setOrderStatus(OrderStatus.ORDER);
         order.setOrderDate(LocalDateTime.now());
-        order.setGroupBuying(isGroupBuying);
         return order;
     }
 
@@ -74,15 +71,16 @@ public class Order extends BaseEntity {
 
     public void cancelOrder() {
         this.orderStatus = OrderStatus.CANCEL;
+
         for (OrderItem orderItem : orderItems) {
-            orderItem.cancel(); // 재고 수복
+            orderItem.cancel();
         }
     }
 
     public void payDone() {
 
         for (OrderItem orderItem : orderItems) {
-            orderItem.payDone(); // 재고 차감
+            orderItem.payDone();
         }
         this.setPaid(true);
     }
@@ -95,10 +93,5 @@ public class Order extends BaseEntity {
         }
 
         return name;
-    }
-
-    public void setDelivery(Delivery delivery) {
-        this.delivery = delivery;
-        delivery.setOrder(this);
     }
 }

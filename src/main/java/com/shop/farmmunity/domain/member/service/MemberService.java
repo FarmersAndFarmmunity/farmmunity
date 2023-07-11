@@ -1,7 +1,6 @@
 package com.shop.farmmunity.domain.member.service;
 
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
-import com.shop.farmmunity.domain.member.dto.MemberUpdateRequestDto;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +49,7 @@ public class MemberService {
         return memberRepository.findByUsername(username);
     }
 
+    @Transactional
     // 소셜 로그인 시 실행되는 함수
     public Member whenSocialLogin(String providerTypeCode, String username) {
         Optional<Member> opMember = findByUsername(username);
@@ -69,14 +69,5 @@ public class MemberService {
     public Page<Member> getAdminMemberPage(MemberSearchDto memberSearchDto, Pageable pageable) {
         return memberRepository.getAdminMemberPage(memberSearchDto, pageable);
     }
-
-    @Transactional
-    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto, String username) {
-
-
-
-    }
-
-
 
 }

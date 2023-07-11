@@ -106,23 +106,6 @@
         <div th:each="order, orderStat : ${orders}">
             <div class="order-box card bg-base-100 shadow-xl">
                 <div class="card-body">
-                    <div th:if="${order.isGroupBuying() == true}">
-                        <span class="badge badge-error badge-outline">
-                            공동구매 주문건
-                        </span>
-                        <span th:if="${order.getGroupBuyStatus() == T(com.shop.farmmunity.domain.item.constant.GroupBuyStatus).WAIT}" class="badge badge-warning">
-                            공동구매 매칭 상대 대기중
-                        </span>
-                        <span th:if="${order.getGroupBuyStatus() == T(com.shop.farmmunity.domain.item.constant.GroupBuyStatus).WAIT}" class="font-bold">매칭 마감 시간 : <span th:text="${order.getMatchEndTime()}" class="font-bold text-error"></span></span>
-                        <span th:if="${order.getGroupBuyStatus() == T(com.shop.farmmunity.domain.item.constant.GroupBuyStatus).SUCCESS}" class="badge badge-accent">
-                            공동구매 매칭 성공!
-                        </span>
-                        <span th:if="${order.getGroupBuyStatus() == T(com.shop.farmmunity.domain.item.constant.GroupBuyStatus).SUCCESS}">매칭 상대 : <span th:text="${order.getPartnerUsername()}" class="font-bold text-error"></span></span>
-                        <span th:if="${order.getGroupBuyStatus() == T(com.shop.farmmunity.domain.item.constant.GroupBuyStatus).FAIL}" class="badge badge-error">공동구매 취소/실패 주문건</span>
-                    </div>
-                    <span th:unless="${order.isGroupBuying() == true}" class="badge badge-accent">
-                        일반구매 주문건
-                    </span>
                     <h4 class="card-title text-3xl mb-10" th:text="|${order.orderDate} 주문건|"></h4>
                     <div class="flex flex-col">
                         <div th:each="orderItem : ${order.orderItemDtoList}" class="flex mb-3">
