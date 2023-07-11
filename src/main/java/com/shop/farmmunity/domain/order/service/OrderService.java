@@ -82,7 +82,8 @@ public class OrderService {
         Member member = memberRepository.findByEmail(email); // 현재 로그인한 회원의 이메일로 회원 정보 조회
 
         List<OrderItem> orderItemList = new ArrayList<>();
-        OrderItem orderItem = OrderItem.createGroupBuyingOrderItem(item, item.getGroupBuying().getDiscount(), orderDto.getCount()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
+//        OrderItem orderItem = OrderItem.createGroupBuyingOrderItem(item, item.getGroupBuying().getDiscount(), orderDto.getCount()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
+        OrderItem orderItem = OrderItem.createGroupBuyingOrderItem(item, orderDto.getCount(), orderDto.getItemOptionId()); // 주문할 상품 엔티티와 주문 수량을 이용하여 주문 상품 엔티티 생성
         orderItemList.add(orderItem);
 
         if(groupRepository.findByMemberIdAndItemIdAndStatus(member.getId(), item.getId(), GroupBuyStatus.WAIT) != null) return -1L; // 이미 대기열에 있는 본인의 공동구매 주문건이 있을경우 주문을 취소시킴

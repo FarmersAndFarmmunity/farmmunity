@@ -66,13 +66,28 @@ public class OrderItem extends BaseEntity {
     }
 
     // 공동 구매 orderItem 생성
-    public static OrderItem createGroupBuyingOrderItem(Item item, int orderPrice, int count) {
+    public static OrderItem createGroupBuyingOrderItem(Item item, int count, Long itemOptionId) {
+
+        String fullOptionNm = null;
+        int optQuntity = 1;
+        int price = item.getGroupBuying().getDiscount();
+
+        if (itemOptionId != null) {
+            ItemOption itemOption = item.getItemOptionList().stream().filter(i -> Objects.equals(i.getId(), itemOptionId)).findAny().orElseThrow(EntityNotFoundException::new);
+            price = itemOption.getGbPrice();
+            NumberFormat numberFormat = NumberFormat.getNumberInstance();
+            String formattedPrice = numberFormat.format(itemOption.getExtraAmount());
+            fullOptionNm = itemOption.getOptionName() + " " + itemOption.getQuantity() + " (" + formattedPrice + ")";
+            optQuntity = itemOption.getQuantity();
+        }
 
         item.checkRestStock(count); // 주문 전에 상품 재고 체크부터
         OrderItem orderItem = new OrderItem();
         orderItem.setItem(item); // 주문한 아이템을 지정
         orderItem.setCount(count); // 주문한 아이템을 몇 개를 살지
-        orderItem.setOrderPrice(orderPrice); // 해당 상품의 가격을 저장
+        orderItem.setOrderPrice(price); // 해당 상품의 가격을 저장
+        orderItem.setOptionNm(fullOptionNm);
+        orderItem.setOptionQuantity(optQuntity);
 
         return orderItem;
     }
