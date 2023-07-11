@@ -79,7 +79,7 @@
 <div layout:fragment="content">
   <div class="flex w-full justify-center">
     <div style="width: 650px;">
-
+      <form role="form" method="post" th:action="@{/members/updateInfo}" th:object="${memberUpdateRequestDto}">
         <p class="text-3xl font-bold my-4 ml-3 pb-3">
           내 정보 관리
         </p>
@@ -108,7 +108,31 @@
               이름
             </dt>
             <dd class="detail-content">
-              <div th:text="${member.getUsername()}"></div>
+              <input type="text" th:value="${member.username}" th:name="username">
+            </dd>
+          </dl>
+          <dl class="detail-line price-box flex flex-row items-center">
+            <dt class="detail-title">
+              현재 비밀번호
+            </dt>
+            <dd class="detail-content">
+              <input th:field="*{currentPassword}" placeholder="현재 비밀번호를 입력해주세요">
+            </dd>
+          </dl>
+          <dl class="detail-line price-box flex flex-row items-center">
+            <dt class="detail-title">
+              새 비밀 번호
+            </dt>
+            <dd class="detail-content">
+              <input th:field="*{newPassword}" placeholder="새 비밀번호를 입력해주세요">
+            </dd>
+          </dl>
+          <dl class="detail-line price-box flex flex-row items-center">
+            <dt class="detail-title">
+              새 비밀 번호 확인
+            </dt>
+            <dd class="detail-content">
+              <input th:field="*{confirmPassword}" placeholder="새 비밀번호를 다시 입력해주세요">
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
@@ -117,6 +141,12 @@
             </dt>
             <dd class="detail-content">
               <div th:text="${member.getRegTime()}"></div>
+            </dd>
+            <dt class="detail-title">
+              회원 정보 최종 수정 일자
+            </dt>
+            <dd class="detail-content">
+              <div th:text="${member.getUpdateTime()}"></div>
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
@@ -131,18 +161,21 @@
           </dl>
         </div>
 
-      <h3 class="card-title text-2xl mb-3">쇼핑</h3>
-      <div class="join-form flex justify-center flex-col">
-        <dl class="mb-3">
-          <dt class="detail-title mb-3">
-            <a th:href="@{/members/mypage/address}">배송지 관리</a>
-          </dt>
-        </dl>
-        <div style="text-align: center">
-          <button class="btn btn-accent" onclick="location.href='/members/myInfo'">내 정보 수정</button>
-        </div>
+        <h3 class="card-title text-2xl mb-3">쇼핑</h3>
+        <div class="join-form flex justify-center flex-col">
+          <dl class="mb-3">
+            <dt class="detail-title mb-3">
+              <a th:href="@{/members/mypage/address}">배송지 관리</a>
+            </dt>
+          </dl>
 
-      </div>
+          <div style="text-align: center">
+<!--            <button class="btn btn-accent" onclick="location.href='/members/myPage'">회원 정보 수정</button>-->
+            <button th:formaction="@{/members/myPage}" type="submit" class="btn btn-accent">회원 정보 수정</button>
+          </div>
+
+        </div>
+      </form>
 
     </div>
   </div>

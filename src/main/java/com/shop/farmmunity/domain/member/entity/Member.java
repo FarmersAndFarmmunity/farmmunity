@@ -79,8 +79,6 @@ public class Member extends BaseEntity {
 
     public void modifyMemberInfo(MemberUpdateRequestDto memberUpdateRequestDto, PasswordEncoder passwordEncoder) {
         this.username = memberUpdateRequestDto.getUsername();
-        this.email = memberUpdateRequestDto.getEmail();
-        this.password = passwordEncoder.encode(memberUpdateRequestDto.getPassword());
-        this.address = memberUpdateRequestDto.getAddress();
+        this.password = passwordEncoder.encode(memberUpdateRequestDto.getConfirmPassword());
     }
 }
