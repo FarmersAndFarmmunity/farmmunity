@@ -70,4 +70,13 @@ public class MemberService {
         return memberRepository.getAdminMemberPage(memberSearchDto, pageable);
     }
 
+    @Transactional
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto, String username) {
+
+
+
+    }
+
+
+
 }

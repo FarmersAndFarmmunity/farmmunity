@@ -1,6 +1,7 @@
 package com.shop.farmmunity.domain.member.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
+import com.shop.farmmunity.domain.item.dto.ItemFormDto;
 import com.shop.farmmunity.domain.member.constant.Role;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
@@ -24,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -75,12 +74,39 @@ public class MemberController {
         return "member/memberLoginForm";
     }
 
-    @GetMapping(value = {"/members/mypage"})
-    public String memberList(Model model, Principal principal) throws Exception {
+    @GetMapping(value = {"/members/myPage"})
+    public String memberList(Model model, Principal principal, MemberUpdateRequestDto memberUpdateRequestDto) throws Exception {
         Member member = memberService.findByEmail(principal.getName());
         model.addAttribute("member", member);
 
         return "member/memberMyPage";
+    }
+
+    @PostMapping(value = {"/members/myPage"})
+    public String updateMemberInfo(@Valid MemberUpdateRequestDto memberUpdateRequestDto, BindingResult bindingResult,
+                                   Model model, Principal principal, @RequestParam("username") String username) {
+        Member member = memberService.findByEmail(principal.getName());
+
+        if(bindingResult.hasErrors()){
+            model.addAttribute("member", member);
+            return "member/memberMyPage";
+        }
+
+        if (username == null) {
+            model.addAttribute("member", member);
+            model.addAttribute("errorMessage", "이름은 필수 입력 값입니다.");
+            return "member/memberMyPage";
+        }
+
+        try {
+            memberService.updateMember(memberUpdateRequestDto, username);
+        } catch (Exception e){
+            model.addAttribute("member", member);
+            model.addAttribute("errorMessage", "회원 수정 중 에러가 발생하였습니다.");
+            return "member/memberMyPage";
+        }
+
+        return "redirect:/";
     }
 
     //////// 관리자 영역
@@ -124,14 +150,5 @@ public class MemberController {
         UsernamePasswordAuthenticationToken newAuth = new UsernamePasswordAuthenticationToken(newPrincipal, currentAuth.getCredentials(), newPrincipal.getAuthorities());
         newAuth.setDetails(currentAuth.getDetails());
         return newAuth;
-    }
-
-    @GetMapping(value = "/members/myInfo")
-    public String memberInfoModify(Model model, Principal principal, MemberUpdateRequestDto memberUpdateRequestDto) {
-        Member member = memberService.findByEmail(principal.getName());
-
-        model.addAttribute("member", member);
-
-        return "member/memberMyPage";
     }
 }

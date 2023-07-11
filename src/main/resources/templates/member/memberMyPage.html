@@ -108,7 +108,7 @@
               이름
             </dt>
             <dd class="detail-content">
-              <input type="text" th:value="${member.getUsername()}">
+              <input type="text" th:value="${member.username}" th:name="username">
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
@@ -116,7 +116,7 @@
               현재 비밀번호
             </dt>
             <dd class="detail-content">
-
+              <input th:field="*{currentPassword}" placeholder="현재 비밀번호를 입력해주세요">
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
@@ -124,7 +124,7 @@
               새 비밀 번호
             </dt>
             <dd class="detail-content">
-              <input th:field="*{username}" placeholder="새 비밀번호를 입력해주세요">
+              <input th:field="*{newPassword}" placeholder="새 비밀번호를 입력해주세요">
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
@@ -132,10 +132,9 @@
               새 비밀 번호 확인
             </dt>
             <dd class="detail-content">
-
-
+              <input th:field="*{confirmPassword}" placeholder="새 비밀번호를 다시 입력해주세요">
             </dd>
-          </dl>3
+          </dl>
           <dl class="detail-line price-box flex flex-row items-center">
             <dt class="detail-title">
               가입 일자
@@ -171,7 +170,8 @@
           </dl>
 
           <div style="text-align: center">
-            <button class="btn btn-accent" onclick="location.href='/members/myInfo'">회원 정보 수정</button>
+<!--            <button class="btn btn-accent" onclick="location.href='/members/myPage'">회원 정보 수정</button>-->
+            <button th:formaction="@{/members/myPage}" type="submit" class="btn btn-accent">회원 정보 수정</button>
           </div>
 
         </div>
