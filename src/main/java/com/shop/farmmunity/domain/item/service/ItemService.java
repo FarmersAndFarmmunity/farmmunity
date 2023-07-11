@@ -56,6 +56,7 @@ public class ItemService {
             // 상품의 이미지 정보를 저장
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
         }
+
         return item.getId();
     }
 
