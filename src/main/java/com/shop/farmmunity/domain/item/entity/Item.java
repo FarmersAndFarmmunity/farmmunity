@@ -5,10 +5,21 @@ import com.shop.farmmunity.base.exception.OutOfStockException;
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
 import com.shop.farmmunity.domain.item.dto.ItemFormDto;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import static jakarta.persistence.FetchType.LAZY;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +30,6 @@ import java.util.List;
 @Setter
 @ToString
 public class Item extends BaseEntity {
-
     @Id
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +53,11 @@ public class Item extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
+
+    @Builder.Default
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    Set<ItemTag> itemTags = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOption> itemOptionList = new ArrayList<>(); // 상품 옵션
@@ -78,7 +93,23 @@ public class Item extends BaseEntity {
         this.stockNumber += stockNumber;
     }
 
+    public void updateItemTags(Set<ItemTag> newItemTags) {
+        Set<ItemTag> needToDelete = itemTags
+                .stream()
+                .filter(Predicate.not(newItemTags::contains))
+                .collect(Collectors.toSet());
+
+        needToDelete
+                .stream()
+                .forEach(itemTags::remove);
+
+        newItemTags
+                .stream()
+                .forEach(itemTags::add);
+    }
+
     public void addOption(ItemOption option) {
         this.itemOptionList.add(option);
+
     }
 }

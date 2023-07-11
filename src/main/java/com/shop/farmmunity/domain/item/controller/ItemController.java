@@ -50,6 +50,7 @@ public class ItemController {
     private final ReviewService reviewService;
 
     private final CustomUserDetailsService customUserDetailsService;
+
     @GetMapping(value = "/vendor/item/new")
     public String itemForm(Model model){
         model.addAttribute("itemFormDto", new ItemFormDto());
@@ -71,7 +72,7 @@ public class ItemController {
         }
 
         try {
-            itemService.saveItem(itemFormDto, itemImgFileList);
+            itemService.saveItem(itemFormDto, itemImgFileList, itemFormDto.getItemTagContents());
         } catch (Exception e){
             model.addAttribute("errorMessage", "상품 등록 중 에러가 발생하였습니다.");
             return "item/itemForm";
@@ -184,6 +185,7 @@ public class ItemController {
 
     @GetMapping("/item/{itemId}")
     public String itemDtl(Model model, @PathVariable Long itemId) {
+        Optional<Item> item = itemService.findById(itemId);
         ItemFormDto itemFormDto = itemService.getItemDtl(itemId);
         List<Review> reviewList = reviewService.getList(itemId);
         GroupBuyDto groupBuyDto = itemService.getGroupBuyInfo(itemId);

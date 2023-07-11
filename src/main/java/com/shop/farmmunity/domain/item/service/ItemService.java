@@ -1,5 +1,7 @@
 package com.shop.farmmunity.domain.item.service;
 
+import com.shop.farmmunity.domain.cart.entity.CartItem;
+import com.shop.farmmunity.domain.cart.service.CartService;
 import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.item.dto.*;
 import com.shop.farmmunity.domain.item.entity.Group;
@@ -12,6 +14,8 @@ import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
 import com.shop.farmmunity.domain.item.repository.ItemOptionRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
+import com.shop.farmmunity.domain.itemTag.service.ItemTagService;
 import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +28,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
-
+    private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
     private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
@@ -41,12 +49,13 @@ public class ItemService {
     private final GroupRepository groupRepository;
 
     // 등록
-    public Long saveItem(ItemFormDto itemFormDto,
-                         List<MultipartFile> itemImgFileList) throws Exception {
+    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList, String itemTagContents) throws Exception {
         GroupBuying groupBuying = itemFormDto.createGroupBuying();
         Item item = itemFormDto.createItem();
         item.setGroupBuying(groupBuying);
         itemRepository.save(item);
+        itemTagService.applyItemTags(item, itemTagContents);
+      
         // 아이템 옵션
         if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
             itemOptionService.saveItemOption(itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), itemFormDto.getGbPriceList(), item);
@@ -66,6 +75,7 @@ public class ItemService {
             // 상품의 이미지 정보를 저장
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
         }
+
         return item.getId();
     }
 

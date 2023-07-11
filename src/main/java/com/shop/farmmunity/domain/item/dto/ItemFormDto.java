@@ -4,14 +4,23 @@ import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
 import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -35,6 +44,16 @@ public class ItemFormDto {
     private ItemSellStatus itemSellStatus;
 
     private ItemClassifyStatus itemClassifyStatus;
+
+    private Long postKeywordId;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    Set<ItemTag> itemTags = new LinkedHashSet<>();
+
+    @NotBlank(message = "태그는 필수 입력 값입니다.")
+    private String itemTagContents;
 
     private List<String> optionNameList = new ArrayList<>(); // 옵션 이름
 
@@ -68,4 +87,19 @@ public class ItemFormDto {
         return modelMapper.map(item, ItemFormDto.class);
     }
 
+    public String getExtra_itemTagLinks() {
+        return itemTags
+                .stream()
+                .map(itemTag -> {
+                    String text = "#" + itemTag.getItemKeyword().getContent();
+
+                    return """
+                            <a href="%s" class="text-link">%s</a>
+                            """
+                            .stripIndent()
+                            .formatted(itemTag.getItemKeyword().getListUrl(), text);
+                })
+                .sorted()
+                .collect(Collectors.joining(" "));
+    }
 }
