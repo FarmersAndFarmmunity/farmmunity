@@ -12,8 +12,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-import static com.shop.farmmunity.domain.item.entity.QItem.item;
-
 public class CartItemRepositoryCustomImpl implements CartItemRepositoryCustom {
     private final JPAQueryFactory queryFactory;
     public CartItemRepositoryCustomImpl(EntityManager em){ this.queryFactory = new JPAQueryFactory(em); }
@@ -28,7 +26,7 @@ public class CartItemRepositoryCustomImpl implements CartItemRepositoryCustom {
                 .join(QCartItem.cartItem.item)
                 .where(QCartItem.cartItem.cart.id.eq(cartId),
                         QItemImg.itemImg.item.id.eq(QCartItem.cartItem.item.id),
-                        QItemImg.itemImg.repimgYn.eq("Y"))
+                        QItemImg.itemImg.repImgYn.eq("Y"))
                 .orderBy(QCartItem.cartItem.regTime.desc())
                 .fetch();
 

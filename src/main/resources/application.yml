@@ -80,5 +80,6 @@ custom:
   uploadPath:
   #회원/상품관리 페이지에서 한 페이지에 표시할 게시글 갯수
   postForPage: 10
+  groupMaxCount: 2
   site:
     baseUrl: http://localhost:8080

@@ -21,6 +21,9 @@ import java.util.stream.Collectors;
 
 import static jakarta.persistence.FetchType.LAZY;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "item")
 @Getter
@@ -30,7 +33,7 @@ public class Item extends BaseEntity {
     @Id
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;       // 상품 코드
+    private Long id; // 상품 코드
 
     @Column(nullable = false, length = 50)
     private String itemNm; // 상품명
@@ -39,10 +42,10 @@ public class Item extends BaseEntity {
     private int price; // 가격
 
     @Column(nullable = false)
-    private int stockNumber; // 재고수량
+    private int stockNumber; // 재고 수량
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String itemDetail; // 상품 상세 설명
 
     @Enumerated(EnumType.STRING)
@@ -55,6 +58,13 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.EXTRA)
     Set<ItemTag> itemTags = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemOption> itemOptionList = new ArrayList<>(); // 상품 옵션
+  
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_buying_id")
+    private GroupBuying groupBuying;
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemNm = itemFormDto.getItemNm();
@@ -96,5 +106,10 @@ public class Item extends BaseEntity {
         newItemTags
                 .stream()
                 .forEach(itemTags::add);
+    }
+
+    public void addOption(ItemOption option) {
+        this.itemOptionList.add(option);
+
     }
 }

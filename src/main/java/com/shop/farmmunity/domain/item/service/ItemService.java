@@ -2,10 +2,17 @@ package com.shop.farmmunity.domain.item.service;
 
 import com.shop.farmmunity.domain.cart.entity.CartItem;
 import com.shop.farmmunity.domain.cart.service.CartService;
+import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.item.dto.*;
+import com.shop.farmmunity.domain.item.entity.Group;
+import com.shop.farmmunity.domain.item.entity.GroupBuying;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemImg;
+import com.shop.farmmunity.domain.item.entity.ItemOption;
+import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
+import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
+import com.shop.farmmunity.domain.item.repository.ItemOptionRepository;
 import com.shop.farmmunity.domain.item.repository.ItemRepository;
 import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import com.shop.farmmunity.domain.itemTag.service.ItemTagService;
@@ -16,7 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
@@ -34,24 +41,36 @@ import static java.util.stream.Collectors.toMap;
 public class ItemService {
     private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
-    private final ItemImgService itemImgService;
+    private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
+    private final ItemOptionRepository itemOptionRepository;
+    private final ItemOptionService itemOptionService;
+    private final GroupBuyingRepository groupBuyingRepository;
+    private final GroupRepository groupRepository;
 
     // 등록
-    public Long saveItem(ItemFormDto itemFormDto,
-                         List<MultipartFile> itemImgFileList, String itemTagContents) throws Exception {
+    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList, String itemTagContents) throws Exception {
+        GroupBuying groupBuying = itemFormDto.createGroupBuying();
         Item item = itemFormDto.createItem();
+        item.setGroupBuying(groupBuying);
         itemRepository.save(item);
         itemTagService.applyItemTags(item, itemTagContents);
+      
+        // 아이템 옵션
+        if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
+            itemOptionService.saveItemOption(itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList(), item);
+        }
+        groupBuyingRepository.save(groupBuying);
 
+        // 아이템 이미지
         for (int i = 0; i < itemImgFileList.size(); i++) { // itemImgFileList를 for문을 이용해 순회하여 처리
             ItemImg itemImg = new ItemImg();
             itemImg.setItem(item);
 
             if (i == 0) { // 첫번 째 이미지면 "Y"를 아니라면 "N"를 부여
-                itemImg.setRepimgYn("Y");
+                itemImg.setRepImgYn("Y");
             } else {
-                itemImg.setRepimgYn("N");
+                itemImg.setRepImgYn("N");
             }
             // 상품의 이미지 정보를 저장
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
@@ -68,19 +87,33 @@ public class ItemService {
             ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
             itemImgDtoList.add(itemImgDto);
         }
+        List<ItemOption> itemOptionList = itemOptionRepository.findByItemIdOrderByIdAsc(itemId);
+        List<ItemOptionDto> itemOptionDtoList = new ArrayList<>();
+
+        for(ItemOption itemOption : itemOptionList) {
+            ItemOptionDto itemOptionDto = ItemOptionDto.of(itemOption);
+            itemOptionDtoList.add(itemOptionDto);
+        }
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
+        itemFormDto.setItemOptionDtoList(itemOptionDtoList);
+        itemFormDto.setDiscount(item.getGroupBuying().getDiscount());
         return itemFormDto;
     }
 
     // 수정
-    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
+    public Long updateItem(ItemFormDto itemFormDto,
+                           List<MultipartFile> itemImgFileList) throws Exception {
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
+
+        if (!CollectionUtils.isEmpty(itemFormDto.getOptionNameList()) || !CollectionUtils.isEmpty(itemFormDto.getExtraAmountList())) {
+            itemOptionService.updateItemOption(item, itemFormDto.getOptionNameList(), itemFormDto.getExtraAmountList(), itemFormDto.getQuantityList());
+        }
 
         List<Long> itemImgIds = itemFormDto.getItemImgIds();
 
@@ -120,6 +153,31 @@ public class ItemService {
 
     public Optional<Item> findById(Long itemId) {
         return itemRepository.findById(itemId);
+    }
+
+    public GroupBuyDto getGroupBuyInfo(Long itemId) {
+        GroupBuyDto groupBuyDto = new GroupBuyDto();
+        Group group = groupRepository.findByItemIdAndStatus(itemId, GroupBuyStatus.WAIT);
+        groupBuyDto.setCount(groupRepository.countByItemIdAndStatus(itemId, GroupBuyStatus.SUCCESS));
+        if(group != null) {
+            groupBuyDto.setUsername(group.getMember().getUsername());
+            groupBuyDto.setMatchEndTime(group.getGroupBuyEndTime().toString().substring(0,19).replace("T", " "));
+        }
+        return groupBuyDto;
+    }
+
+    public List<GroupBuyDto> getGroupBuyList(Long itemId) {
+        List<GroupBuyDto> groupBuyDtos = new ArrayList<>();
+        List<Group> groups = groupRepository.findByItemIdAndStatusAndIsHost(itemId, GroupBuyStatus.SUCCESS, true);
+        for(Group group : groups){
+            GroupBuyDto groupBuyDto = new GroupBuyDto();
+            groupBuyDto.setUsername(group.getMember().getUsername());
+            groupBuyDto.setPartnerUsername(group.getPartnerMember().getUsername());
+            groupBuyDto.setMatchedTime(group.getGroupBuyMatchedTime().toString().substring(0, 19).replace("T", " "));
+
+            groupBuyDtos.add(groupBuyDto);
+        }
+        return groupBuyDtos;
     }
 }
 

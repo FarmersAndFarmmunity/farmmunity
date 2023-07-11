@@ -6,7 +6,6 @@
 <head>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-
 </head>
 
 <!-- 사용자 스크립트 추가 -->
@@ -25,6 +24,7 @@
     <script>
         var urlParams = new URLSearchParams(window.location.search);
         var msg = urlParams.get('msg');
+        let selectedId = null;
 
         if (msg) {
             alert(decodeURIComponent(msg));
@@ -33,7 +33,7 @@
 
         const tossPayments = TossPayments(CLIENT_KEY);
 
-        function orderCpmplete() {
+        function orderComplete() {
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
@@ -64,16 +64,15 @@
                 },
                 dataType: "json",
                 cache: false,
-                success: function (result, status) {
+                success: function () {
                     payment();
                 },
-                error: function (jqXHR, status, error) {
+                error: function (jqXHR) {
 
                     if (jqXHR.status == '401') {
                         alert('로그인 후 이용해주세요');
                         location.href = '/members/login';
                     } else {
-                        // alert(jqXHR.responseText);
                         var errors = jqXHR.responseJSON;
                         displayErrors(errors);
                     }
@@ -81,8 +80,46 @@
             });
         }
 
+        function selectAddress() {
+            const popOption = "width = 650px, height=550px, top=300px, left=300px, scrollbars=yes";
+            const openUrl = '/members/mypage/address/select';
+            const childWindow = window.open(openUrl, 'select', popOption);
+
+            window.addEventListener('message', function(event) {
+                if (event.data.type === 'selectedId') {
+                    selectedId = event.data.selectedId;
+                    receiveSelectedId(selectedId);
+
+                    childWindow.close();
+                }
+            });
+        }
+
+        function receiveSelectedId(selectedId) {
+            const apiEndpoint = baseUrl + `/members/mypage/address/select/${selectedId}`
+            fetch(apiEndpoint)
+                .then(response => response.json())
+                .then(data => {
+                    const shippingName = document.getElementById('shippingName');
+                    const recipientName = document.getElementById('recipientName');
+                    const recipientContact = document.getElementById('recipientContact');
+                    const zipcode = document.getElementById('zipcode');
+                    const addr = document.getElementById('addr');
+                    const addr_detail = document.getElementById('addr_detail');
+                    shippingName.value = data.shippingName;
+                    recipientName.value = data.recipientName;
+                    recipientContact.value = data.recipientContact;
+                    zipcode.value = data.zipcode;
+                    addr.value = data.addr;
+                    addr_detail.value = data.addr_detail;
+                })
+                .catch(error => {
+                    alert(error);
+                });
+        }
+
         function displayErrors(errors) {
-            $(".fieldError").hide().text(""); // Clear previous error messages
+            $(".fieldError").hide().text("");
 
             for (var fieldName in errors) {
                 var errorElement = $("#" + fieldName + "Error");
@@ -92,11 +129,11 @@
                     if (errors[fieldName]) {
                         errorElement.text(errors[fieldName]);
                         errorElement.show();
-                        inputElement.addClass("is-invalid"); // Add error styling
+                        inputElement.addClass("is-invalid");
                     } else {
                         errorElement.hide();
-                        inputElement.removeClass("is-invalid"); // Remove error styling
-                        inputElement.val(""); // Clear input value
+                        inputElement.removeClass("is-invalid");
+                        inputElement.val("");
                     }
                 }
             }
@@ -131,54 +168,6 @@
 
             tossPayments.requestPayment(method, paymentData);
         }
-
-        function execDaumPostcode() {
-            new daum.Postcode({
-                oncomplete: function (data) {
-                    // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
-
-                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
-                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
-                    var addr = ''; // 주소 변수
-                    var extraAddr = ''; // 참고항목 변수
-
-                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
-                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
-                        addr = data.roadAddress;
-                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
-                        addr = data.jibunAddress;
-                    }
-
-                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
-                    if (data.userSelectedType === 'R') {
-                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
-                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
-                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
-                            extraAddr += data.bname;
-                        }
-                        // 건물명이 있고, 공동주택일 경우 추가한다.
-                        if (data.buildingName !== '' && data.apartment === 'Y') {
-                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
-                        }
-                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
-                        if (extraAddr !== '') {
-                            extraAddr = ' (' + extraAddr + ')';
-                        }
-                        // 조합된 참고항목을 해당 필드에 넣는다.
-                        document.getElementById("addr_detail").value = extraAddr;
-
-                    } else {
-                        document.getElementById("addr_detail").value = '';
-                    }
-
-                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                    document.getElementById('zipcode').value = data.zonecode;
-                    document.getElementById("addr").value = addr;
-                    // 커서를 상세주소 필드로 이동한다.
-                    document.getElementById("addr_detail").focus();
-                }
-            }).open();
-        }
     </script>
 </th:block>
 
@@ -202,14 +191,6 @@
             text-overflow: ellipsis;
         }
 
-        .fs18 {
-            font-size: 18px
-        }
-
-        .fs24 {
-            font-size: 24px
-        }
-
         .order-box {
             width: 700px;
         }
@@ -217,10 +198,18 @@
         .order-line {
             border-bottom: 1px solid #efefef;
         }
-        .fieldError {
-            color: red;
-        }
 
+        .fieldError {
+            color: #bd2130;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            width:100%;
+            padding-top: 0.5rem;
+            padding-left: 0.5rem;
+        }
+        #inlineh3 {
+            display: inline-block;
+        }
     </style>
 </th:block>
 
@@ -242,7 +231,8 @@
                                          th:alt="${orderItem.itemNm}">
                                 </div>
                                 <div class="text-base repImgDiv" style="width: 350px">
-                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"></div>
+                                    <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"/>
+                                    <span th:if="${orderItem.getOptionNm() != null}" th:text="${'옵션 ' + orderItem.getOptionNm()}"></span>
                                     <div th:text="${'상품 가격 : ' + orderItem.orderPrice} +'원'"></div>
                                     <div th:text="${'주문 개수 : ' + orderItem.count} +'개'"></div>
                                     <div th:text="${'주문 번호 : ' + order.getOrderId() + '번'}"></div>
@@ -258,7 +248,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="customerName" class="input  input-bordered w-full"
-                                           placeholder="이름을 입력해주세요">
+                                           placeholder="이름을 입력해주세요" th:value="${member.getUsername()}">
                                     <div id="customerNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -278,12 +268,16 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="customerEmail" class="input input-bordered w-full"
-                                           placeholder="이메일을 입력해주세요">
+                                           placeholder="이메일을 입력해주세요" th:value="${member.getEmail()}">
                                     <div id="customerEmailError" class="fieldError"></div>
                                 </dd>
                             </dl>
                         </div>
-                        <h3 class="card-title text-2xl">받으시는 분</h3>
+                        <div class="d-inline-flex">
+                            <h3 class="card-title text-2xl" id="inlineh3">받으시는 분</h3>
+                                    <button type="button" class="btn btn-primary float-right mb-3 ml-1"
+                                            onclick="selectAddress()">배송지 변경</button>
+                        </div>
                         <div class="join-form flex justify-center flex-col">
                             <dl class="mb-3">
                                 <dt class="detail-title">
@@ -291,7 +285,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="shippingName" class="input input-bordered w-full"
-                                           placeholder="배송지명을 입력해주세요">
+                                           placeholder="배송지명을 입력해주세요" th:value="${address.shippingName}">
                                     <div id="shippingNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -301,7 +295,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="recipientName" class="input input-bordered w-full"
-                                           placeholder="이름을 입력해주세요">
+                                           placeholder="이름을 입력해주세요" th:value="${address.recipientName}">
                                     <div id="recipientNameError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -311,7 +305,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="recipientContact" class="input input-bordered w-full"
-                                           placeholder="연락처를 입력해주세요">
+                                           placeholder="연락처를 입력해주세요" th:value="${address.recipientContact}">
                                     <div id="recipientContactError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -320,18 +314,14 @@
                                     <label>주소</label>
                                 </dt>
                                 <dd class="detail-content">
-                                    <input type="text" id="zipcode" class="input input-bordered"
-                                           placeholder="우편번호" readonly>
-                                    <button type="button" class="btn btn-primary mb-3 ml-1"
-                                            onclick="execDaumPostcode()">주소검색
-                                    </button>
+                                    <input type="text" id="zipcode" class="input input-bordered" placeholder="우편번호" th:value="${address.zipcode}" readonly>
                                     <div id="zipcodeError" class="fieldError"></div>
                                 </dd>
                             </dl>
                             <dl class="mb-3">
                                 <dd class="detail-content">
                                     <input type="text" id="addr" class="input input-bordered w-full"
-                                           placeholder="기본주소" readonly>
+                                           placeholder="기본주소" th:value="${address.addr}" readonly>
                                     <div id="addrError" class="fieldError"></div>
                                 </dd>
                             </dl>
@@ -341,7 +331,7 @@
                                 </dt>
                                 <dd class="detail-content">
                                     <input type="text" id="addr_detail" class="input input-bordered w-full"
-                                           placeholder="상세 주소를 입력해주세요">
+                                           placeholder="상세 주소를 입력해주세요" th:value="${address.addr_detail}">
                                 </dd>
                             </dl>
                             <dl class="mb-3">
@@ -368,7 +358,7 @@
                             <div class="text-xl font-bold text-center mb-2">
                                 총 주문 금액 : <span class="text-accent" th:text="${order.getTotalPrice() + '원'}">0원</span>
                             </div>
-                            <button type="button" class="btn btn-accent" onclick="orderCpmplete()">주문하기</button>
+                            <button type="button" class="btn btn-accent" onclick="orderComplete()">주문하기</button>
                         </div>
                     </div>
                 </div>
