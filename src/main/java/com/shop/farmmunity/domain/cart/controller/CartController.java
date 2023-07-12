@@ -20,7 +20,6 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class CartController {
-
     private final CartService cartService;
 
     @PostMapping(value = "/cart")

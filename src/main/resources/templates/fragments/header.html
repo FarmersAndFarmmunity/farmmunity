@@ -57,16 +57,16 @@
                                 <a href="/members/myPage">내 정보 관리</a>
                             </li>
 
+                            <li class="hover:text-accent" sec:authorize="isAuthenticated()">
+                                <a href="/members/mypage/address">배송지 관리</a>
+                            </li>
+
                             <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDOR')">
                                 <a href="/vendor/item/new">상품 등록</a>
                             </li>
 
-                            <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_VENDOR')">
-                                <a href="/vendor/items">내 상품 관리</a>
-                            </li>
-
                             <li class="hover:text-accent" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                                <a href="/admin/items">전체 상품 관리</a>
+                                <a href="/admin/items">상품 관리</a>
                             </li>
 
                             <li class="hover:text-accent" sec:authorize="isAuthenticated()">

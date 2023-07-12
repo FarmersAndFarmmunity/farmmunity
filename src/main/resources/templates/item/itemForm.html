@@ -3,18 +3,23 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/layout1}">
 
+<head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+
 <!-- 사용자 스크립트 추가 -->
 <th:block layout:fragment="script">
 
     <script th:inline="javascript">
+
         $(document).ready(function(){
             var errorMessage = [[${errorMessage}]];
             if(errorMessage != null){
                 alert(errorMessage);
+                history.back();
             }
-
             bindDomEvent();
-
         });
 
         function bindDomEvent(){
@@ -30,6 +35,69 @@
 
                 $(this).siblings(".custom-file-label").html(fileName);
             });
+        }
+
+        function addTextBox() {
+            const box = document.getElementById("opt-box");
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = "<input type='text' class='option-input input input-bordered input-sm w-full mb-2' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
+                "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='gbPriceList' placeholder='옵션 공동구매 가격을 입력해주세요'>" +
+                "<input type='number' class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
+                "<input type='button' class='btn btn-error btn-sm' value='삭제' onclick='remove(this)'>"
+            box.appendChild(newDiv);
+        }
+
+        const addExtraTextBox = () => {
+            const box = document.getElementById("extra-opt-box");
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = "<input type='text' class='option-input input input-bordered input-sm w-full mb-2' name='optionNameList' placeholder='옵션명을 입력해주세요'> " +
+                "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='extraAmountList' placeholder='옵션 가격을 입력해주세요'>" +
+                "<input type='number' class='option-input input input-bordered input-sm w-full mb-2' name='gbPriceList' placeholder='옵션 공동구매 가격을 입력해주세요'>" +
+                "<input type='number' class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name='quantityList' placeholder='옵션 수량을 입력해주세요'>" +
+                "<input type='button' class='btn btn-error btn-sm' value='삭제' onclick='remove(this)'>"
+            box.appendChild(newDiv);
+        }
+
+        function remove(obj) {
+            if (document.getElementById('opt-box')) {
+                document.getElementById('opt-box').removeChild(obj.parentNode);
+            }
+        }
+
+        function removeOption(button) {
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            var optionId = button.getAttribute('data-id');
+            var url = "/vendor/item/itemOption/" + optionId;
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                contentType: "application/json",
+                beforeSend: function (xhr) {
+                    /* 데이터를 전송하기 전에 헤더에 csrf값을 설정 */
+                    xhr.setRequestHeader(header, token);
+                },
+                dataType: "json",
+                cache: false,
+                error: function (jqXHR) {
+                    if (jqXHR.status == '401') {
+                        alert('로그인 후 이용해주세요');
+                        location.href = '/members/login';
+                    } else {
+                        var errors = jqXHR.responseJSON;
+                        displayErrors(errors);
+                    }
+                }
+            });
+            // Get the parent div of the option
+            var optionDiv = button.parentNode;
+
+            // Remove the option div from the DOM
+            optionDiv.parentNode.removeChild(optionDiv);
         }
 
     </script>
@@ -59,7 +127,7 @@
             height: fit-content;
         }
         .detail-title {
-             width:150px;
+             width:200px;
              display: flex;
              align-items: center;
              font-weight: bold;
@@ -71,6 +139,7 @@
             width:100%;
             flex-direction: column;
         }
+
     </style>
 </th:block>
 
@@ -79,8 +148,11 @@
         <div style="width: 650px;">
             <form role="form" method="post" enctype="multipart/form-data" th:object="${itemFormDto}">
 
-                <p class="text-3xl font-bold my-4 ml-3 pb-3">
+                <p class="text-3xl font-bold my-4 ml-3 pb-3" th:if="${#strings.isEmpty(itemFormDto.id)}">
                     상품 등록
+                </p>
+                <p class="text-3xl font-bold my-4 ml-3 pb-3" th:unless="${#strings.isEmpty(itemFormDto.id)}">
+                    상품 수정
                 </p>
 
                 <input type="hidden" th:field="*{id}">
@@ -128,6 +200,35 @@
                             <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>
+
+                    <dl class="detail-line price-box flex flex-row">
+                        <dt class="detail-title">
+                            상품 옵션
+                        </dt>
+                        <dd class="detail-content">
+                            <div class="w-full" th:if="${#lists.isEmpty(itemFormDto.itemOptionDtoList)}">
+                                <div id="opt-box" class="form-group opt-div">
+                                    <input type="button" class="btn btn-warning btn-sm mb-2 w-full" value="옵션 추가하기" onclick="addTextBox()">
+                                </div>
+                            </div>
+
+                            <div class="w-full" th:if = "${not #lists.isEmpty(itemFormDto.itemOptionDtoList)}">
+                                <div class="form-group" th:each="itemOptionDto, status: ${itemFormDto.itemOptionDtoList}">
+                                    <div id="existing-opt-box" class="opt-div">
+                                        <input type="text" th:value="${itemOptionDto.optionName}" class='option-input input input-bordered input-sm w-full mb-2' name="optionNameList" placeholder="옵션명을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.extraAmount}" class='option-input input input-bordered input-sm w-full mb-2' name="extraAmountList" placeholder="옵션 가격을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.gbPrice}" class='option-input input input-bordered input-sm w-full mb-2' name="gbPriceList" placeholder="옵션 공동구매 가격을 입력해주세요">
+                                        <input type="number" th:value="${itemOptionDto.quantity}" class='option-input input input-bordered input-sm w-80 mr-2 mb-2' name="quantityList" placeholder="옵션 수량을 입력해주세요">
+                                        <input type="button" class="btn btn-error btn-sm" value="삭제" onclick="removeOption(this)" th:data-id="${itemOptionDto.id}">
+                                    </div>
+                                </div>
+                                <div id="extra-opt-box" class="form-group opt-div">
+                                    <input type="button" class="btn btn-warning btn-sm mb-2 w-full" value="옵션 추가하기" onclick="addExtraTextBox()">
+                                </div>
+                            </div>
+                        </dd>
+                    </dl>
+
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
                             공동구매 할인가
@@ -145,6 +246,17 @@
                             <p th:if="${#fields.hasErrors('stockNumber')}" th:errors="*{stockNumber}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>
+
+                    <dl class="detail-line price-box flex flex-row">
+                        <dt class="detail-title">
+                            태그
+                        </dt>
+                        <dd class="detail-content">
+                            <input type="text" name="itemTagContents" th:field="*{itemTagContents}" class="input input-bordered input-md w-full w-80" placeholder="#태그1 #태그2 #태그3 ...">
+                            <p th:if="${#fields.hasErrors('itemTagContents')}" th:errors="*{itemTagContents}" class="fieldError">Incorrect data</p>
+                        </dd>
+                    </dl>
+
                     <dl class="detail-line price-box flex flex-row">
                         <dt class="detail-title">
                             상품 상세 내용

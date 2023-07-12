@@ -67,7 +67,7 @@
               <div class="card-body">
                 <h4 class="card-title" style="text-overflow: ellipsis;">[[${item.itemNm}]]</h4>
                 <p class="card-text">[[${item.itemDetail}]]</p>
-                <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                <h3 class="card-title text-danger" th:text="|${#numbers.formatInteger(item.price, 0, 'COMMA')}원~|"></h3>
               </div>
             </a>
           </div>
@@ -116,7 +116,7 @@
                 <div class="card-body">
                   <h4 class="card-title" style="text-overflow: ellipsis;">[[${item.itemNm}]]</h4>
                   <p class="card-text">[[${item.itemDetail}]]</p>
-                  <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                  <h3 class="card-title text-danger" th:text="|${#numbers.formatInteger(item.price, 0, 'COMMA')}원~|"></h3>
                 </div>
               </a>
             </div>

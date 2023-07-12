@@ -13,6 +13,7 @@ public class OrderItemDtlDto {
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrderPrice();
         this.imgUrl = imgUrl;
+        this.optionNm = orderItem.getOptionNm();
     }
 
     private String itemNm; // 상품명
@@ -22,5 +23,7 @@ public class OrderItemDtlDto {
     private int orderPrice; // 주문 상품 금액
 
     private String imgUrl;  // 상품 이미지 경로
+
+    private String optionNm; // 옵션명
 
 }

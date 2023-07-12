@@ -49,6 +49,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
 
 	implementation 'org.hibernate:hibernate-core:6.1.7.Final' // OrderTest 의 EntityNotFoundException 예외와 관련된 의존성
+
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+	testImplementation 'org.springframework.batch:spring-batch-test'
 }
 
 tasks.named('test') {

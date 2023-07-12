@@ -1,7 +1,6 @@
 package com.shop.farmmunity.domain.member.controller;
 
 import com.shop.farmmunity.base.security.CustomUserDetailsService;
-import com.shop.farmmunity.domain.item.dto.ItemFormDto;
 import com.shop.farmmunity.domain.member.constant.Role;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberSearchDto;
@@ -84,22 +83,29 @@ public class MemberController {
 
     @PostMapping(value = {"/members/myPage"})
     public String updateMemberInfo(@Valid MemberUpdateRequestDto memberUpdateRequestDto, BindingResult bindingResult,
-                                   Model model, Principal principal, @RequestParam("username") String username) {
+                                   Model model, Principal principal) {
         Member member = memberService.findByEmail(principal.getName());
+
+        // 현재 비밀번호 확인 로직
+        if (!isValidCurrentPassword(memberUpdateRequestDto.getCurrentPassword(), principal.getName(), passwordEncoder)) {
+            model.addAttribute("member", member);
+            model.addAttribute("errorMessage", "현재 비밀번호가 일치하지 않습니다.");
+            return "member/memberMyPage";
+        }
 
         if(bindingResult.hasErrors()){
             model.addAttribute("member", member);
             return "member/memberMyPage";
         }
 
-        if (username == null) {
+        if (!isMatchedPassword(memberUpdateRequestDto.getNewPassword(), memberUpdateRequestDto.getConfirmPassword())) {
             model.addAttribute("member", member);
-            model.addAttribute("errorMessage", "이름은 필수 입력 값입니다.");
+            model.addAttribute("errorMessage", "변경하려는 비밀번호가 일치하지 않습니다.");
             return "member/memberMyPage";
         }
 
         try {
-            memberService.updateMember(memberUpdateRequestDto, username);
+            memberService.updateMember(memberUpdateRequestDto, principal.getName(), passwordEncoder);
         } catch (Exception e){
             model.addAttribute("member", member);
             model.addAttribute("errorMessage", "회원 수정 중 에러가 발생하였습니다.");
@@ -109,9 +115,17 @@ public class MemberController {
         return "redirect:/";
     }
 
+    private boolean isMatchedPassword(String newPassword, String confirmPassword) {
+        return newPassword.equals(confirmPassword);
+    }
+
+    private boolean isValidCurrentPassword(String currentPassword, String username, PasswordEncoder passwordEncoder) {
+        return memberService.checkPassword(currentPassword, username, passwordEncoder);
+    }
+
+
     //////// 관리자 영역
     // 멤버 관리 기능
-
     @GetMapping(value = {"/admin/member", "/admin/member/{page}"})
     public String memberList(MemberSearchDto memberSearchDto, @PathVariable("page") Optional<Integer> page, Model model) throws Exception {
         Pageable pageable = PageRequest.of(page.isPresent() ? page.get() : 0, postForPage); // 페이지에 표시될 최대 숫자

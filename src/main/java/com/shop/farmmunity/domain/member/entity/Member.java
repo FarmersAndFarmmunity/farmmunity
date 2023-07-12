@@ -4,11 +4,9 @@ import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.member.constant.Role;
 import com.shop.farmmunity.domain.member.dto.MemberFormDto;
 import com.shop.farmmunity.domain.member.dto.MemberUpdateRequestDto;
+import com.shop.farmmunity.domain.order.entity.OrderItem;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,8 +37,6 @@ public class Member extends BaseEntity {
 
     private String password;
 
-    private String address;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -48,10 +44,9 @@ public class Member extends BaseEntity {
         Member member = new Member();
         member.setUsername(memberFormDto.getUsername());
         member.setEmail(memberFormDto.getEmail());
-        member.setAddress(memberFormDto.getAddress());
         String password = passwordEncoder.encode(memberFormDto.getPassword());
         member.setPassword(password);
-        member.setProviderTypeCode("Farmers");
+        member.setProviderTypeCode("Farmmunity");
         member.setRole(Role.ADMIN); // 현재는 멤버의 롤이 기본적으로 ADMIN 으로 설정되어 있다.
         return member;
     }
@@ -60,7 +55,6 @@ public class Member extends BaseEntity {
         Member member = new Member();
         member.setUsername(username);
         member.setEmail(username.split("__")[1] + "@" + providerTypeCode.toLowerCase() + ".com");
-        member.setAddress("");
         member.setPassword("");
         member.setProviderTypeCode(providerTypeCode);
         member.setRole(Role.ADMIN); // 현재는 멤버의 롤이 기본적으로 ADMIN 으로 설정되어 있다.

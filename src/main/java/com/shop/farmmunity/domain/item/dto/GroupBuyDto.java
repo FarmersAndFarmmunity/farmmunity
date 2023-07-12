@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class GroupBuyDto {
+
     private long count; // 판매량
     private String username; // 공동구매 호스트 아이디
     private String partnerUsername; // 공동구매 참여자 아이디
