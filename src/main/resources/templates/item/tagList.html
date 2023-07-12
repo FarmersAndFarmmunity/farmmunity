@@ -18,7 +18,7 @@
       <div class="item-box-new grid grid-cols-4 gap-5")>
         <th:block th:each="item, status: ${items}">
           <div class="item-new">
-            <div class="card">
+            <div class="card shadow-xl">
               <a th:href="'/item/' +${item.id}" class="text-dark">
                 <div class="card-body">
                   <h4 class="card-title" style="text-overflow: ellipsis;">[[${item.itemNm}]]</h4>

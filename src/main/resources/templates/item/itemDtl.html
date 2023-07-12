@@ -354,7 +354,6 @@
         </div>
     </div>
 
-    <div th:utext="${item.extra_itemTagLinks}"></div>
 
     <div class="tabs menu-container flex flex-row w-full">
         <a class="tab tab-bordered tab-active item-detail-box w-4/12" href="#item-detail">상품 정보</a>
@@ -364,6 +363,8 @@
 
     <div class="jumbotron jumbotron-fluid mgt-30">
         <div class="container" id="item-detail">
+            <h4 class="h4 text-3xl font-bold my-4 ml-3">상품 태그 모아보기</h4>
+            <div class="m-3 p-3" th:utext="${item.extra_itemTagLinks}" style="border-top: 1px solid #efefef;"></div>
             <h4 class="h4 text-3xl font-bold my-4 ml-3">상품 상세 설명</h4>
             <p class="m-3 p-3 text-lg" th:text="${item.itemDetail}" style="border-top: 1px solid #efefef;"></p>
             <div th:each="itemImg : ${item.itemImgDtoList}" class="flex justify-center">
