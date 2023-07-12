@@ -107,9 +107,4 @@ public class Item extends BaseEntity {
                 .stream()
                 .forEach(itemTags::add);
     }
-
-    public void addOption(ItemOption option) {
-        this.itemOptionList.add(option);
-
-    }
 }
