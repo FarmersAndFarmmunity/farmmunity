@@ -1,11 +1,8 @@
 package com.shop.farmmunity.domain.order.dto;
 
-import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.order.constant.Customer;
 import com.shop.farmmunity.domain.order.constant.Recipient;
 import com.shop.farmmunity.domain.order.entity.Delivery;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

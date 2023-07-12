@@ -2,9 +2,7 @@ package com.shop.farmmunity.domain.order.entity;
 
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.member.entity.Member;
-import com.shop.farmmunity.domain.order.constant.Customer;
 import com.shop.farmmunity.domain.order.constant.OrderStatus;
-import com.shop.farmmunity.domain.order.constant.Recipient;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

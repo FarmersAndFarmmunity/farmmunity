@@ -1,22 +1,13 @@
 package com.shop.farmmunity.domain.item.service;
 
-import com.shop.farmmunity.domain.cart.entity.CartItem;
 import com.shop.farmmunity.domain.cart.service.CartService;
 import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.item.dto.*;
-import com.shop.farmmunity.domain.item.entity.Group;
-import com.shop.farmmunity.domain.item.entity.GroupBuying;
-import com.shop.farmmunity.domain.item.entity.Item;
-import com.shop.farmmunity.domain.item.entity.ItemImg;
-import com.shop.farmmunity.domain.item.entity.ItemOption;
-import com.shop.farmmunity.domain.item.repository.GroupBuyingRepository;
-import com.shop.farmmunity.domain.item.repository.GroupRepository;
-import com.shop.farmmunity.domain.item.repository.ItemImgRepository;
-import com.shop.farmmunity.domain.item.repository.ItemOptionRepository;
-import com.shop.farmmunity.domain.item.repository.ItemRepository;
+import com.shop.farmmunity.domain.item.entity.*;
+import com.shop.farmmunity.domain.item.repository.*;
+import com.shop.farmmunity.domain.itemTag.dto.ItemTagDto;
 import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import com.shop.farmmunity.domain.itemTag.service.ItemTagService;
-import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,18 +20,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.*;
-import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
-    private final CartService cartService;
+
     private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
     private final ItemImgService itemImgService;
@@ -186,15 +176,18 @@ public class ItemService {
         return groupBuyDtos;
     }
 
-    public List<Item> getItemTags(String itemTagContent) {
+    public List<ItemTagDto> getItemTags(String itemTagContent) {
         List<ItemTag> itemTags = itemTagService.getItemTags(itemTagContent);
 
-        List<Item> items = itemTags
-                .stream()
-                .map(ItemTag::getItem)
-                .collect(toList());
-
-        return items;
+        return itemTags.stream()
+                .map(itemTag -> {
+                    ItemImg repImgYn = itemImgRepository.findByItemIdAndRepImgYn(itemTag.getItem().getId(), "Y");
+                    String imgUrl = repImgYn.getImgUrl();
+                    ItemTagDto itemTagDto = ItemTagDto.of(itemTag.getItem());
+                    itemTagDto.setImgUrl(imgUrl);
+                    return itemTagDto;
+                })
+                .collect(Collectors.toList());
     }
 
 }

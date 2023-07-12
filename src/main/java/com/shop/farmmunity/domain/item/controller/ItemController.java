@@ -9,9 +9,7 @@ import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemOption;
 import com.shop.farmmunity.domain.item.service.ItemOptionService;
 import com.shop.farmmunity.domain.item.service.ItemService;
-import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
-import com.shop.farmmunity.domain.member.entity.Member;
-import com.shop.farmmunity.domain.payment.constant.PaymentDtlDto;
+import com.shop.farmmunity.domain.itemTag.dto.ItemTagDto;
 import com.shop.farmmunity.domain.review.entity.Review;
 import com.shop.farmmunity.domain.review.service.ReviewService;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,7 +27,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -200,7 +197,7 @@ public class ItemController {
 
     @GetMapping("/item/tag/{tagContent}")
     public String tagList(Model model, @PathVariable String tagContent) {
-        List<Item> itemTags = itemService.getItemTags(tagContent);
+        List<ItemTagDto> itemTags = itemService.getItemTags(tagContent);
 
         model.addAttribute("items", itemTags);
         return "item/tagList";

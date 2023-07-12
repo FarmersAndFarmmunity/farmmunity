@@ -1,9 +1,7 @@
 package com.shop.farmmunity.domain.item.repository;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
@@ -14,8 +12,6 @@ import com.shop.farmmunity.domain.item.dto.QMainItemDto;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.QItem;
 import com.shop.farmmunity.domain.item.entity.QItemImg;
-import com.shop.farmmunity.domain.itemKeyword.entity.ItemKeyword;
-import com.shop.farmmunity.domain.itemTag.entity.QItemTag;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,7 +20,6 @@ import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 

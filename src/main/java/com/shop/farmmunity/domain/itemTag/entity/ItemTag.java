@@ -2,8 +2,8 @@ package com.shop.farmmunity.domain.itemTag.entity;
 
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.item.entity.Item;
-import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.itemKeyword.entity.ItemKeyword;
+import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
