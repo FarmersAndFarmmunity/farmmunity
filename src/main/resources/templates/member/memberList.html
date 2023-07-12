@@ -90,9 +90,9 @@
             </td>
             <td th:text="${#temporals.format(member.getRegTime(), 'yyyy-MM-dd')}"></td>
             <td>
-                <a type="button" class="btn btn-accent float-right"
-                   th:href="@{|/admin/members/address/${member.id}|}"
-                   th:text="|목록|"></a>
+                <input type="button" class="btn btn-warning"
+                   th:onclick="|window.open('@{/admin/members/address/}' +${member.id})|"
+                   th:value="'배송지 목록'">
             </td>
         </tr>
         </tbody>
