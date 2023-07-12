@@ -101,7 +101,7 @@ public class ItemFormDto {
                     String text = "#" + itemTag.getItemKeyword().getContent();
 
                     return """
-                            <a href="%s" class="text-link">%s</a>
+                            <div class='badge badge-neutral'><a href="%s" class="text-link">%s</a></div>
                             """
                             .stripIndent()
                             .formatted(itemTag.getItemKeyword().getListUrl(), text);
