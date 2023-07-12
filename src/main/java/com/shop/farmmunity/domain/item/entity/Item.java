@@ -18,8 +18,6 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static jakarta.persistence.FetchType.LAZY;
-
 @Entity
 @Table(name = "item")
 @Getter
@@ -112,8 +110,4 @@ public class Item extends BaseEntity {
         this.itemOptionList.add(option);
 
     }
-
-    @Transient
-    @Builder.Default
-    private Map<String, Object> extra = new LinkedHashMap<>();
 }

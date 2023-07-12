@@ -4,25 +4,32 @@
       layout:decorate="~{layouts/layout1}">
 
 <body>
-<main layout:fragment="main">
+<main layout:fragment="content">
   <section class="section">
     <div class="container">
       <h1 class="font-bold text-lg">
-        <i class="fa-solid fa-book"></i>
-        상품 목록
+        <i class="fa-solid"></i>
+        <a th:href="@{|/item/tag/${tagContent}|}" class="text-link">
+          <i class="fa-solid fa-hashtag"></i>"[[${tagContent}]]"
+        </a>
+        <span> 관련 상품</span>
       </h1>
 
-      <ul>
-        <li th:each="item : ${items}" class="flex gap-2 items-center">
-          <a th:href="@{|/item/${item.id}|}" th:text="|번호 : ${item.id}|">
-          </a>
-
-          <a th:href="@{|/item/${item.id}|}" th:text="|상품명 : ${item.itemNm}|">
-          </a>
-
-          <th:block th:utext="|태그 : ${article.extra_hashTagLinks}|" />
-        </li>
-      </ul>
+      <div class="item-box-new grid grid-cols-4 gap-5")>
+        <th:block th:each="item, status: ${items}">
+          <div class="item-new">
+            <div class="card">
+              <a th:href="'/item/' +${item.id}" class="text-dark">
+                <div class="card-body">
+                  <h4 class="card-title" style="text-overflow: ellipsis;">[[${item.itemNm}]]</h4>
+                  <p class="card-text">[[${item.itemDetail}]]</p>
+                  <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                </div>
+              </a>
+            </div>
+          </div>
+        </th:block>
+      </div>
     </div>
   </section>
 

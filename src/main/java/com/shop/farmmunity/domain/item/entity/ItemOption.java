@@ -1,5 +1,6 @@
 package com.shop.farmmunity.domain.item.entity;
 
+import com.shop.farmmunity.base.exception.OutOfStockException;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,5 +35,23 @@ public class ItemOption {
         this.extraAmount = extraAmount;
         this.quantity = quantity;
         this.gbPrice = gbPrice;
+    }
+
+    public void removeStock(int quantity) {
+
+        checkRestStock(quantity);
+        this.quantity -= quantity;
+    }
+
+    public void checkRestStock(int quantity) {
+        int restStock = this.quantity - quantity;
+        if (restStock < 0) {
+            throw new OutOfStockException("상품의 재고가 부족 합니다. (현재 재고 수량: " + this.quantity + ")");
+        }
+    }
+
+    // 주문 취소 시 주문 수량 만큼 상품 재고를 증가
+    public void addStock(int quantity) {
+        this.quantity += quantity;
     }
 }

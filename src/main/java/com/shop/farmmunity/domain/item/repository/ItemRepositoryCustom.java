@@ -16,6 +16,4 @@ public interface  ItemRepositoryCustom {
     Page<Item> getMyItemPage(ItemSearchDto itemSearchDto, Pageable pageable, String email);
 
     Page<MainItemDto> getMainItemPage(ItemClassifyDto itemClassifyDto, ItemSearchDto itemSearchDto, Pageable pageable);
-
-    List<ItemKeyword> getItemByTag(Long memberId);
 }

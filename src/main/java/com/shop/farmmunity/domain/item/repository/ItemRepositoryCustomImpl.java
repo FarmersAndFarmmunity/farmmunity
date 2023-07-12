@@ -15,7 +15,6 @@ import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.QItem;
 import com.shop.farmmunity.domain.item.entity.QItemImg;
 import com.shop.farmmunity.domain.itemKeyword.entity.ItemKeyword;
-import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import com.shop.farmmunity.domain.itemTag.entity.QItemTag;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
@@ -165,31 +164,5 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetchOne();
 
         return new PageImpl<>(content, pageable, total);
-    }
-
-    @Override
-    public List<ItemKeyword> getItemByTag(Long memberId) {
-        QItem item = QItem.item;
-        QItemImg itemImg = QItemImg.itemImg;
-        QItemTag itemTag = QItemTag.itemTag;
-
-        List<Tuple> itemTagQuery = jpaQueryFactory
-                .select(itemTag.itemTag.itemKeyword, itemTag.itemTag.count())
-                .from(itemTag.itemTag)
-                .where(itemTag.itemTag.member.id.eq(memberId))
-                .orderBy(itemTag.itemTag.itemKeyword.id.desc())
-                .groupBy(itemTag.itemTag.itemKeyword)
-                .fetch();
-
-        return itemTagQuery.stream()
-                .map(tuple -> {
-                    ItemKeyword _itemKeyword = tuple.get(itemTag.itemTag.itemKeyword);
-                    Long tagsCount = tuple.get(itemTag.itemTag.count());
-
-                    _itemKeyword.getExtra().put("tagsCount", tagsCount);
-
-                    return _itemKeyword;
-                })
-                .collect(Collectors.toList());
     }
 }

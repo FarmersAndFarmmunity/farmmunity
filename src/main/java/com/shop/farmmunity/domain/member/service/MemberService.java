@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,12 +72,17 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto, String username) {
+    public void updateMember(MemberUpdateRequestDto memberUpdateRequestDto, String username, PasswordEncoder passwordEncoder) {
+        Member member = memberRepository.findByEmail(username);
+        member.modifyMemberInfo(memberUpdateRequestDto, passwordEncoder);
 
-
-
+        memberRepository.save(member);
     }
 
 
-
+    public boolean checkPassword(String currentPassword, String username, PasswordEncoder passwordEncoder) {
+        Member member = memberRepository.findByEmail(username);
+        String realPassword = member.getPassword();
+        return passwordEncoder.matches(currentPassword, realPassword);
+    }
 }

@@ -215,11 +215,11 @@ public class ItemController {
         throw new AccessDeniedException("접근 권한이 없습니다.");
     }
 
-    @GetMapping("/tag/{tagContent}")
-    public String tagList(Model model, @PathVariable String tagContent, Member member) {
-        List<Item> itemTags = itemService.getItemTags(tagContent, member);
+    @GetMapping("/item/tag/{tagContent}")
+    public String tagList(Model model, @PathVariable String tagContent) {
+        List<Item> itemTags = itemService.getItemTags(tagContent);
 
-        model.addAttribute("itemTags", itemTags);
+        model.addAttribute("items", itemTags);
         return "item/tagList";
     }
 }

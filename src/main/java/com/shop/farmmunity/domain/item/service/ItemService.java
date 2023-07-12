@@ -184,11 +184,7 @@ public class ItemService {
         return groupBuyDtos;
     }
 
-    public List<Item> getItems() {
-        return itemRepository.getQslArticlesOrderByIdDesc();
-    }
-
-    public List<Item> getItemTags(String itemTagContent, Member member) {
+    public List<Item> getItemTags(String itemTagContent) {
         List<ItemTag> itemTags = itemTagService.getItemTags(itemTagContent);
 
         List<Item> items = itemTags
