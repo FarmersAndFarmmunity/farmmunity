@@ -38,7 +38,7 @@ public class ItemTagService {
     private ItemTag saveItemTag(Item item, String itemKeywordContent) {
         ItemKeyword itemKeyword = itemKeywordService.save(itemKeywordContent);
 
-        Optional<ItemTag> opItemTag = itemTagRepository.findByIdAndItemKeywordId(item.getId(), itemKeyword.getId());
+        Optional<ItemTag> opItemTag = itemTagRepository.findByItemIdAndItemKeywordId(item.getId(), itemKeyword.getId());
 
         if (opItemTag.isPresent()) {
             return opItemTag.get();
@@ -49,8 +49,10 @@ public class ItemTagService {
                 .itemKeyword(itemKeyword)
                 .build();
 
-        itemTagRepository.save(itemTag);
+        return itemTagRepository.save(itemTag);
+    }
 
-        return itemTag;
+    public List<ItemTag> getItemTags(String itemKeywordContent) {
+        return itemTagRepository.findAllByItemKeyword_contentOrderByItem_idDesc(itemKeywordContent);
     }
 }

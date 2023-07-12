@@ -252,7 +252,7 @@
                             태그
                         </dt>
                         <dd class="detail-content">
-                            <input type="text" name="itemTagContents" th:field="*{itemTagContents}" placeholder="#태그1 #태그2 #태그3 ..." class="input input-bordered  input-md w-full w-80" maxlength="50">
+                            <input type="text" name="itemTagContents" th:field="*{itemTagContents}" class="input input-bordered input-md w-full w-80" placeholder="#태그1 #태그2 #태그3 ...">
                             <p th:if="${#fields.hasErrors('itemTagContents')}" th:errors="*{itemTagContents}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>

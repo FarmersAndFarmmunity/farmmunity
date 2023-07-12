@@ -14,15 +14,9 @@ import lombok.ToString;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import static jakarta.persistence.FetchType.LAZY;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "item")
@@ -55,6 +49,9 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemClassifyStatus itemClassifyStatus; // 상품 카테고리
 
+    @Column(nullable = false,  length = 50)
+    private String itemTagContents;
+
     @Builder.Default
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.EXTRA)
@@ -73,6 +70,7 @@ public class Item extends BaseEntity {
         this.stockNumber = itemFormDto.getStockNumber();
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();
+        this.itemTagContents = itemFormDto.getItemTagContents();
     }
 
     // 재고 수량을 계산 (주문이 들어올 때에 주문 수량만큼 재고 수량을 빼줌)
@@ -107,5 +105,10 @@ public class Item extends BaseEntity {
         newItemTags
                 .stream()
                 .forEach(itemTags::add);
+    }
+
+    public void addOption(ItemOption option) {
+        this.itemOptionList.add(option);
+
     }
 }

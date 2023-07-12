@@ -19,6 +19,7 @@ import com.shop.farmmunity.domain.itemTag.service.ItemTagService;
 import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,15 +32,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
 
-
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
-
+    private final CartService cartService;
     private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
     private final LocalItemImgService itemImgService;
@@ -182,5 +183,17 @@ public class ItemService {
         }
         return groupBuyDtos;
     }
+
+    public List<Item> getItemTags(String itemTagContent) {
+        List<ItemTag> itemTags = itemTagService.getItemTags(itemTagContent);
+
+        List<Item> items = itemTags
+                .stream()
+                .map(ItemTag::getItem)
+                .collect(toList());
+
+        return items;
+    }
+
 }
 

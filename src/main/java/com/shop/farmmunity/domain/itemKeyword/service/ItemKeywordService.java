@@ -24,9 +24,7 @@ public class ItemKeywordService {
                 .content(content)
                 .build();
 
-        itemKeywordRepository.save(itemKeyword);
-
-        return itemKeyword;
+        return itemKeywordRepository.save(itemKeyword);
     }
 
     public Optional<ItemKeyword> findById(long id) {
