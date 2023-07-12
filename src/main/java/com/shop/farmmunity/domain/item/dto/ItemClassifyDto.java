@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ItemClassifyDto {
+
     private ItemClassifyStatus itemClassifyStatus;
 
     public void setItemClassifyStatus(ItemClassifyStatus itemClassifyStatus) {

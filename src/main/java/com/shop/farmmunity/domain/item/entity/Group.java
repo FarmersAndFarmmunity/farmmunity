@@ -28,6 +28,7 @@ public class Group extends BaseEntity {
     private Long id;
 
     private boolean isHost; // 공동 구매 주최 여부(1인 상태 여부), 주최 단위로 구매 진행
+
     private GroupBuyStatus status; // 공동 구매 매칭 성공 여부
 
     private long itemId;

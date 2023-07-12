@@ -53,10 +53,25 @@
       font-weight: bold;
     }
 
+    .detail-date-title {
+      width:100px;
+      display: flex;
+      align-items: center;
+      font-weight: bold;
+    }
     .detail-content {
       display: flex;
-      align-items: left;
+      align-items: start;
       width:100%;
+      flex-direction: column;
+      word-break: break-all;
+    }
+
+    .detail-date-content {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      width:225px;
       flex-direction: column;
       word-break: break-all;
     }
@@ -90,51 +105,51 @@
               <div th:text="${member.getEmail()}"></div>
             </dd>
           </dl>
-          <dl class="detail-line price-box flex flex-row items-center">
+          <dl class="detail-line price-box flex flex-row items-center" th:if="${member.providerTypeCode.equals('Farmmunity')}">
             <dt class="detail-title">
               이름
             </dt>
             <dd class="detail-content">
-              <input type="text" th:value="${member.username}" th:name="username" required>
+              <input type="text" class="input input-bordered input-md w-full" th:value="${member.username}" th:name="username" required>
             </dd>
           </dl>
-          <dl class="detail-line price-box flex flex-row items-center">
+          <dl class="detail-line price-box flex flex-row items-center" th:if="${member.providerTypeCode.equals('Farmmunity')}">
             <dt class="detail-title">
               현재 비밀번호
             </dt>
             <dd class="detail-content">
-              <input type="password" th:field="*{currentPassword}" placeholder="현재 비밀번호를 입력해주세요">
+              <input type="password" class="input input-bordered input-md w-full" th:field="*{currentPassword}" placeholder="현재 비밀번호를 입력해주세요">
             </dd>
           </dl>
-          <dl class="detail-line price-box flex flex-row items-center">
+          <dl class="detail-line price-box flex flex-row items-center" th:if="${member.providerTypeCode.equals('Farmmunity')}">
             <dt class="detail-title">
-              새 비밀 번호
+              새 비밀번호
             </dt>
             <dd class="detail-content">
-              <input type="password" th:field="*{newPassword}" placeholder="새 비밀번호를 입력해주세요">
+              <input type="password" class="input input-bordered input-md w-full" th:field="*{newPassword}" placeholder="새 비밀번호를 입력해주세요">
               <p th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="fieldError">Incorrect data</p>
             </dd>
           </dl>
-          <dl class="detail-line price-box flex flex-row items-center">
+          <dl class="detail-line price-box flex flex-row items-center" th:if="${member.providerTypeCode.equals('Farmmunity')}">
             <dt class="detail-title">
-              새 비밀 번호 확인
+              새 비밀번호 확인
             </dt>
             <dd class="detail-content">
-              <input type="password" th:field="*{confirmPassword}" placeholder="새 비밀번호를 다시 입력해주세요">
+              <input type="password" class="input input-bordered input-md w-full" th:field="*{confirmPassword}" placeholder="새 비밀번호를 다시 입력해주세요">
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
-            <dt class="detail-title">
+            <dt class="detail-date-title">
               가입 일자
             </dt>
-            <dd class="detail-content">
-              <div th:text="${member.getRegTime()}"></div>
+            <dd class="detail-date-content">
+              <div th:text="${#temporals.format(member.getRegTime(), 'yyyy-MM-dd')}"></div>
             </dd>
-            <dt class="detail-title">
-              회원 정보 최종 수정 일자
+            <dt class="detail-date-title">
+              회원 정보<br> 최종 수정 일자
             </dt>
-            <dd class="detail-content">
-              <div th:text="${member.getUpdateTime()}"></div>
+            <dd class="detail-date-content">
+              <div th:text="${#temporals.format(member.getUpdateTime(), 'yyyy-MM-dd')}"></div>
             </dd>
           </dl>
           <dl class="detail-line price-box flex flex-row items-center">
@@ -149,18 +164,10 @@
           </dl>
         </div>
 
-        <h3 class="card-title text-2xl mb-3">쇼핑</h3>
         <div class="join-form flex justify-center flex-col">
-          <dl class="mb-3">
-            <dt class="detail-title mb-3">
-              <a th:href="@{/members/mypage/address}">배송지 관리</a>
-            </dt>
-          </dl>
-
           <div style="text-align: center">
-            <button th:formaction="@{/members/myPage}" type="submit" class="btn btn-accent">회원 정보 수정</button>
+            <button th:formaction="@{/members/myPage}" type="submit" class="btn btn-accent" th:if="${member.providerTypeCode.equals('Farmmunity')}">회원 정보 수정</button>
           </div>
-
         </div>
       </form>
 

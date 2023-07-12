@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ItemTagService {
+
     private final ItemKeywordService itemKeywordService;
     private final ItemTagRepository itemTagRepository;
 
