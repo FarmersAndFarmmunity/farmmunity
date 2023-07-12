@@ -39,6 +39,10 @@
             $("#totalGBPrice").html(($("#count").val() * selectedGbPrice) + '원');
         }
 
+        function numberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
         function calculateTotalPrice(){
             var count = $("#count").val();
             var price = $("#price").val();
@@ -47,10 +51,11 @@
                 price = selectedExtraAmount;
                 gbPrice = selectedGbPrice;
             }
-            var totalPrice = price*count;
-            var totalGBPrice = gbPrice*count;
-            $("#totalPrice").html(totalPrice + '원');
-            $("#totalGBPrice").html(totalGBPrice + '원');
+            var formattedTotalPrice = numberWithCommas(price);
+            var formattedTotalGBPrice = numberWithCommas(gbPrice);
+
+            $("#totalPrice").html(formattedTotalPrice + '원');
+            $("#totalGBPrice").html(formattedTotalGBPrice + '원');
         }
 
         function order(){
@@ -259,7 +264,7 @@
                         </dt>
                         <dd class="detail-content">
                             <input type="hidden" th:value="${item.price}" id="price" name="price">
-                            <span th:text="${item.price}"></span>원
+                            <span th:text="|${#numbers.formatInteger(item.price, 0, 'COMMA')}원|"></span>
                         </dd>
                     </dl>
 
@@ -269,7 +274,7 @@
                         </dt>
                         <dd class="detail-content">
                             <input type="hidden" th:value="${item.discount}" id="gbPrice" name="gbPrice">
-                            <span th:text="${item.discount}"></span>원
+                            <span th:text="|${#numbers.formatInteger(item.discount, 0, 'COMMA')}원|"></span>
                         </dd>
                     </dl>
 
@@ -278,7 +283,7 @@
                             <span th:text="재고"></span>
                         </dt>
                         <dd class="detail-content">
-                            <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" th:text="|${item.stockNumber}개 남음|"></span>
+                            <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" th:text="|${#numbers.formatInteger(item.stockNumber, 0, 'COMMA')}개 남음|"></span>
                             <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}">-</span>
                         </dd>
                     </dl>
@@ -289,7 +294,7 @@
                         <dd class="detail-content">
                             <select id="option" class="select select-bordered w-full" th:if="${item.getItemOptionDtoList().size() != 0}" onchange="selectOption(this)">
                                 <option th:value="0">옵션을 선택해주세요</option>
-                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}" th:text="${option.optionName + ' ' + option.quantity + '개 남음 ' + option.extraAmount + '원'}" th:data-extraAmount="${option.extraAmount}" th:data-gbPrice="${option.gbPrice}"></option>
+                                <option th:each="option : ${item.getItemOptionDtoList()}" th:value="${option.id}"  th:text="|${option.optionName + ' ' + #numbers.formatInteger(option.quantity, 0, 'COMMA') + '개 남음 ' + #numbers.formatInteger(option.extraAmount, 0, 'COMMA') + '원'}|" th:data-extraAmount="${option.extraAmount}" th:data-gbPrice="${option.gbPrice}"></option>
                             </select>
                             <span th:if="${#arrays.isEmpty(item.getItemOptionDtoList())}" th:text="--"></span>
                         </dt>

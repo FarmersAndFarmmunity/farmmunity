@@ -71,6 +71,7 @@ public class Item extends BaseEntity {
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();
         this.itemTagContents = itemFormDto.getItemTagContents();
+        this.groupBuying.setDiscount(itemFormDto.getDiscount());
     }
 
     // 재고 수량을 계산 (주문이 들어올 때에 주문 수량만큼 재고 수량을 빼줌)

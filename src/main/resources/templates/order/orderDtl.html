@@ -233,7 +233,7 @@
                                 <div class="text-base repImgDiv" style="width: 350px">
                                     <div class="font-bold" th:text="${'상품 이름 : ' + orderItem.itemNm}"/>
                                     <span th:if="${orderItem.getOptionNm() != null}" th:text="${'옵션 : ' + orderItem.getOptionNm()}"></span>
-                                    <div th:text="${'상품 가격 : ' + orderItem.orderPrice} +'원'"></div>
+                                    <div th:text="${'상품 가격 : ' + #numbers.formatInteger(orderItem.orderPrice, 0, 'COMMA')} +'원'"></div>
                                     <div th:text="${'주문 개수 : ' + orderItem.count} +'개'"></div>
                                     <div th:text="${'주문 번호 : ' + order.getOrderId() + '번'}"></div>
                                 </div>
@@ -356,7 +356,7 @@
 
                         <div class="flex flex-col">
                             <div class="text-xl font-bold text-center mb-2">
-                                총 주문 금액 : <span class="text-accent" th:text="${order.getTotalPrice() + '원'}">0원</span>
+                                총 주문 금액 : <span class="text-accent" th:text="|${#numbers.formatInteger(order.getTotalPrice(), 0, 'COMMA')}원|">0원</span>
                             </div>
                             <button type="button" class="btn btn-accent" onclick="orderComplete()">주문하기</button>
                         </div>
