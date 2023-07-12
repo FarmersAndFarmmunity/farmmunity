@@ -145,7 +145,7 @@ public class ItemController {
         }
 
         try {
-            itemService.updateItem(itemFormDto, itemImgFileList);
+            itemService.updateItem(itemFormDto, itemImgFileList, itemFormDto.getItemTagContents());
         } catch (Exception e){
             log.error("상품 등록 중 에러가 발생했습니다. ", e);
             model.addAttribute("errorMessage", e.getMessage());

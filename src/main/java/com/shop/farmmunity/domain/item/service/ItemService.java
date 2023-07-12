@@ -110,7 +110,7 @@ public class ItemService {
 
     // 수정
     public Long updateItem(ItemFormDto itemFormDto,
-                           List<MultipartFile> itemImgFileList) throws Exception {
+                           List<MultipartFile> itemImgFileList, String itemTagContents) throws Exception {
         Item item = itemRepository.findById(itemFormDto.getId())
                 .orElseThrow(EntityNotFoundException::new);
         item.updateItem(itemFormDto);
@@ -124,6 +124,8 @@ public class ItemService {
         for (int i = 0; i < itemImgFileList.size(); i++) {
             itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i));
         }
+
+        itemTagService.applyItemTags(item, itemTagContents);
 
         return item.getId();
     }
