@@ -9,6 +9,8 @@ import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemOption;
 import com.shop.farmmunity.domain.item.service.ItemOptionService;
 import com.shop.farmmunity.domain.item.service.ItemService;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
+import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.payment.constant.PaymentDtlDto;
 import com.shop.farmmunity.domain.review.entity.Review;
 import com.shop.farmmunity.domain.review.service.ReviewService;
@@ -213,4 +215,11 @@ public class ItemController {
         throw new AccessDeniedException("접근 권한이 없습니다.");
     }
 
+    @GetMapping("/tag/{tagContent}")
+    public String tagList(Model model, @PathVariable String tagContent, Member member) {
+        List<Item> itemTags = itemService.getItemTags(tagContent, member);
+
+        model.addAttribute("itemTags", itemTags);
+        return "item/tagList";
+    }
 }

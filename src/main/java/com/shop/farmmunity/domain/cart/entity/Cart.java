@@ -13,7 +13,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Cart extends BaseEntity {
-
     @Id
     @Column(name = "cart_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

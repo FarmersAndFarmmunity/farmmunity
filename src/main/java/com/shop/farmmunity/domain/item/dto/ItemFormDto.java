@@ -7,6 +7,7 @@ import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -16,10 +17,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.modelmapper.ModelMapper;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -35,11 +33,11 @@ public class ItemFormDto {
     @NotNull(message = "가격은 필수 입력 값입니다.")
     private Integer price;
 
-    @NotBlank(message = "상세 설명은 필수 입력 값입니다.")
-    private String itemDetail;
-
     @NotNull(message = "재고는 필수 입력 값입니다.")
     private Integer stockNumber;
+
+    @NotBlank(message = "상세 설명은 필수 입력 값입니다.")
+    private String itemDetail;
 
     private ItemSellStatus itemSellStatus;
 
@@ -47,13 +45,13 @@ public class ItemFormDto {
 
     private Long postKeywordId;
 
+    @NotBlank(message = "태그는 필수 입력 값입니다.")
+    private String itemTagContents;
+
     @Builder.Default
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.EXTRA)
     Set<ItemTag> itemTags = new LinkedHashSet<>();
-
-    @NotBlank(message = "태그는 필수 입력 값입니다.")
-    private String itemTagContents;
 
     private List<String> optionNameList = new ArrayList<>(); // 옵션 이름
 
@@ -85,6 +83,15 @@ public class ItemFormDto {
 
     public static ItemFormDto of(Item item) {
         return modelMapper.map(item, ItemFormDto.class);
+    }
+
+    //수정을 위해
+    public String getExtra_inputValue_itemTagContents() {
+        return itemTags
+                .stream()
+                .map(itemTag -> "#" + itemTag.getItemKeyword().getContent())
+                .sorted()
+                .collect(Collectors.joining(" "));
     }
 
     public String getExtra_itemTagLinks() {

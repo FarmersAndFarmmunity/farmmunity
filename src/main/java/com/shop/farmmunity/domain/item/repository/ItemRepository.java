@@ -9,4 +9,6 @@ public interface ItemRepository extends JpaRepository<Item, Long>, ItemRepositor
     void deleteById(long itemId);
 
     List<Item> findByCreatedBy(String email);
+
+    List<Item> getQslArticlesOrderByIdDesc();
 }

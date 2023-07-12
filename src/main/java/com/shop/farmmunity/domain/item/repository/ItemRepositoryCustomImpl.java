@@ -1,7 +1,9 @@
 package com.shop.farmmunity.domain.item.repository;
 
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shop.farmmunity.domain.item.constant.ItemClassifyStatus;
 import com.shop.farmmunity.domain.item.constant.ItemSellStatus;
@@ -12,6 +14,9 @@ import com.shop.farmmunity.domain.item.dto.QMainItemDto;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.QItem;
 import com.shop.farmmunity.domain.item.entity.QItemImg;
+import com.shop.farmmunity.domain.itemKeyword.entity.ItemKeyword;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
+import com.shop.farmmunity.domain.itemTag.entity.QItemTag;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,13 +25,14 @@ import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
-    private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory jpaQueryFactory;
 
     public ItemRepositoryCustomImpl(EntityManager em) {
-        this.queryFactory = new JPAQueryFactory(em);
+        this.jpaQueryFactory = new JPAQueryFactory(em);
     }
 
     private BooleanExpression searchSellStatusEq(ItemSellStatus searchSellStatus) {
@@ -66,7 +72,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     @Override
     public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
 
-        List<Item> content = queryFactory
+        List<Item> content = jpaQueryFactory
                 .selectFrom(QItem.item)
                 .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                         searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
@@ -77,7 +83,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = queryFactory.select(Wildcard.count).from(QItem.item)
+        long total = jpaQueryFactory.select(Wildcard.count).from(QItem.item)
                 .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                         searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
                         searchByLike(itemSearchDto.getSearchBy(), itemSearchDto.getSearchQuery()))
@@ -88,7 +94,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     @Override
     public Page<Item> getMyItemPage(ItemSearchDto itemSearchDto, Pageable pageable, String email) {
-        List<Item> content = queryFactory
+        List<Item> content = jpaQueryFactory
                 .selectFrom(QItem.item)
                 .where(QItem.item.createdBy.eq(email),
                         regDtsAfter(itemSearchDto.getSearchDateType()),
@@ -100,7 +106,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = queryFactory.select(Wildcard.count).from(QItem.item)
+        long total = jpaQueryFactory.select(Wildcard.count).from(QItem.item)
                 .where(regDtsAfter(itemSearchDto.getSearchDateType()),
                         searchSellStatusEq(itemSearchDto.getSearchSellStatus()),
                         searchByLike(itemSearchDto.getSearchBy(), itemSearchDto.getSearchQuery()))
@@ -129,7 +135,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         QItem item = QItem.item;
         QItemImg itemImg = QItemImg.itemImg;
 
-        List<MainItemDto> content = queryFactory
+        List<MainItemDto> content = jpaQueryFactory
                 .select(
                         new QMainItemDto(
                                 item.id,
@@ -149,7 +155,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        long total = queryFactory
+        long total = jpaQueryFactory
                 .select(Wildcard.count)
                 .from(itemImg)
                 .join(itemImg.item, item)
@@ -161,5 +167,29 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return new PageImpl<>(content, pageable, total);
     }
 
+    @Override
+    public List<ItemKeyword> getItemByTag(Long memberId) {
+        QItem item = QItem.item;
+        QItemImg itemImg = QItemImg.itemImg;
+        QItemTag itemTag = QItemTag.itemTag;
 
+        List<Tuple> itemTagQuery = jpaQueryFactory
+                .select(itemTag.itemTag.itemKeyword, itemTag.itemTag.count())
+                .from(itemTag.itemTag)
+                .where(itemTag.itemTag.member.id.eq(memberId))
+                .orderBy(itemTag.itemTag.itemKeyword.id.desc())
+                .groupBy(itemTag.itemTag.itemKeyword)
+                .fetch();
+
+        return itemTagQuery.stream()
+                .map(tuple -> {
+                    ItemKeyword _itemKeyword = tuple.get(itemTag.itemTag.itemKeyword);
+                    Long tagsCount = tuple.get(itemTag.itemTag.count());
+
+                    _itemKeyword.getExtra().put("tagsCount", tagsCount);
+
+                    return _itemKeyword;
+                })
+                .collect(Collectors.toList());
+    }
 }

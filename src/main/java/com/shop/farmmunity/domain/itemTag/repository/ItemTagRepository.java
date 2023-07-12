@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemTagRepository extends JpaRepository<ItemTag, Long> {
-        Optional<ItemTag> findByIdAndItemKeywordId(Long Id, Long keywordId);
+        Optional<ItemTag> findByItemIdAndItemKeywordId(Long Id, Long keywordId);
 
-        List<ItemTag> findAllById(long Id);
+        List<ItemTag> findAllByItemIdIn(long[] ids);
 
         List<ItemTag> findAllByItemKeyword_contentOrderByItem_idDesc(String itemKeywordContent);
 }

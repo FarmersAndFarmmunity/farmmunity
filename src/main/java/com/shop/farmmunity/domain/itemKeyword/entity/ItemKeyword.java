@@ -1,12 +1,12 @@
 package com.shop.farmmunity.domain.itemKeyword.entity;
 
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Entity
 @Setter
@@ -25,4 +25,8 @@ public class ItemKeyword extends BaseEntity {
     public Object getListUrl() {
         return "/item/tag/" + content;
     }
+
+    @Transient
+    @Builder.Default
+    private Map<String, Object> extra = new LinkedHashMap<>();
 }
