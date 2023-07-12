@@ -31,9 +31,7 @@ public class CartDetailDto {
         if (itemOptionId != null) {
             ItemOption itemOption = item.getItemOptionList().stream().filter(i -> Objects.equals(i.getId(), itemOptionId)).findAny().orElseThrow(EntityNotFoundException::new);
             this.price = itemOption.getExtraAmount();
-            NumberFormat numberFormat = NumberFormat.getNumberInstance();
-            String formattedPrice = numberFormat.format(itemOption.getExtraAmount());
-            this.optionNm = itemOption.getOptionName() + " " + itemOption.getQuantity() + " (" + formattedPrice + ")";
+            this.optionNm = itemOption.getOptionName();
         }
     }
 }

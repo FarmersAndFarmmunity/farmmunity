@@ -39,6 +39,7 @@ import static java.util.stream.Collectors.toMap;
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
+
     private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
     private final LocalItemImgService itemImgService;

@@ -30,6 +30,7 @@ import java.util.List;
 @Setter
 @ToString
 public class Item extends BaseEntity {
+
     @Id
     @Column(name = "item_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

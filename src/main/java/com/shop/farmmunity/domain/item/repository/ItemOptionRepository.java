@@ -8,5 +8,4 @@ import java.util.List;
 public interface ItemOptionRepository extends JpaRepository<ItemOption, Long> {
     List<ItemOption> findByItemIdOrderByIdAsc(Long itemId);
 
-    void deleteAllByItemId(Long itemId);
 }
