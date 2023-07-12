@@ -18,6 +18,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @SuperBuilder
 @ToString(callSuper = true)
 public class ItemTag extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

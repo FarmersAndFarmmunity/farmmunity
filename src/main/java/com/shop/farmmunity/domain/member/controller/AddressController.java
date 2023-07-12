@@ -42,6 +42,19 @@ public class AddressController {
         return "member/addressList";
     }
 
+    @GetMapping(value = "/admin/members/address/{memberId}")
+    public String membersAddress(@PathVariable("memberId") Long memberId, Model model, Principal principal){
+
+        try {
+            List<AddressDto> addressList = addressService.getAddressList(memberId);
+            model.addAttribute("addressList", addressList);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "member/addressForm";
+        }
+        return "member/addressList";
+    }
+
     @GetMapping(value = "/members/mypage/address/select")
     public String selectAddress(Model model, Principal principal){
 

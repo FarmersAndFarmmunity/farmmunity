@@ -61,7 +61,7 @@
         </td>
         <td th:text="(${item.itemSellStatus} == ${T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL} ? '판매중' : '품절')"></td>
         <td th:text="${item.createdBy}" style="width: 300px;word-break:break-all;"></td>
-        <td th:text="${#strings.substring(item.regTime, 0, 19)}"></td>
+        <td th:text="${#temporals.format(item.regTime, 'yyyy-MM-dd')}"></td>
       </tr>
       </tbody>
     </table>

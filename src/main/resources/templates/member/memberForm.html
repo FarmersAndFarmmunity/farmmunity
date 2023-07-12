@@ -83,15 +83,6 @@
                             <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="fieldError">Incorrect data</p>
                         </dd>
                     </dl>
-                    <dl class="detail-line">
-                        <dt class="detail-title">
-                            <label th:for="address">주소</label>
-                        </dt>
-                        <dd class="detail-content">
-                            <input type="text" th:field="*{address}" class="input input-bordered w-full" placeholder="주소를 입력해주세요">
-                            <p th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="fieldError">Incorrect data</p>
-                        </dd>
-                    </dl>
                 </div>
 
                 <div class="btn-box flex w-full justify-center items-center mt-3">
