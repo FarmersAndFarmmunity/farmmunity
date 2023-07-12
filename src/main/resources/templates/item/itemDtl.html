@@ -332,14 +332,15 @@
                 </div>
 
                 <div class="text-right my-2">
-                    <span class="font-bold">
+                    <div class="font-bold">
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="mr-2">총 결제 금액: </span>
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-3xl text-accent"><h3 name="totalPrice" id="totalPrice" class="font-weight-bold" style="display: contents;"></h3></span>
-
+                    </div>
+                    <div class="font-bold">
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="mr-2">공동구매시 총 결제 금액: </span>
                         <span th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-3xl text-error"><h3 name="totalGBPrice" id="totalGBPrice" class="font-weight-bold" style="display: contents;"></h3></span>
                         <span th:unless="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}">구매 불가</span>
-                    </span>
+                    </div>
                 </div>
 
                 <div th:if="${item.itemSellStatus == T(com.shop.farmmunity.domain.item.constant.ItemSellStatus).SELL}" class="text-right">
