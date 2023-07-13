@@ -30,17 +30,13 @@
 
             bindDomEvent();
         });
-      
+
         function selectOption(selectElement) {
             var selectedOption = selectElement.options[selectElement.selectedIndex];
+            var count = $("#count").val();
             selectedExtraAmount = selectedOption.getAttribute('data-extraAmount');
             selectedGbPrice = selectedOption.getAttribute('data-gbPrice');
-            $("#totalPrice").html(($("#count").val() * selectedExtraAmount) + '원');
-            $("#totalGBPrice").html(($("#count").val() * selectedGbPrice) + '원');
-        }
-
-        function numberWithCommas(number) {
-            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            innerPrice(count, selectedExtraAmount, selectedGbPrice);
         }
 
         function calculateTotalPrice(){
@@ -51,11 +47,20 @@
                 price = selectedExtraAmount;
                 gbPrice = selectedGbPrice;
             }
-            var formattedTotalPrice = numberWithCommas(price);
-            var formattedTotalGBPrice = numberWithCommas(gbPrice);
+            innerPrice(count, price, gbPrice)
+        }
 
+        function innerPrice(count, price, gbPrice) {
+            var totalPrice = price * count;
+            var totalGbPrice = gbPrice * count;
+            var formattedTotalPrice = numberWithCommas(totalPrice);
+            var formattedTotalGbPrice = numberWithCommas(totalGbPrice);
             $("#totalPrice").html(formattedTotalPrice + '원');
-            $("#totalGBPrice").html(formattedTotalGBPrice + '원');
+            $("#totalGBPrice").html(formattedTotalGbPrice + '원');
+        }
+
+        function numberWithCommas(number) {
+            return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
 
         function order(){
@@ -224,7 +229,7 @@
         }
 
         .detail-title {
-            width:100px;
+            width:150px;
             display: flex;
             align-items: center;
         }
@@ -357,9 +362,8 @@
 
 
     <div class="tabs menu-container flex flex-row w-full">
-        <a class="tab tab-bordered tab-active item-detail-box w-4/12" href="#item-detail">상품 정보</a>
-        <a class="tab tab-bordered tab-active item-review-box w-4/12" href="#review">상품 리뷰</a>
-        <a class="tab tab-bordered tab-active item-faq-box w-4/12">문의 하기</a>
+        <a class="tab tab-bordered tab-active item-detail-box w-1/2" href="#item-detail">상품 정보</a>
+        <a class="tab tab-bordered tab-active item-review-box w-1/2" href="#review">상품 리뷰</a>
     </div>
 
     <div class="jumbotron jumbotron-fluid mgt-30">
