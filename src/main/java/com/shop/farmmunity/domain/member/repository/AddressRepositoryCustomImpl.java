@@ -2,15 +2,10 @@ package com.shop.farmmunity.domain.member.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.shop.farmmunity.domain.cart.dto.CartDetailDto;
-import com.shop.farmmunity.domain.cart.entity.QCartItem;
-import com.shop.farmmunity.domain.item.entity.QItemImg;
 import com.shop.farmmunity.domain.member.dto.AddressDto;
 import com.shop.farmmunity.domain.member.entity.Address;
 import com.shop.farmmunity.domain.member.entity.QAddress;
-import com.shop.farmmunity.domain.member.entity.QMember;
 import jakarta.persistence.EntityManager;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

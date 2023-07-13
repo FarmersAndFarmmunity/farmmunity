@@ -3,7 +3,6 @@ package com.shop.farmmunity.domain.item.entity;
 import com.shop.farmmunity.base.baseEntity.BaseEntity;
 import com.shop.farmmunity.domain.item.constant.GroupBuyStatus;
 import com.shop.farmmunity.domain.member.entity.Member;
-import com.shop.farmmunity.domain.order.constant.OrderStatus;
 import com.shop.farmmunity.domain.order.entity.Order;
 import com.shop.farmmunity.domain.order.entity.OrderItem;
 import jakarta.persistence.*;

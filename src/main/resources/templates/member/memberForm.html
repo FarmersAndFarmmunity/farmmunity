@@ -54,8 +54,8 @@
     <div class="content-box w-full flex justify-center mt-10">
         <div class="flex justify-center flex-col" style="width:500px;">
             <div class="h4 text-4xl font-bold my-4 text-center mb-3" th:text="회원가입"></div>
-            <form th:action="@{/members/new}" method="post" th:object="${memberFormDto}">
-                <div class="join-form flex justify-center flex-col">
+            <form role="form" th:object="${memberFormDto}" method="post">
+                <div class="flex justify-center flex-col">
                     <dl class="detail-line">
                         <dt class="detail-title">
                             <label th:for="username">이름</label>
@@ -84,10 +84,10 @@
                         </dd>
                     </dl>
                 </div>
-
                 <div class="btn-box flex w-full justify-center items-center mt-3">
-                    <button type="submit" class="btn btn-accent" style="">가입하기</button>
+                    <button th:formaction="@{/members/new}" type="submit" class="btn btn-accent" style="">가입하기</button>
                 </div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
             </form>
         </div>
     </div>

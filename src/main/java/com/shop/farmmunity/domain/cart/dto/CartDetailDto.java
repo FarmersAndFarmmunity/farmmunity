@@ -3,11 +3,9 @@ package com.shop.farmmunity.domain.cart.dto;
 import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.item.entity.ItemOption;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.text.NumberFormat;
 import java.util.Objects;
 
 @Getter

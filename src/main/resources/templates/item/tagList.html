@@ -21,9 +21,10 @@
             <div class="card shadow-xl">
               <a th:href="'/item/' +${item.id}" class="text-dark">
                 <div class="card-body">
-                  <h4 class="card-title" style="text-overflow: ellipsis;">[[${item.itemNm}]]</h4>
-                  <p class="card-text">[[${item.itemDetail}]]</p>
-                  <h3 class="card-title text-danger">[[${item.price}]]원</h3>
+                  <img th:src="${item.imgUrl}" class="card-img-top" th:alt="${item.itemNm}" height="800">
+                  <h4 class="card-title" style="text-overflow: ellipsis;" th:text="${item.itemNm}"></h4>
+                  <p class="card-text" th:text="${item.itemDetail}"></p>
+                  <h3 class="card-title text-danger" th:text="|${#numbers.formatInteger(item.price, 0, 'COMMA')}원|"></h3>
                 </div>
               </a>
             </div>

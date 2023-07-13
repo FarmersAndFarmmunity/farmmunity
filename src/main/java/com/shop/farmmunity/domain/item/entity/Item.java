@@ -14,7 +14,10 @@ import lombok.ToString;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -71,6 +74,7 @@ public class Item extends BaseEntity {
         this.itemDetail = itemFormDto.getItemDetail();
         this.itemSellStatus = itemFormDto.getItemSellStatus();
         this.itemTagContents = itemFormDto.getItemTagContents();
+        this.groupBuying.setDiscount(itemFormDto.getDiscount());
     }
 
     // 재고 수량을 계산 (주문이 들어올 때에 주문 수량만큼 재고 수량을 빼줌)
@@ -105,10 +109,5 @@ public class Item extends BaseEntity {
         newItemTags
                 .stream()
                 .forEach(itemTags::add);
-    }
-
-    public void addOption(ItemOption option) {
-        this.itemOptionList.add(option);
-
     }
 }

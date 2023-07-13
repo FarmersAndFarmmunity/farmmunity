@@ -1,10 +1,10 @@
 package com.shop.farmmunity.domain.itemTag.service;
 
 import com.shop.farmmunity.domain.item.entity.Item;
-import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
-import com.shop.farmmunity.domain.itemTag.repository.ItemTagRepository;
 import com.shop.farmmunity.domain.itemKeyword.entity.ItemKeyword;
 import com.shop.farmmunity.domain.itemKeyword.service.ItemKeywordService;
+import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
+import com.shop.farmmunity.domain.itemTag.repository.ItemTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

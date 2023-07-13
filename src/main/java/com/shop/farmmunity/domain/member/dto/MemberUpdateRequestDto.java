@@ -1,16 +1,10 @@
 package com.shop.farmmunity.domain.member.dto;
 
-import com.shop.farmmunity.domain.item.dto.ItemFormDto;
-import com.shop.farmmunity.domain.item.entity.Item;
-import com.shop.farmmunity.domain.member.entity.Member;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.modelmapper.ModelMapper;
-
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor

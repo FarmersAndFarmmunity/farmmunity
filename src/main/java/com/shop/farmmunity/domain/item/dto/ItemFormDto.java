@@ -7,7 +7,6 @@ import com.shop.farmmunity.domain.item.entity.Item;
 import com.shop.farmmunity.domain.itemTag.entity.ItemTag;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -17,7 +16,10 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.modelmapper.ModelMapper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 

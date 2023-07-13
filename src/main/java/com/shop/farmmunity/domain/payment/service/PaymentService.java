@@ -9,7 +9,6 @@ import com.shop.farmmunity.domain.item.repository.GroupRepository;
 import com.shop.farmmunity.domain.member.entity.Member;
 import com.shop.farmmunity.domain.member.repository.MemberRepository;
 import com.shop.farmmunity.domain.order.entity.Order;
-import com.shop.farmmunity.domain.order.entity.OrderItem;
 import com.shop.farmmunity.domain.order.repository.OrderRepository;
 import com.shop.farmmunity.domain.payment.constant.PaymentDtlDto;
 import com.shop.farmmunity.domain.payment.entity.Payment;
