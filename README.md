@@ -44,7 +44,7 @@ https://www.kurly.com/main
 | [김연준](https://github.com/duswnsxnxn)                                              | [김영재](https://github.com/Kim-youngjae)                                            | [김소영](https://github.com/whale22)                                                 | [소예은](https://github.com/sohhhyeeun)                                             |   
 |-------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|----------------------------------------------------------------------------------|
 | <img src ="https://avatars.githubusercontent.com/u/65449174?v=4" width="150" />     | <img src ="https://avatars.githubusercontent.com/u/62341313?v=4" width="150" />     | <img src ="https://avatars.githubusercontent.com/u/15629036?v=4" width="150" />     | <img src ="https://avatars.githubusercontent.com/u/109645958?v=4" width="150" /> |
-| 배송지 기능 개선 <br/> 옵션 기능 <br/> 젠킨스 자동 배포                                    | 옵션 기능 <br/> 고객 정보 수정 기능                                                      | 공동 구매 매칭 기능 <br/> 공동 구매 할인 기능 <br/> 프론트 작업                             |  상품 태그 추가 기능<br/> 태그 검색 기능                                                       |
+| 배송지 관리 기능 <br/> 옵션 기능 <br/> 주문 기능 개선 <br/> 젠킨스 자동 배포                                   | 옵션 기능 <br/> 고객 정보 수정 기능                                                      | 공동 구매 매칭 기능 <br/> 공동 구매 할인 기능 <br/> 프론트 작업                             |  상품 태그 추가 기능<br/> 태그 검색 기능                                                       |
 
 
 
