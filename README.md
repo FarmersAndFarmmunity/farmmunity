@@ -24,7 +24,8 @@ https://www.kurly.com/main
 
 ### 2차 프로젝트 목표
 **김연준**
-- (추후 추가 예정)
+- 기존의 코드에서 기능 확장하면서 직면하는 어려움을 해결하는 것을 목표로 하고 있습니다.
+- 1차에서 못했던 타이커머스 사이트와 비슷한 기능들을 구현하고 싶습니다.
 
 **김영재**
 - 1차 프로젝트로 쌓은 경험으로 해보지 않은 도메인 개발을 도전해보고 싶었습니다.
@@ -49,6 +50,8 @@ https://www.kurly.com/main
 
 ## 🍈 사용 기술스택
 <img src ="https://cdn.discordapp.com/attachments/1119977979985019052/1128571408910401547/image.png"/>
+<img width="703" alt="기술스텍 사진" src="https://github.com/FarmersAndFarmmunity/farmmunity/assets/65449174/52f1002d-77e2-4086-a33b-5ef9ea0d0bec">
+
 
 
 
