@@ -49,8 +49,7 @@ https://www.kurly.com/main
 
 
 ## 🍈 사용 기술스택
-<img src ="https://cdn.discordapp.com/attachments/1119977979985019052/1128571408910401547/image.png"/>
-<img width="703" alt="기술스텍 사진" src="https://github.com/FarmersAndFarmmunity/farmmunity/assets/65449174/52f1002d-77e2-4086-a33b-5ef9ea0d0bec">
+![Farmmunity기술스텍](https://github.com/FarmersAndFarmmunity/farmmunity/assets/65449174/34ad653d-1e1e-41cd-bf05-ac399c3c89da)
 
 
 
