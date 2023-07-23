@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
@@ -58,11 +60,21 @@ public class SecurityConfig {
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
         ;
 
+        http.csrf(csrf -> csrf
+                .csrfTokenRepository(csrfTokenRepository())
+        );
+
         return http.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CsrfTokenRepository csrfTokenRepository() {
+        CookieCsrfTokenRepository repository = CookieCsrfTokenRepository.withHttpOnlyFalse();
+        return repository;
     }
 }
