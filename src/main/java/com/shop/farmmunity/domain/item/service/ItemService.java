@@ -33,7 +33,7 @@ public class ItemService {
 
     private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
-    private final ItemImgService itemImgService;
+    private final LocalItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final ItemOptionService itemOptionService;
@@ -68,6 +68,7 @@ public class ItemService {
             }
             // 상품의 이미지 정보를 저장
             itemImgService.saveItemImg(itemImg, itemImgFileList.get(i));
+
         }
 
         return item.getId();
