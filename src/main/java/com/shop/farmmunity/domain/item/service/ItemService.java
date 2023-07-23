@@ -33,7 +33,7 @@ public class ItemService {
 
     private final ItemTagService itemTagService;
     private final ItemRepository itemRepository;
-    private final LocalItemImgService itemImgService;
+    private final ItemImgService itemImgService;
     private final ItemImgRepository itemImgRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final ItemOptionService itemOptionService;
