@@ -53,7 +53,6 @@ https://www.kurly.com/main
 
 
 
-
 ## 🍅 주요 기능 시연
 ### 🌿 내 정보 관리
 <img src ="https://user-images.githubusercontent.com/109645958/253142221-82bfa333-2866-4e89-a24f-9eb95ec7b23f.gif">
