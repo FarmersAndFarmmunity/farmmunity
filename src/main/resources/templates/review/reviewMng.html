@@ -72,7 +72,7 @@
         <div th:with="start=${(reviews.number/maxPage)*maxPage + 1}, end=(${(reviews.totalPages == 0) ? 1 : (start + (maxPage - 1) < reviews.totalPages ? start + (maxPage - 1) : reviews.totalPages)})" >
             <ul class="flex join justify-center mt-5">
 
-                <li class="join-item btn" th:classappend="${reviews.first}?'disabled'">
+                <li class="join-item btn" th:if="${!reviews.isFirst()}">
                     <a th:onclick="'javascript:page(' + ${reviews.number - 1} + ')'" aria-label='이전' class="page-link">
                         <span aria-hidden='true'>이전</span>
                     </a>
@@ -82,7 +82,7 @@
                     <a th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
                 </li>
 
-                <li class="join-item btn" th:classappend="${reviews.last}?'disabled'">
+                <li class="join-item btn" th:if="${!reviews.isLast()}">
                     <a th:onclick="'javascript:page(' + ${reviews.number + 1} + ')'" aria-label='다음' class="page-link">
                         <span aria-hidden='true'>다음</span>
                     </a>

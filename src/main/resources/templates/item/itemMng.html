@@ -69,7 +69,7 @@
     <div th:with="start=${(items.number/maxPage)*maxPage + 1}, end=(${(items.totalPages == 0) ? 1 : (start + (maxPage - 1) < items.totalPages ? start + (maxPage - 1) : items.totalPages)})" >
       <ul class="flex join justify-center mt-5">
 
-        <li class="join-item btn" th:classappend="${items.first}?'disabled':''">
+        <li class="join-item btn" th:if="${!items.isFirst()}">
           <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:onclick="'javascript:page(' + ${items.number - 1} + ')'" aria-label='이전' class="page-link">
             <span aria-hidden='true'>이전</span>
           </a>
@@ -79,7 +79,7 @@
           <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:onclick="'javascript:page(' + ${page - 1} + ')'" th:inline="text" class="page-link">[[${page}]]</a>
         </li>
 
-        <li class="join-item btn" th:classappend="${items.last}?'disabled':''">
+        <li class="join-item btn" th:if="${!items.isLast()}">
           <a sec:authorize="hasAuthority('ROLE_ADMIN')" th:onclick="'javascript:page(' + ${items.number + 1} + ')'" aria-label='다음' class="page-link">
             <span aria-hidden='true'>다음</span>
           </a>

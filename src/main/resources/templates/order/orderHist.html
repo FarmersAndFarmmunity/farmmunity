@@ -160,7 +160,7 @@
     <div th:with="start=${(orders.number/maxPage)*maxPage + 1}, end=(${(orders.totalPages == 0) ? 1 : (start + (maxPage - 1) < orders.totalPages ? start + (maxPage - 1) : orders.totalPages)})" >
         <ul class="flex join justify-center mt-5">
 
-            <li class="join-item btn" th:classappend="${orders.number eq 0}?'disabled':''">
+            <li class="join-item btn" th:if="${!orders.isFirst()}">
                 <a th:href="@{'/orders/' + ${orders.number-1}}" aria-label='이전' class="page-link">
                     <span aria-hidden='true'>이전</span>
                 </a>
@@ -170,7 +170,7 @@
                 <a th:href="@{'/orders/' + ${page-1}}" th:inline="text" class="page-link">[[${page}]]</a>
             </li>
 
-            <li class="join-item btn" th:classappend="${orders.number+1 ge orders.totalPages}?'disabled':''">
+            <li class="join-item btn" th:if="${!orders.isLast()}">
                 <a th:href="@{'/orders/' + ${orders.number+1}}" aria-label='다음' class="page-link">
                     <span aria-hidden='true'>다음</span>
                 </a>
